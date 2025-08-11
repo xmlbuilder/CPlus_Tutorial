@@ -1,0 +1,13 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="220">
+  <text x="20" y="24" font-family="Arial" font-size="14">반복자 카테고리 (약➡강)</text>
+  <rect x="60" y="50" width="140" height="30" fill="#f3e5f5" stroke="#8e24aa"/>
+  <text x="130" y="70" text-anchor="middle" font-family="Arial" font-size="12">Input / Output</text>
+  <rect x="220" y="50" width="140" height="30" fill="#e1f5fe" stroke="#0277bd"/>
+  <text x="290" y="70" text-anchor="middle" font-family="Arial" font-size="12">Forward</text>
+  <rect x="380" y="50" width="160" height="30" fill="#e8f5e9" stroke="#2e7d32"/>
+  <text x="460" y="70" text-anchor="middle" font-family="Arial" font-size="12">Bidirectional</text>
+  <rect x="560" y="50" width="160" height="30" fill="#fff8e1" stroke="#f9a825"/>
+  <text x="640" y="70" text-anchor="middle" font-family="Arial" font-size="12">Random Access</text>
+  <text x="390" y="110" text-anchor="middle" font-family="Arial" font-size="12">제공 기능: 입력/출력 → 전방 이동 → 전/후진 → 인덱스·산술</text>
+</svg>

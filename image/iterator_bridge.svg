@@ -1,0 +1,21 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="200">
+  <rect x="20" y="60" width="200" height="80" rx="12" ry="12" fill="#e3f2fd" stroke="#1e88e5"/>
+  <text x="120" y="105" text-anchor="middle" font-family="Arial" font-size="16">컨테이너</text>
+  <rect x="300" y="30" width="180" height="140" rx="12" ry="12" fill="#e8f5e9" stroke="#43a047"/>
+  <text x="390" y="80" text-anchor="middle" font-family="Arial" font-size="15">반복자 (Iterator)</text>
+  <text x="390" y="105" text-anchor="middle" font-family="Arial" font-size="12">포인터 유사 객체</text>
+  <text x="390" y="125" text-anchor="middle" font-family="Arial" font-size="12">++, --, *, ==, !=</text>
+  <rect x="540" y="60" width="220" height="80" rx="12" ry="12" fill="#fff3e0" stroke="#fb8c00"/>
+  <text x="650" y="105" text-anchor="middle" font-family="Arial" font-size="16">알고리즘</text>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#1e88e5"/>
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#fb8c00"/>
+    </marker>
+  </defs>
+  <line x1="220" y1="100" x2="300" y2="100" stroke="#1e88e5" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="480" y1="100" x2="540" y2="100" stroke="#fb8c00" stroke-width="2" marker-end="url(#arrow2)"/>
+</svg>
