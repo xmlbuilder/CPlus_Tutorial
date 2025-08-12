@@ -1,0 +1,18 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="160">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#1565c0"/>
+    </marker>
+  </defs>
+  <text x="20" y="24" font-family="Arial" font-size="16">deque: 양쪽 끝 삽입/삭제</text>
+  <rect x="110" y="60" width="80" height="40" rx="6" ry="6" fill="#e3f2fd" stroke="#1565c0"/><text x="150" y="85" text-anchor="middle" font-family="Arial" font-size="14">20</text><rect x="200" y="60" width="80" height="40" rx="6" ry="6" fill="#e3f2fd" stroke="#1565c0"/><text x="240" y="85" text-anchor="middle" font-family="Arial" font-size="14">15</text><rect x="290" y="60" width="80" height="40" rx="6" ry="6" fill="#e3f2fd" stroke="#1565c0"/><text x="330" y="85" text-anchor="middle" font-family="Arial" font-size="14">9</text><rect x="380" y="60" width="80" height="40" rx="6" ry="6" fill="#e3f2fd" stroke="#1565c0"/><text x="420" y="85" text-anchor="middle" font-family="Arial" font-size="14">8</text><rect x="470" y="60" width="80" height="40" rx="6" ry="6" fill="#e3f2fd" stroke="#1565c0"/><text x="510" y="85" text-anchor="middle" font-family="Arial" font-size="14">30</text><rect x="560" y="60" width="80" height="40" rx="6" ry="6" fill="#e3f2fd" stroke="#1565c0"/><text x="600" y="85" text-anchor="middle" font-family="Arial" font-size="14">25</text>
+  <text x="80" y="130" font-family="Arial" font-size="12">pop_front()</text>
+  <line x1="110" y1="115" x2="110" y2="80" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="700" y="130" font-family="Arial" font-size="12" text-anchor="middle">pop_back()</text>
+  <line x1="700" y1="115" x2="700" y2="80" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="180" y="30" font-family="Arial" font-size="12">push_front()</text>
+  <line x1="150" y1="35" x2="150" y2="70" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="630" y="30" font-family="Arial" font-size="12" text-anchor="middle">push_back()</text>
+  <line x1="630" y1="35" x2="630" y2="70" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
