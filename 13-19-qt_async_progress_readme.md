@@ -5,7 +5,7 @@ GUI 스레드에서만 위젯 접근(예: `progressBar->setValue`)하는 것은 
 
 ---
 
-## ✅ 최소 변경 / 안전한 동기화
+## ✅ 안전한 동기화
 
 - `m_nProgress` → `std::atomic<int>`
 - `**`std::launch::async`** 로 강제(지연 실행 방지)
