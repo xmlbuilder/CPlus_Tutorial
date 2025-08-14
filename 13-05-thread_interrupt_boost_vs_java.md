@@ -175,7 +175,7 @@ int main() {
 
 ## 5) 상태·흐름 다이어그램
 
-### (Mermaid) Boost interrupt 흐름
+### Boost interrupt 흐름
 ```mermaid
 sequenceDiagram
     participant Main
@@ -196,7 +196,7 @@ sequenceDiagram
     Main-->>Main: 종료
 ```
 
-### (Mermaid) Java interrupt 상태 개요
+### Java interrupt 상태 개요
 ```mermaid
 stateDiagram-v2
     [*] --> Running
