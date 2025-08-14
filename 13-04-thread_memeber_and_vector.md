@@ -186,19 +186,19 @@ POSIX/일반적인 스케줄링 모델을 단순화한 상태 전이 예시입�
 
 ```mermaid
 stateDiagram-v2
-    [*] --> New: std::thread 생성
+    * --> New: std::thread 생성
     New --> Runnable: 스케줄러에 등록
     Runnable --> Running: CPU 할당(스케줄)
     Running --> Runnable: time slice 종료 / 선점
     Running --> Waiting: sleep()/join()/mutex lock/condvar wait
     Waiting --> Runnable: notify/timeout/unlock
     Running --> Terminated: 함수 종료(return/throw)
-    Terminated --> [*]
+    Terminated --> *
 
     state Running {
-        [*] --> Executing
+        * --> Executing
         Executing --> Yielded: std::this_thread::yield()
-        Yielded --> [*]
+        Yielded --> *
     }
 
     note right of Waiting
