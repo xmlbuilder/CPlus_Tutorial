@@ -1,4 +1,4 @@
-# 🧰 `ON_Closure` — Lightweight type-erased callable (GitHub README)
+# 🧰 `ON_Closure` — Lightweight type-erased callable
 
 `ON_Closure<R, Args...>`는 임의의 **호출 가능 객체**(람다, 함수 포인터, 펑터, `std::bind` 결과 등)를 **타입 소거(type erasure)** 로 감싸 **하나의 공통 인터페이스**로 호출할 수 있게 하는 작고 간단한 유틸입니다.
 
