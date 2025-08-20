@@ -151,7 +151,7 @@
 ## 10. 기타
 - [23-01 — on closure #1](https://github.com/xmlbuilder/CPlus_Tutorial/blob/main/23-01-on_closure_readme.md)
 - [23-02 — on closure #2](https://github.com/xmlbuilder/CPlus_Tutorial/blob/main/23-02-on_closure_readme.md)
-- [75 — namespace](https://github.com/xmlbuilder/CPlus_Tutorial/blob/main/23-02-on_closure_readme.md)
+- [75 — namespace](https://github.com/xmlbuilder/CPlus_Tutorial/blob/main/75.namespace.md)
 
 ---
 
