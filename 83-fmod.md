@@ -16,7 +16,8 @@ double fmod(double x, double y);
 ## 📌 동작 방식
 fmod(x, y)는 다음과 같은 수학적 정의를 따릅니다:
 
-\text{fmod}(x, y) = x - y \times \text{trunc}(x / y)
+**fmod(x, y)** = `x - y * trunc(x / y)`
+
 
 - trunc(x / y)는 소수점 이하를 버린 몫
 - 결과는 x와 같은 부호를 가짐
