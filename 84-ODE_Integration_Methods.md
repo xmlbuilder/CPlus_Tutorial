@@ -42,7 +42,8 @@ Runge–Kutta는 사실상 Simpson/Trapezoid 아이디어를 ODE에 맞게 **명
 
 스텝 크기 $\(h\)$ , 현재 상태 $\(y_n\)$ , 시간 $\(t_n\)$ :
 
-$\[
+$$
+\[
 \begin{aligned}
 k_1 &= f(t_n, y_n), \\
 k_2 &= f\left(t_n + \tfrac{h}{2}, \, y_n + \tfrac{h}{2}k_1\right), \\
@@ -50,7 +51,8 @@ k_3 &= f\left(t_n + \tfrac{h}{2}, \, y_n + \tfrac{h}{2}k_2\right), \\
 k_4 &= f\left(t_n + h, \, y_n + h k_3\right), \\
 y_{n+1} &= y_n + \tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4).
 \end{aligned}
-\]$
+\]
+$$
 
 - $\(k_1, k_2, k_3, k_4\)$ 는 서로 다른 시점에서의 “슬로프(derivative)”  
 - 가중합을 통해 Simpson 공식과 비슷한 포물선 보간을 흉내냄.  
