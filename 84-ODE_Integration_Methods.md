@@ -884,126 +884,337 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 
 ```cpp
 
-class ON_CurveLength : public ON_IntegFuncEvalObj
+static double CalculateLengthBySimpson(FirstDerivativeLengthFunction function, 
+  const ON_NurbsCurve& curve, 
+  double start, 
+  double end, 
+  double simpson, 
+  double tolearance)
 {
-private:
-  const ON_Curve& m_crCurve;
-public:
-  ON_CurveLength(const ON_Curve& crCurve)
-    : m_crCurve(crCurve) {}
-  bool Evaluate(double dT, double& rdResult) const override;
-};
+  double length = 0.0;
+  double m = (start + end) / 2.0;
+  double left = ON_Integrator::Simpson(function, (void*)&curve, start, m);
+  double right = ON_Integrator::Simpson(function, (void*)&curve, m, end);
 
-bool ON_CurveLength::Evaluate(double dT, double& rdResult) const
-{
-  TArrayd evalData(2 * 3);
-  m_crCurve.Evaluate(dT, 1, 3, evalData.GetData());
-  rdResult = ON_3dVector(&evalData[3]).Length();
-  return true;
-}
-
-double ON_CalcCurveLengthByTangent(
-  ON_Curve& curve, 
-  double dDesiredAccuracy
-)
-{
-  double totalLength = 0;
-  if (!curve.IsValid()) return totalLength;
-
-  double dSpanAccuracy = dDesiredAccuracy / curve.SpanCount();
-
-  ON_Interval sSegIvl = curve.Domain();
-  ON_CurveLength sEval(curve);
-  ON_IntegratorEx sIntegrator(sEval);
-
-  double dRomberg;
-  sIntegrator.IntegrateIt(sSegIvl.Min(), sSegIvl.Max(), 
-    IntegratorAlgorithmType::IA_ROMBERG,
-    dSpanAccuracy, dRomberg);
-  totalLength += dRomberg;
-
-  return totalLength;
-}
-
-class CalcAreaIntegrator : public ON_IntegFuncEvalObj
-{
-private:
-  const ON_Surface&   m_crSurface;
-  const ON_Interval&  m_crUDomain;
-  const ON_Interval&  m_crVDomain;
-  double              m_dIsoCurveAccuracy;
-public:
-  CalcAreaIntegrator(
-    const ON_Surface& crSurface,
-    const ON_Interval& crUDomain, 
-    const ON_Interval& crVDomain, 
-    double dIsoCurveAccuracy)
-    : m_crSurface(crSurface), m_crUDomain(crUDomain), m_crVDomain(crVDomain),
-    m_dIsoCurveAccuracy(dIsoCurveAccuracy) {}
-  bool Evaluate(double dT, double& rdResult) const override;
-};
-
-
-class IsoCurveLengthIntegrator : public ON_IntegFuncEvalObj
-{
-private:
-  const ON_Surface& m_crSurface;
-  double m_dUIsoValue;
-public:
-  IsoCurveLengthIntegrator(const ON_Surface& crSurface, double dUIsoValue)
-    : m_crSurface(crSurface), m_dUIsoValue(dUIsoValue) {
+  double differ = left + right - simpson;
+  if (ON_AreEqual(differ, 0.0) || ON_AreLessThan(abs(differ) / 10.0, tolearance))
+  {
+    length = left + right + differ / 10.0;
   }
-  virtual bool Evaluate(double dT, double& rdResult) const;
-};
-
-
-bool IsoCurveLengthIntegrator::Evaluate(double dT, double& rdResult) const
-{
-  TArrayd taVal(3 * 3);
-  m_crSurface.Evaluate(m_dUIsoValue, dT, 1, 3, taVal.GetData());
-  ON_3dVector Su = ON_3dVector(&taVal[3]);
-  ON_3dVector Sv = ON_3dVector(&taVal[6]);
-
-  // Compute first fundamental form
-  double dE = Su.Dot(Su);
-  double dF = Su.Dot(Sv);
-  double dG = Sv.Dot(Sv);
-
-  rdResult = std::sqrt((std::max)(0.0, dE * dG - dF * dF));
-  return true;
+  else
+  {
+    length = CalculateLengthBySimpson(function, curve, start, m, left, tolearance / 2.0) 
+      + CalculateLengthBySimpson(function, curve, m, end, right, tolearance / 2.0);
+  }
+  return length;
 }
 
-bool CalcAreaIntegrator::Evaluate(double dT, double& rdResult) const
+double ON_CurveApproximateLength(const ON_NurbsCurve& curve, IntegratorType type)
 {
-  IsoCurveLengthIntegrator sEval(m_crSurface, dT);
-  ON_IntegratorEx sIntegrator(sEval);
+  if (curve.IsLine())
+  {
+    ON_3dPoint startPoint = ON_3dPoint(curve.ControlPoint(0));
+    ON_3dPoint endPoint = ON_3dPoint(curve.ControlPoint(curve.CVCount() - 1));
+    return startPoint.DistanceTo(endPoint);
+  }
 
-  double dRomberg;
-  sIntegrator.IntegrateIt(m_crVDomain.Min(),
-    m_crVDomain.Max(), IntegratorAlgorithmType::IA_ROMBERG,
-    m_dIsoCurveAccuracy, dRomberg);
+  ON_NurbsCurve reCurve = curve;
+  reCurve.SetDomain(0.0, 1.0);
 
-  rdResult = dRomberg;
-  return true;
+  int degree = reCurve.Degree();
+  const double* knotVector = reCurve.Knot();
+  int cntKnot = reCurve.KnotCount();
+ 
+  double length = 0.0;
+  switch (type)
+  {
+  case IntegratorType::Simpson:
+  {
+    double start = knotVector[0];
+    double end = knotVector[cntKnot - 1];
+    FirstDerivativeLengthFunction function;
+    double simpson = 0;
+    std::vector<ON_NurbsCurve> curves;
+    reCurve.Decompose(curves);
+    for (int i = 0; i < curves.size(); i++)
+    {
+      simpson += ON_Integrator::Simpson(function, (void*)&curves[i], start, end);
+    }
+    length = CalculateLengthBySimpson(function, reCurve, start, end, simpson, ON_SQRT_EPSILON);
+    break;
+  }
+  case IntegratorType::GaussLegendre:
+  {
+    std::vector<ON_NurbsCurve> curves;
+    reCurve.Decompose(curves);
+    for (int i = 0; i < curves.size(); i++)
+    {
+      const ON_NurbsCurve& subCurve = curves[i];
+      const double*  aKnots = subCurve.Knot();
+      int cntLocalKnot = subCurve.KnotCount();
+      double a = aKnots[0];
+      double b = aKnots[cntLocalKnot - 1];
+      double coefficient = (b - a) / 2.0;
+
+      double bLength = 0.0;
+      auto abscissae = GaussLegendreAbscissae;
+      int size = (int)abscissae.size();
+      for (int j = 0; j < size; j++)
+      {
+        double t = coefficient * abscissae[j] + (a + b) / 2.0;
+        ON_3dPoint point;
+        ON_3dVector tan;
+        subCurve.TangentAt(t, point, tan);
+        double derLength = tan.Length();
+        if (std::isnan(derLength)) derLength = 0.0;
+        bLength += GaussLegendreWeights[j] * derLength;
+      }
+      bLength = coefficient * bLength;
+      length += bLength;
+    }
+    break;
+  }
+  case IntegratorType::Chebyshev:
+  {
+    std::vector<double> series = ON_Integrator::ChebyshevSeries();
+    int nCntCtrlPt = reCurve.CVCount();
+    for (int i = degree-1; i < nCntCtrlPt; i++)
+    {
+      double a = knotVector[i];
+      double b = knotVector[i + 1];
+      FirstDerivativeLengthFunction function;
+      length += ON_Integrator::ClenshawCurtisQuadrature(function, (void*)&reCurve, a, b, series);
+    }
+    break;
+  }
+  default:
+    break;
+  }
+  return length;
 }
 
-double ON_CalcSurfaceArea(
-  const ON_Surface& surface,
-  const ON_Interval uDomain,
-  const ON_Interval vDomain,
-  double dPatchAccuracy)
+double ON_NurbsSurfaceApproximateArea(
+  const ON_NurbsSurface& surface, 
+  IntegratorType type)
 {
-  double totalArea = 0.0;
-  CalcAreaIntegrator sAreaEval(surface, uDomain, vDomain, dPatchAccuracy * 0.2);
-  ON_IntegratorEx sIntegrator(sAreaEval);
-  double dRomberg = 0.0;
-  sIntegrator.IntegrateIt(uDomain.Min(),
-    uDomain.Max(), IntegratorAlgorithmType::IA_ROMBERG,
-    dPatchAccuracy, dRomberg);
-  totalArea += dRomberg;
+  ON_NurbsSurface retSurface = surface;
+  retSurface.SetDomain(0, 0.0, 1.0);
+  retSurface.SetDomain(1, 0.0, 1.0);
 
-  return totalArea;
+  int degreeU = retSurface.Degree(0);
+  int degreeV = retSurface.Degree(1);
+
+  const double* knotVectorU = retSurface.Knot(0);
+  const double* knotVectorV = retSurface.Knot(1);
+
+  double area = 0.0;
+  switch (type)
+  {
+  case IntegratorType::Simpson:
+  {
+    struct fun
+      : ON_BinaryIntegrationFunction
+    {
+      double operator()(double u, double v, void* calFunc)const override
+      {
+        auto surface = (ON_NurbsSurface*)calFunc;
+        ON_3dPoint S;
+        ON_3dVector Su, Sv;
+        surface->TangentAt(u, v, S, Su, Sv);
+        double E = ON_DotProduct(Su, Su);
+        double F = ON_DotProduct(Su, Sv);
+        double G = ON_DotProduct(Sv, Sv);
+        double ds = std::sqrt(E * G - F * F);
+        return ds;
+      }
+    } function;
+
+    // the initial search range
+    struct UVRange
+    {
+      double u1, u2, v1, v2;
+      double area;
+    };
+
+    UVRange init;
+    init.u1 = 0;
+    init.u2 = 1;
+    init.v1 = 0;
+    init.v2 = 1;
+    init.area = ON_Integrator::Simpson(function, (void*)&retSurface, init.u1, init.u2, init.v1, init.v2);
+    std::vector<UVRange> stack(1, init);
+
+    while (!stack.empty())
+    {
+      UVRange uva = stack.back();
+      stack.pop_back();
+      // Bisect uv into 4 parts.
+      double du = uva.u2 - uva.u1;
+      double dv = uva.v2 - uva.v1;
+      double hdu = 0.5 * du;
+      double hdv = 0.5 * dv;
+      UVRange uva1, uva2, uva3, uva4;
+      uva1.u1 = uva.u1;
+      uva1.u2 = uva.u1 + hdu;
+      uva1.v1 = uva.v1;
+      uva1.v2 = uva.v1 + hdv;
+      uva1.area = ON_Integrator::Simpson(function, (void*)&retSurface, uva1.u1, uva1.u2, uva1.v1, uva1.v2);
+      uva2.u1 = uva.u1 + hdu;
+      uva2.u2 = uva.u2;
+      uva2.v1 = uva.v1;
+      uva2.v2 = uva.v1 + hdv;
+      uva2.area = ON_Integrator::Simpson(function, (void*)&retSurface, uva2.u1, uva2.u2, uva2.v1, uva2.v2);
+      uva3.u1 = uva.u1;
+      uva3.u2 = uva.u1 + hdu;
+      uva3.v1 = uva.v1 + hdv;
+      uva3.v2 = uva.v2;
+      uva3.area = ON_Integrator::Simpson(function, (void*)&retSurface, uva3.u1, uva3.u2, uva3.v1, uva3.v2);
+      uva4.u1 = uva.u1 + hdu;
+      uva4.u2 = uva.u2;
+      uva4.v1 = uva.v1 + hdv;
+      uva4.v2 = uva.v2;
+      uva4.area = ON_Integrator::Simpson(function, (void*)&retSurface, uva4.u1, uva4.u2, uva4.v1, uva4.v2);
+
+      // sum area
+      double areaNew = uva1.area + uva2.area + uva3.area + uva4.area;
+
+      // The error is tolerated.
+      if (std::fabs(areaNew - uva.area) < ON_SQRT_FLOAT_EPSILON)
+      {
+        // Accumulate to the final area.
+        area += areaNew;
+      }
+      else
+      {
+        // Continue bisections.
+        stack.push_back(uva1);
+        stack.push_back(uva2);
+        stack.push_back(uva3);
+        stack.push_back(uva4);
+      }
+    }
+
+    break;
+  }
+  case IntegratorType::GaussLegendre:
+  {
+    auto& abscissae = GaussLegendreAbscissae;
+
+    ON_SimpleArray<ON_NurbsSurface*> decomposeSurfaces;
+    ON_DecomposeSurface(retSurface, decomposeSurfaces);
+    for (int i = 0; i < decomposeSurfaces.Count(); i++)
+    {
+      ON_NurbsSurface* deSurface = decomposeSurfaces[i];
+      const double* aKnotsU = deSurface->Knot(0);
+      const double* aKnotsV = deSurface->Knot(1);
+
+      int cntKnotU = deSurface->KnotCount(0);
+      int cntKnotV = deSurface->KnotCount(1);
+
+      double a = aKnotsU[0];
+      double b = aKnotsU[cntKnotU - 1];
+      double coefficient1 = (b - a) * 0.5;
+
+      double c = aKnotsV[0];
+      double d = aKnotsV[cntKnotV - 1];
+      double coefficient2 = (d - c) * 0.5;
+
+      double bArea = 0.0;
+      auto& abscissae = GaussLegendreAbscissae;
+      int size = (int)abscissae.size();
+      for (int k = 0; k < size; k++)
+      {
+        double u = coefficient1 * abscissae[k] + (a + b) * 0.5;
+        for (int j = 0; j < size; j++)
+        {
+          double v = coefficient2 * abscissae[j] + (c + d) * 0.5;
+          ON_3dPoint S;
+          ON_3dVector Su, Sv;
+          deSurface->TangentAt(u, v, S, Su, Sv);
+          double E = ON_DotProduct(Su, Su);
+          double F = ON_DotProduct(Su, Sv);
+          double G = ON_DotProduct(Sv, Sv);
+          double ds = std::sqrt(E * G - F * F);
+          bArea += GaussLegendreWeights[k] * GaussLegendreWeights[j] * ds;
+        }
+      }
+      bArea = coefficient1 * coefficient2 * bArea;
+      area += bArea;
+      delete deSurface;
+    }
+    break;
+  }
+  case IntegratorType::Chebyshev:
+  {
+    struct AreaData
+    {
+      const ON_NurbsSurface* Surface{ nullptr };
+      double parmV;
+      double curKnotU;
+      double nextKnotU;
+      double curKnotV;
+      double nextKnotV;
+      const std::vector<double>& Series;
+
+      AreaData(const ON_NurbsSurface* surface, const std::vector<double>& series) :
+        Surface(surface), Series(series), parmV(0.0), curKnotU(0.0), nextKnotU(1.0),
+        curKnotV(0.0), nextKnotV(0.0)
+      {
+      }
+    };
+    class AreaCoreFunction : public ON_IntegrationFunction
+    {
+      double operator()(double parameter, void* customFunc)
+      {
+        AreaData* data = (AreaData*)customFunc;
+        ON_3dPoint pt;
+        ON_3dVector Su;
+        ON_3dVector Sv;
+        data->Surface->TangentAt(parameter, data->parmV, pt, Su, Sv);
+        double E = ON_DotProduct(Su, Su);
+        double F = ON_DotProduct(Su, Sv);
+        double G = ON_DotProduct(Sv, Sv);
+        double ds = std::sqrt(E * G - F * F);
+        return ds;
+      }
+    };
+    class AreaWrapperFunction : public ON_IntegrationFunction
+    {
+      double operator()(double parameter, void* customData)
+      {
+        static std::vector<double> series;
+        AreaCoreFunction areaCoreFunction;
+        AreaData* data = (AreaData*)customData;
+        data->parmV = parameter;
+        return ON_Integrator::ClenshawCurtisQuadrature2(areaCoreFunction, data, data->curKnotU, data->nextKnotU, data->Series);
+      }
+    };
+    
+    std::vector<double> series = ON_Integrator::ChebyshevSeries();
+    AreaWrapperFunction function;
+    AreaData data(&retSurface, series);
+
+    for (int i = degreeU-1; i < retSurface.CVCount(0)-1; i++)
+    {
+      data.curKnotU = knotVectorU[i];
+      data.nextKnotU = knotVectorU[i + 1];
+      for (int j = degreeV-1; j < retSurface.CVCount(1)-1; j++)
+      {
+        data.curKnotV = knotVectorV[j];
+        data.nextKnotV = knotVectorV[j + 1];
+        area += ON_Integrator::ClenshawCurtisQuadrature2(function, (void*)&data, data.curKnotV, data.nextKnotV, series);
+      }
+    }
+    break;
+  }
+  default:
+    break;
+  }
+  return area;
 }
+
+
+
 
 ```
 ----
