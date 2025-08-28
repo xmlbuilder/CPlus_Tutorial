@@ -155,7 +155,7 @@ public:
 ```cpp
 auto comp = ComponentBuilder().addA().addB().build();
 comp->operation();
-``
+```
 
 
 ## 🧠 요약: 장점 vs 단점
