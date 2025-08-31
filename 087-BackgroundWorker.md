@@ -593,3 +593,134 @@ int main(int argc, char *argv[]) {
 
 ---
 
+## 📌 MFC용 BackgroundWorker 예시
+```cpp
+// BackgroundWorkerMFC.h
+#pragma once
+#include <thread>
+#include <atomic>
+#include <functional>
+#include <windows.h>
+
+enum class WorkerEventType {
+    Progress,
+    Completed
+};
+
+struct WorkerEvent {
+    WorkerEventType type;
+    int value; // Progress일 때만 사용
+};
+
+// 사용자 정의 메시지
+#define WM_WORKER_PROGRESS  (WM_USER + 1)
+#define WM_WORKER_COMPLETED (WM_USER + 2)
+
+class BackgroundWorkerMFC {
+public:
+    BackgroundWorkerMFC(HWND hWndTarget)
+        : hWndTarget_(hWndTarget), running_(false) {}
+
+    ~BackgroundWorkerMFC() {
+        cancel();
+        wait();
+    }
+
+    void start() {
+        if (running_) return;
+        running_ = true;
+
+        workerThread_ = std::thread([this]() {
+            for (int i = 0; i <= 100 && running_; i += 10) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                PostMessage(hWndTarget_, WM_WORKER_PROGRESS, (WPARAM)i, 0);
+            }
+            PostMessage(hWndTarget_, WM_WORKER_COMPLETED, 0, 0);
+        });
+    }
+
+    void cancel() {
+        running_ = false;
+    }
+
+    bool isRunning() const { return running_; }
+
+    void wait() {
+        if (workerThread_.joinable())
+            workerThread_.join();
+    }
+
+private:
+    HWND hWndTarget_;
+    std::atomic<bool> running_;
+    std::thread workerThread_;
+};
+
+```
+### 📌 MFC 대화상자/뷰에서 사용 예시
+```cpp
+// MyDialog.h
+#pragma once
+#include "BackgroundWorkerMFC.h"
+
+class CMyDialog : public CDialogEx {
+public:
+    CMyDialog(CWnd* pParent = nullptr)
+        : CDialogEx(IDD_MY_DIALOG, pParent),
+          worker_(m_hWnd) {}
+
+protected:
+    virtual BOOL OnInitDialog() {
+        CDialogEx::OnInitDialog();
+        return TRUE;
+    }
+
+    afx_msg void OnBnClickedStart() {
+        worker_ = BackgroundWorkerMFC(m_hWnd); // 새로 생성
+        worker_.start();
+    }
+
+    afx_msg LRESULT OnWorkerProgress(WPARAM wParam, LPARAM lParam) {
+        int progress = (int)wParam;
+        m_ProgressCtrl.SetPos(progress);
+        return 0;
+    }
+
+    afx_msg LRESULT OnWorkerCompleted(WPARAM wParam, LPARAM lParam) {
+        AfxMessageBox(_T("작업 완료!"));
+        return 0;
+    }
+
+    DECLARE_MESSAGE_MAP()
+
+private:
+    BackgroundWorkerMFC worker_;
+    CProgressCtrl m_ProgressCtrl;
+};
+```
+
+
+## 📌 메시지 맵 연결
+```cpp
+BEGIN_MESSAGE_MAP(CMyDialog, CDialogEx)
+    ON_BN_CLICKED(IDC_BUTTON_START, &CMyDialog::OnBnClickedStart)
+    ON_MESSAGE(WM_WORKER_PROGRESS, &CMyDialog::OnWorkerProgress)
+    ON_MESSAGE(WM_WORKER_COMPLETED, &CMyDialog::OnWorkerCompleted)
+END_MESSAGE_MAP()
+```
+
+
+## 🔍 동작 흐름
+- start() 호출 → 백그라운드 스레드 시작
+- 진행률 발생 시 PostMessage(WM_WORKER_PROGRESS, progress, 0) 호출
+- UI 스레드에서 ON_MESSAGE 매핑된 핸들러 실행 → 안전하게 UI 업데이트
+- 완료 시 WM_WORKER_COMPLETED 메시지 전송 → UI에서 완료 처리
+
+💡 이렇게 하면 MFC에서도 C# BackgroundWorker처럼
+- 진행률 보고
+- 완료 알림
+- UI 스레드 안전성 보장
+
+---
+
+
