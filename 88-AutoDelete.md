@@ -1,7 +1,7 @@
 # AutoDelete
 AutoDelete<T> 구조는 C++에서 소유권을 명확히 표현하고, 
-메모리 해제를 자동으로 처리하는 간단한 스마트 포인터예요. 
-마치 std::unique_ptr<T>의 축소판처럼 동작하죠.
+  메모리 해제를 자동으로 처리하는 간단한 스마트 포인터예요. 
+  마치 std::unique_ptr<T>의 축소판처럼 동작하죠.
 
 ## 코드
 ```cpp
@@ -71,5 +71,6 @@ AutoDelete& operator=(const AutoDelete&) = delete;
 AutoDelete<T>는 C++에서 소유권을 명확히 표현하고, 메모리 해제를 자동화하는 경량 스마트 포인터예요.
 
 ---
+
 
 
