@@ -59,19 +59,6 @@ flowchart TB
            토큰(피연산자/연산자)                                   함수 호출로 치환하여 호출
 ```
 
-```mermaid
-flowchart LR
-  expr["{  V1   +   V2  }"]
-  comp["[  Compiler  ]"]
-  call["V1.operator+( V2 )"]
-
-  expr --> comp --> call
-
-  %% notes (use separate nodes instead of labeled self-edges)
-  note1(["토큰(피연산자/연산자)"])
-  note2(["컴파일러가 연산자를 함수 호출로 치환하여 호출"])
-
-```
 ---
 
 ```mermaid
