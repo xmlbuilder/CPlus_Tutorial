@@ -66,4 +66,36 @@ A diagram in the image illustrates virtual inheritance in C++ through class hier
 
 ![virtual Inheritance](/image/virtualInheritance.jpg)
 
+```mermaid
+flowchart TB
+  %% Top base
+  Base["class BaseIO<br/>public:<br/>  int mode;"]
+
+  %% Explanation note (optional)
+  Note["Virtual Inheritance<br/>- Resolve duplication of base members in multiple inheritance.<br/>- Declare <i>virtual</i> before the base in derived class decl.<br/>- When a most-derived object is created, the base subobject exists only once."]
+  Base --- Note
+
+  %% Middle row (derived with virtual base)
+  subgraph Row[" "]
+    direction LR
+    InCls["class In : virtual public BaseIO<br/>public:<br/>  int readPos;"]
+    OutCls["class Out : virtual public BaseIO<br/>public:<br/>  int writePos;"]
+  end
+
+  Base --> InCls
+  Base --> OutCls
+
+  %% Bottom combined derived
+  InOutCls["class InOut : public In, public Out<br/>public:<br/>  bool safe;"]
+
+  InCls --> InOutCls
+  OutCls --> InOutCls
+
+  %% styling
+  classDef rounded rx:8, ry:8, stroke-width:1.2;
+  class Base,InCls,OutCls,InOutCls,Note rounded;
+
+
+```
+
 
