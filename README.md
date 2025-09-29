@@ -222,5 +222,10 @@
 - 88-AutoDelete.md
 - 90.k-d tree정리.md
 - 91-Decorator.md
-## 10. 디자인 패턴
+
+
+## A. Design Pattern
+- [Decoration Pattern](./01-DecoratonPattern.md)
+
+
 ## 11. 실전 문제 적용
