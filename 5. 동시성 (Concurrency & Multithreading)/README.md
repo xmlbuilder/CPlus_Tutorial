@@ -16,7 +16,7 @@
 - [future_promise_guide](./15-future_promise_guide.md)
 - [async_guide](./16-async_guide.md)
 - [thread_pool_readme](./17-thread_pool_readme.md)
-- [single_scheduler_readme]./18-single_scheduler_readme.md)
+- [single_scheduler_readme](./18-single_scheduler_readme.md)
 - [mutex_osyncstream_readme](./19-mutex_osyncstream_readme.md)
 - [qt_async_progress_readme](./20-qt_async_progress_readme.md)
 - [qt_eventloop_guide](./21-qt_eventloop_guide.md)
