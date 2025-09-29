@@ -1,7 +1,7 @@
 # 🧾 C++ override 지정자와 가상 함수 정리
 
 ## 📌 개요
-C에서 **다형성(polymorphism)**을 구현하기 위해 사용하는 핵심 기능 중 하나가 **가상 함수(virtual function)**입니다.  
+C에서 **다형성(polymorphism)** 을 구현하기 위해 사용하는 핵심 기능 중 하나가 **가상 함수(virtual function)** 입니다.  
 C11부터는 가상 함수 재정의 시 실수를 방지하기 위해 override 지정자를 사용할 수 있게 되었습니다.
 
 ## 🧠 virtual function
