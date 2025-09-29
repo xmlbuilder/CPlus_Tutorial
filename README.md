@@ -169,15 +169,16 @@
 - [예외클래스_정의](./6.%20예외와%20오류%20처리/03-예외클래스_정의.md)
 
 ## 7. 메모리 관리 & 시스템
-- 15-windows_long_path_utf8.md
-- 16-01-MemoryManager.md
-- 16-02-memory_manager_guide.md
-- 28.unique_ptr.md
-- 43.memory_alignment.md
-- 52-01.linux_shared_memory.md
-- 52-02.linux_shared_memory.md
-- 65.new_placement_deconstructor.md
-- 80-bigobj의 역할.md
+- [onrealloc](./7.%20메모리%20관리%20%26%20시스템/01-onrealloc.md)
+- [windows_long_path_utf8](./7.%20메모리%20관리%20%26%20시스템/02-windows_long_path_utf8.md)
+- [MemoryManager](./7.%20메모리%20관리%20%26%20시스템/03-MemoryManager.md)
+- [memory manager_guide](./7.%20메모리%20관리%20%26%20시스템/04-memory_manager_guide.md)
+- [memory alignment](./7.%20메모리%20관리%20%26%20시스템/05.memory_alignment.md)
+- [windows shared memory](./7.%20메모리%20관리%20%26%20시스템/06.windows_shared_memory.md)
+- [linux shared_memory](./7.%20메모리%20관리%20%26%20시스템/07.linux_shared_memory.md)
+- [unique_ptr](./7.%20메모리%20관리%20%26%20시스템/08.unique_ptr.md)
+- [new placement deconstructor](./7.%20메모리%20관리%20%26%20시스템/09.new_placement_deconstructor.md)
+- [bigobj의 역할](./7.%20메모리%20관리%20%26%20시스템/10-bigobj의_역할.md)
 
 ## 8. 입출력 & 유틸리티
 - 06-Raw_string_literal.md
