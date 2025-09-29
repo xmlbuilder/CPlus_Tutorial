@@ -21,7 +21,7 @@ for (auto it = v.begin(); it != v.end(); ++it) {
 
 ## 🧠 타입 추론 규칙
 - auto는 값의 타입을 기준으로 추론합니다.
-- 참조나 const는 제거되므로, 필요하면 명시적으로 붙여야 해요.
+- 참조나 const는 제거되므로, 필요하면 명시적으로 붙여야 함.
 ```cpp
 int a = 42;
 const int& ref = a;
