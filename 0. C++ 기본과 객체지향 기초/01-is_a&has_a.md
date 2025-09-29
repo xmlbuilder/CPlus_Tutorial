@@ -240,9 +240,9 @@ UniformStrategy  CurvatureAwareStrategy
 
 ---
 
-### 1.4 어댑터(Adaptor): ON_CameraLite → ON_Viewport
+### 1.4 어댑터(Adaptor): ON_Camera → ON_Viewport
 ```
-ON_CameraLite ----ApplyToViewport()----> ON_Viewport
+ON_Camera ----ApplyToViewport()----> ON_Viewport
    (has-a 데이터)                         (렌더 타겟)
 ```
 **포인트**: Viewport API를 직접 상속하지 않고, **어댑터 함수**로 연결.
