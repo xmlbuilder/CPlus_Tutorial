@@ -37,8 +37,12 @@ public:
 flowchart TB
   CC["복사 생성자<br/>T(const T& src) { ... }"]
 
-  SRC["기존의 객체(src)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
-  DST["새로운 객체(dest)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
+  %% 가로 배치 영역
+  subgraph row[" "]
+    direction LR
+    SRC["기존의 객체(src)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
+    DST["새로운 객체(dest)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
+  end
 
   CC --> SRC
   CC --> DST
@@ -46,6 +50,7 @@ flowchart TB
 
   classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
   class CC,SRC,DST dashed;
+
 
 ```
 
