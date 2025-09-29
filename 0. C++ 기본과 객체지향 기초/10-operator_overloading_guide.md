@@ -67,13 +67,9 @@ flowchart LR
 
   expr --> comp --> call
 
-  %% annotations
-  expr ---|"토큰(피연산자/연산자)"| expr
-  call ---|"컴파일러가 연산자를 함수 호출로 치환하여 호출"| call
-
-  %% style
-  classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
-  class expr,comp,call dashed;
+  %% notes (use separate nodes instead of labeled self-edges)
+  note1(["토큰(피연산자/연산자)"])
+  note2(["컴파일러가 연산자를 함수 호출로 치환하여 호출"])
 
 ```
 ---
