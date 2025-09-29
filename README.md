@@ -164,9 +164,9 @@
 - [threadpool](./5.%20동시성%20(Concurrency%20%26%20Multithreading)/24-threadpool.md)
   
 ## 6. 예외와 오류 처리
-- 14-01-exception_handling.md
-- 14-02-noexcept_guide.md
-- 24.예외클래스_정의.md
+- [exception_handling](./6.%20예외와%20오류%20처리/01-exception_handling.md)
+- [noexcept_guide](./6.%20예외와%20오류%20처리/02-noexcept_guide.md)
+- [예외클래스_정의](./6.%20예외와%20오류%20처리/03-예외클래스_정의.md)
 
 ## 7. 메모리 관리 & 시스템
 - 15-windows_long_path_utf8.md
