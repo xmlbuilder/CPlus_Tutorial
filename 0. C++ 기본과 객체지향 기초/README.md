@@ -11,7 +11,7 @@
 - [연산자_오버로딩](./09-operator_overloading.md)
 - [연산자_오버로딩_가이드](./10-operator_overloading_guide.md)
 - [가상소멸자_가이드](./11-virtual_destructor_guide.md)
-- [가상_상속](./12-virtual Inheritance.md)
+- [가상_상속](./12-virtual_Inheritance.md)
 - [const와_mutable](./13-const_mutable.md)
 - [friend](./14-friend.md)
 - [friend_상세](./15-friend_상세.md)
