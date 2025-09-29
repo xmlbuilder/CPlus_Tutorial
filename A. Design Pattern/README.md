@@ -1,2 +1,3 @@
 ## A. Design Pattern
-- [Decoration Pattern] (./01-Decoration-Pattern.md)
+
+- [Decoration Pattern](./01-DecoratonPattern.md)
