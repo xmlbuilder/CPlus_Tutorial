@@ -67,6 +67,18 @@ flowchart TB
                                                                                ▲
                                                                                │ 호출 대상(좌변: a)
 ```
+```mermaid
+flowchart LR
+  A["c = a + b"]
+  B["c = a.operator+( b )"]
+  A -->|컴파일러가 연산자를 함수 호출로 변환| B
+  B -->|"호출 대상(좌변: a)"| B
+
+  classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
+  class A,B dashed;
+
+```
+
 ```cpp
 // 멤버 함수로 정의된 '+' 연산자 예
 class Sum {
