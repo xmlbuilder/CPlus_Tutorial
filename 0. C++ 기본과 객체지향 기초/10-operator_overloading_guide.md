@@ -7,11 +7,10 @@
 
 ### ![개념 요약]
 ```mermaid
-classDiagram
-    class 연산자중복 {
-        +반환형 operator<연산자>(매개변수 목록)
-        +연산 수행
-    }
+flowchart TD
+    A[연산자 중복: v1 + v2]
+    A --> B[멤버 함수 구현: v1.operator+(v2)]
+    A --> C[비 멤버 함수 구현: operator+(v1, v2)]
 
 ```
 
