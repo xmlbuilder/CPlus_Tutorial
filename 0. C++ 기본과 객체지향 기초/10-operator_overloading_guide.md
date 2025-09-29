@@ -51,10 +51,17 @@ classDiagram
 └─────────────────────────┘    └──────────────────────────────┘
 ```
 ```mermaid
-flowchart TD
-    A[연산자 중복: v1 + v2]
-    A --> B[멤버 함수 구현: v1.operator+(v2)]
-    A --> C[비멤버 함수 구현: operator+(v1, v2)]
+flowchart TB
+  A["연산자 중복<br/>v1 + v2"]
+  B["멤버 함수의 구현<br/>v1.operator+(v2)"]
+  C["비 멤버 함수(전역)의 구현<br/>operator+(v1, v2)"]
+
+  A --> B
+  A --> C
+
+  classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
+  class A,B,C dashed;
+
 ````
 
 
