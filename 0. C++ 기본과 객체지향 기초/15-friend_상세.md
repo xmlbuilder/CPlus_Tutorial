@@ -21,6 +21,35 @@
 ![friend](/image/frend1.jpg)
 ---
 
+```mermaid
+flowchart TB
+  %% 설명 노트
+  Note["클래스의 멤버가 아닌 외부 함수/다른 클래스의 멤버 함수를<br/>friend로 선언하여 해당 클래스의 모든 멤버에 접근 가능.<br/>- 멤버로 선언하기엔 부자연스럽지만, 내부 접근이 필요할 때 사용."]
+
+  %% 1) 외부 'equals' 함수 (전역 함수)
+  EQFN["1) 외부 함수 equals<br/><code>bool equals(Rect r, Rect s);</code>"]
+
+  %% 2) 특정 함수만 friend로 선언
+  C1["2) 특정 함수 friend 선언<br/><code>class Rect {<br/>  friend bool equals(Rect r, Rect s);<br/>};</code>"]
+
+  %% 3) 외부 클래스 전체를 friend로 선언
+  C2["3) 외부 클래스 friend 선언<br/><code>class RectManager { /* ... */ };<br/><br/>class Rect {<br/>  friend class RectManager;<br/>};</code>"]
+
+  %% 2') 멤버 equals로 구현하는 경우(비교참고)
+  C0["멤버로 equals 구현(참고)<br/><code>class Rect {<br/>  bool equals(Rect r, Rect s);<br/>};</code>"]
+
+  %% 관계선
+  Note --- EQFN
+  EQFN --> C1
+  C1 --> C2
+  Note --- C0
+
+  %% 스타일
+  classDef card rx:8, ry:8, stroke-width:1.2;
+  class Note,EQFN,C1,C2,C0 card;
+
+```
+
 ## 🧠 추가 예시: 연산자 오버로딩
 ```cpp
 class Vector2d {
