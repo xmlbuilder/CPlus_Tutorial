@@ -168,6 +168,19 @@ int main() {
            └─ 연산자를 함수 호출로 치환하여 호출
 ```
 
+```mermaid
+flowchart TB
+  A["V1"] --> D["Compiler"]
+  B["+"]  --> D
+  C["V2"] --> D
+  D --> E["operator+( V1, V2 )"]
+
+  classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
+  class A,B,C,D,E dashed;
+
+  D ---|연산자를 함수 호출로 치환하여 호출| E
+
+```
 
 ### 비멤버(+friend) 방식의 장점
 - **양쪽 피연산자 모두**에 대해 **암시적 변환**을 허용(대칭 연산에 유리).  
