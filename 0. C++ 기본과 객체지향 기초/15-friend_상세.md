@@ -33,10 +33,10 @@ flowchart TB
   C1["2) 특정 함수 friend 선언<br/><code>class Rect {<br/>  friend bool equals(Rect r, Rect s);<br/>};</code>"]
 
   %% 3) 외부 클래스 전체를 friend로 선언
-  C2["3) 외부 클래스 friend 선언<br/><code>class RectManager { /* ... */ };<br/><br/>class Rect {<br/>  friend class RectManager;<br/>};</code>"]
+  C2["3) 외부 클래스 friend 선언<br/><code>class RectManager { /* ... */ };<br/><br/>class Rect {<br/> friend class RectManager;<br/>};</code>"]
 
   %% 2') 멤버 equals로 구현하는 경우(비교참고)
-  C0["멤버로 equals 구현(참고)<br/><code>class Rect {<br/>  bool equals(Rect r, Rect s);<br/>};</code>"]
+  C0["멤버로 equals 구현(참고)<br/><code>class Rect {<br/> bool equals(Rect r, Rect s);<br/>};</code>"]
 
   %% 관계선
   Note --- EQFN
