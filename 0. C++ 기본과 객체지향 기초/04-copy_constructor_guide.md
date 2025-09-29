@@ -33,6 +33,22 @@ public:
   └───────────────┘            └─────────────────┘
 ```
 
+```mermaild
+flowchart TB
+  CC["복사 생성자<br/>T(const T& src) { ... }"]
+
+  SRC["기존의 객체(src)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
+  DST["새로운 객체(dest)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
+
+  CC --> SRC
+  CC --> DST
+  SRC -->|복사| DST
+
+  classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
+  class CC,SRC,DST dashed;
+
+```
+
 ### 2) 동작 흐름(예: `Circle dest(src);`)
 ```
 (1) Circle src(30);              ──▶ src.radius = 30
