@@ -70,7 +70,8 @@
 - [namespace](./0.%20C%2B%2B%20기본과%20객체지향%20기초/25-namespace.md)
 - [enum_class](./0.%20C%2B%2B%20기본과%20객체지향%20기초/26-enum_class.md)
 - [inline](./0.%20C%2B%2B%20기본과%20객체지향%20기초/27-inline.md)
-- 
+
+
 ## 1. Modern C++ 핵심 문법
 - 02-decltype.md
 - 26.auto_type.md
