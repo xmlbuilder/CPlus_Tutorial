@@ -103,3 +103,39 @@ if (auto op1 = monad(1, 3.5); op1.has_value()) {
 ---
 
 
+## 현업에서 사용 예제]
+
+- 상해치 구할 때 값이 존재하지 않아서 0인지 존재하는데 0인지 구별이 필요 할 때 사용
+
+```cpp
+std::optional<double> CalcInjuryBase::getDoubleValue(const std::string& strKey, double dScale)
+{
+    if(m_pKeyValuePool->hasValue(strKey)){
+
+         return strtof(m_pKeyValuePool->getValue(strKey).c_str(), nullptr) * dScale;
+    }
+
+    return std::nullopt;
+}
+
+std::optional<double> optHead3ms = calInjNCAP->getDoubleValue(REAR_LH_Head3MS);
+if(optHead3ms.has_value()){
+    bHasLeft = true;
+    QTableWidgetItem* item = new QTableWidgetItem(QString::number(optHead3ms.value(), 'f', 3));
+    item->setTextAlignment(Qt::AlignRight);
+    ui->tableWidget->setItem(startIndex, 2, item);
+    //Point
+    std::optional<double> optPointHead3MS = calInjNCAP->getDoubleValue("P4Head3MS");
+    if(optPointHead3MS.has_value())
+    {
+        double dPointHead3MS = optPointHead3MS.value();
+        QTableWidgetItem* item = new QTableWidgetItem(QString::number(dPointHead3MS, 'f', 3));
+        item->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(startIndex+1, 2, item);
+    }
+}
+```
+---
+
+
+
