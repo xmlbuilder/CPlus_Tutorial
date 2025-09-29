@@ -181,18 +181,18 @@
 - [bigobj의 역할](./7.%20메모리%20관리%20%26%20시스템/10-bigobj의_역할.md)
 
 ## 8. 입출력 & 유틸리티
-- 06-Raw_string_literal.md
-- 29.cout_formatting.md
-- 31-01.stream기본.md
-- 32-02.stream_random_access.md
-- 35.string_parsing_cpp.md
-- 37.using.md
-- 46.unicode_cout.md
-- 61.crossplatform_io.md
-- 69.ofstream.md
-- 82-String_Utility.md
-- 82-programpath.md
-- 53.index_map.md
+- [Raw_string_literal](./8.%20입출력%20%26%20유틸리티/01-Raw_string_literal.md)
+- [cout_formatting](./8.%20입출력%20%26%20유틸리티/02.cout_formatting.md)
+- [stream기본](./8.%20입출력%20%26%20유틸리티/03.stream기본.md)
+- [stream_random_access](./8.%20입출력%20%26%20유틸리티/04.stream_random_access.md)
+- [string_parsing_cpp](./8.%20입출력%20%26%20유틸리티/05.string_parsing_cpp.md)
+- [using](./8.%20입출력%20%26%20유틸리티/06.using.md)
+- [unicode_cout](./8.%20입출력%20%26%20유틸리티/07.unicode_cout.md)
+- [index_map](./8.%20입출력%20%26%20유틸리티/08.index_map.md)
+- [crossplatform_io](./8.%20입출력%20%26%20유틸리티/09.crossplatform_io.md)
+- [ofstream](./8.%20입출력%20%26%20유틸리티/10.ofstream.md)
+- [programpath](./8.%20입출력%20%26%20유틸리티/11-programpath.md)
+- [String_Utility](./8.%20입출력%20%26%20유틸리티/12-String_Utility.md)
 
 ## 9. 고급 주제 & 패턴
 - 33-01.random.md
