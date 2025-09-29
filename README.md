@@ -195,33 +195,28 @@
 - [String_Utility](./8.%20입출력%20%26%20유틸리티/12-String_Utility.md)
 
 ## 9. 고급 주제 & 패턴
-- 33-01.random.md
-- 33-02.random_샘플.md
-- 36.inline_function_overhead.md
-- 38-01.lvalue_rvalue.md
-- 38-02.lvalue_rvalue.md
-- 38-03.lvalue_rvalue.md
-- 47.UML_Class_Guide.md
-- 49.SOLID_OCP.md
-- 50.RTTR_Reflection.md
-- 51-01.StringSwitch.md
-- 51-02.StringSwitch.md
-- 63.operator_likeas_array.md
-- 64.trun_function.md
-- 66.LinkedList_Study.md
-- 68.sizeof.md
-- 71.Process_Handling_with_Boost.md
-- 74.range_views_concept.md
-- 79- 코드영역정리.md
-- 81-static_variable.md
-- 83-fmod.md
-- 84-ODE_Integration_Methods.md
-- 85-01-DecoratonPattern.md
-- 86-매크로기반_클래스자동등록.md
-- 87-BackgroundWorker.md
-- 88-AutoDelete.md
-- 90.k-d tree정리.md
-- 91-Decorator.md
+- [random](./9.%20고급%20주제%20%26%20패턴/01-random.md)
+- [random_샘플](./9.%20고급%20주제%20%26%20패턴/02-random_샘플.md)
+- [inline_function_overhead](./9.%20고급%20주제%20%26%20패턴/03-inline_function_overhead.md)
+- [lvalue_rvalue-1](./9.%20고급%20주제%20%26%20패턴/04-lvalue_rvalue-1.md)
+- [lvalue_rvalue-2](./9.%20고급%20주제%20%26%20패턴/05-lvalue_rvalue-2.md)
+- [lvalue_rvalue-3](./9.%20고급%20주제%20%26%20패턴/06-lvalue_rvalue-3.md)
+- [regular_expression](./9.%20고급%20주제%20%26%20패턴/07-regular_expression.md)
+- [UML_Class_Guide](./9.%20고급%20주제%20%26%20패턴/08-UML_Class_Guide.md)
+- [SOLID_OCP](./9.%20고급%20주제%20%26%20패턴/09-SOLID_OCP.md)
+- [fmod](./9.%20고급%20주제%20%26%20패턴/10-fmod.md)
+- [StringSwitch-1](./9.%20고급%20주제%20%26%20패턴/11-StringSwitch-1.md)
+- [StringSwitch-2](./9.%20고급%20주제%20%26%20패턴/12-StringSwitch-2.md)
+- [operator_likeas_array](./9.%20고급%20주제%20%26%20패턴/13-operator_likeas_array.md)
+- [trun_function](./9.%20고급%20주제%20%26%20패턴/14-trun_function.md)
+- [LinkedList_Study](./9.%20고급%20주제%20%26%20패턴/15-LinkedList_Study.md)
+- [sizeof](./9.%20고급%20주제%20%26%20패턴/16-sizeof.md)
+- [Process_Handling_with_Boost](./9.%20고급%20주제%20%26%20패턴/17-Process_Handling_with_Boost.md)
+- [range_views_concept](./9.%20고급%20주제%20%26%20패턴/18-range_views_concept.md)
+- [코드영역정리](./9.%20고급%20주제%20%26%20패턴/19-코드영역정리.md)
+- [static_variable](./9.%20고급%20주제%20%26%20패턴/20-static_variable.md)
+- [Decorator](./9.%20고급%20주제%20%26%20패턴/21-Decorator.md)
+- [Regexpression_수량자](./9.%20고급%20주제%20%26%20패턴/22-Regexpression_수량자.md)
 
 
 ## A. Design Pattern
