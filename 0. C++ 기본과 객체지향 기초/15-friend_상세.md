@@ -79,6 +79,29 @@ friend Vector2 operator++(Vector2& other, int); // 후위
 ### 그림 참조
 ![friend](/image/frend2.jpg)
 
+```mermaid
+flowchart TB
+  Note["전위/후위 연산자 오버로딩<br/>- 전위: 객체 참조 반환<br/>- 후위: 연산 후 객체의 복사본 반환"]
+
+  %% Friend 선언
+  Friend["friend Vector2& operator++(Vector2 other);"]
+
+  %% 전위 연산자
+  Pre["전위 연산자<br/><code>Vector2& operator++(Vector2& other)</code><br/>++other; return other;"]
+
+  %% 후위 연산자
+  Post["후위 연산자<br/><code>Vector2 operator++(Vector2& other, int x)</code><br/>tmp=other; other++; return tmp;"]
+
+  Note --> Friend
+  Friend --> Pre
+  Friend --> Post
+
+  %% 스타일
+  classDef card rx:8, ry:8, stroke-width:1.2;
+  class Note,Friend,Pre,Post card;
+
+```
+
 ### 📌 코드 비교
 #### ✅ 전위 연산자
 ```cpp
