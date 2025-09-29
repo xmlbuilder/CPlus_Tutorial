@@ -70,15 +70,17 @@
 - 21-optional.md
 - 39.variant.md
 - 62.nullptr.md
+
 ## 2. 템플릿 & 제네릭 프로그래밍
-- 04-templates.md
-- 05-Template_operator.md
-- 11-Variadic_arguments_guide.md
-- 40.template_map.md
-- 41.template_folding.md
-- 45.template_sandbox.md
-- 78-template_본질.md
-- 67.가변인자.md
+- [templates](./2.%20템플릿%20%26%20제네릭%20프로그래밍/01-templates.md)
+- [Template_operator](./2.%20템플릿%20%26%20제네릭%20프로그래밍/02-Template_operator.md)
+- [Variadic_arguments_guide](./2.%20템플릿%20%26%20제네릭%20프로그래밍/03-Variadic_arguments_guide.md)
+- [template_map](./2.%20템플릿%20%26%20제네릭%20프로그래밍/04-template_map.md)
+- [template_folding](./2.%20템플릿%20%26%20제네릭%20프로그래밍/05-template_folding.md)
+- [template_sandbox](./2.%20템플릿%20%26%20제네릭%20프로그래밍/06-template_sandbox.md)
+- [가변인자](./2.%20템플릿%20%26%20제네릭%20프로그래밍/07-가변인자.md)
+- [template_본질](./2.%20템플릿%20%26%20제네릭%20프로그래밍/08-template_본질.md)
+
 ## 3. STL & 컨테이너 / 알고리즘
 - 07-01-STL_overview.md
 - 07-02-STL_container.md
