@@ -90,10 +90,12 @@ decltype(auto) y = (x); // int&
 
 ---
 # 🧠 Non-Type Template Parameter란?
-템플릿 인자에는 타입뿐 아니라 **값(value)**도 전달할 수 있어요. 이를 non-type template parameter라고 함.
+템플릿 인자에는 타입뿐 아니라 **값(value)** 도 전달할 수 있음.  
+이를 non-type template parameter라고 함.  
+```cpp
 template<typename T, int BufSize>
 class buffer_t { ... };
-
+```
 
 여기서 BufSize는 타입이 아닌 정수 값을 템플릿 인자로 받음.
 
