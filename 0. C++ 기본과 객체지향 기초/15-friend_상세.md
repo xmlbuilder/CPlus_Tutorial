@@ -18,8 +18,6 @@
 | Case 3 | friend class RectManager; | 외부 클래스 RectManager의 모든 멤버 함수 | 
 
 ## 그림 참조
-![friend](/image/frend1.jpg)
----
 
 ```mermaid
 flowchart TB
@@ -49,6 +47,7 @@ flowchart TB
   class Note,EQFN,C1,C2,C0 card;
 
 ```
+---
 
 ## 🧠 추가 예시: 연산자 오버로딩
 ```cpp
