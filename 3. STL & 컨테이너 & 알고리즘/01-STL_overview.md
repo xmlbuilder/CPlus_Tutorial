@@ -79,6 +79,25 @@
         알고리즘 (Algorithm)
 ```
 
+```mermaid
+flowchart TB
+  C["컨테이너"]
+  S["시퀀스 컨테이너<br/>(vector, list...)"]
+  A["연관 컨테이너<br/>(set, map...)"]
+  I["반복자 (Iterator)"]
+  G["알고리즘 (Algorithm)"]
+
+  C --> S
+  C --> A
+  S --> I
+  A --> I
+  I --> G
+
+  classDef dashed stroke-dasharray: 6 4, stroke-width:1.5, rx:6, ry:6;
+  class C,S,A,I,G dashed;
+
+```
+
 ---
 
 ## 4. STL의 장점
