@@ -22,7 +22,7 @@ public:
 - 특징:
 - 객체 생성 불가
 - 파생 클래스에서 순수 가상 함수를 모두 구현하지 않으면, 그 클래스도 추상 클래스가 됨
-- **다형성(polymorphism)**을 활용하기 위한 기반 클래스 역할
+- **다형성(polymorphism)** 을 활용하기 위한 기반 클래스 역할
 
 ```cpp
 class Circle : public Shape {
