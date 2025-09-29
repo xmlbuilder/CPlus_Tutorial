@@ -62,6 +62,29 @@ int main() {
 ## 🔹 메모리 구조 시각화
 ![static](/image/static_variable.jpg)
 
+```mermaid
+flowchart LR
+  ClassA["Class A<br/><code>static int a;</code><br/><code>int b;</code><br/><code>int c;</code>"]
+
+  Static["static int a<br/><br/>- 프로그램 시작~종료까지 유지<br/>- 객체 생성 전부터 존재<br/>- 모든 A 객체와 독립적으로 '하나만' 존재"]
+
+  subgraph INST["A 타입 객체들"]
+    direction TB
+    A1["A 객체 ①<br/>b = 2<br/>c = 3"]
+    A2["A 객체 ②<br/>b = 12<br/>c = 18"]
+    A3["A 객체 ③<br/>b = 20<br/>c = 100"]
+  end
+
+  Static --- ClassA
+  Static -->|공유| A1
+  Static -->|공유| A2
+  Static -->|공유| A3
+
+  classDef card rx:10, ry:10, stroke-width:1.3;
+  class ClassA,Static,INST,A1,A2,A3 card;
+
+```
+
 
 ## 🔹 핵심 요약
 | 항목 | 설명 | 
