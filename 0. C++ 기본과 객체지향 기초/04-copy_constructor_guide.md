@@ -33,7 +33,7 @@ public:
   └───────────────┘            └─────────────────┘
 ```
 
-```mermaild
+```mermaid
 flowchart TB
   CC["복사 생성자<br/>T(const T& src) { ... }"]
 
