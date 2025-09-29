@@ -41,34 +41,36 @@
 - [B. 실전 문제 적용](#B-실전-문제=적용)
 
 ## 0. C++ 기본과 객체지향 기초
-- 00-is_a&has_a.md
-- 01-생성자_기본_제거.md
-- 22-01-Polymorphism_basic.md
-- 22-02-copy_constructor_guide.md
-- 22-03-virtual.md
-- 22-04-final.md
-- 22-05-delegate_constructor.md
-- 22-06-pure_virtual_class.md
-- 22-07-operator_overloading.md
-- 22-08-operator_overloading_guide.md
-- 22-09-virtual_destructor_guide.md
-- 22-10.virtual Inheritance.md
-- 22-12.const_mutable.md
-- 22-13-01.friend.md
-- 22-13-02.friend.md
-- 22-13-03.단항연산자중복.md
-- 22-13-04.단항연산자중복_심화.md
-- 22-13-05.복사생성자.md
-- 22-13-06.static_cast.md
-- 22-13-07.dynamic_cast.md
-- 22-13-08.가상함수_심화.md
-- 22-13-09.가상함수_심화.md
-- 22-13-10.대입연산자_심화.md
-- 25-01.static.md
-- 25-02.static_심화.md
-- 75.namespace.md
-- 76.enum_class.md
-- 77-inline.md
+
+- [is_a&has](./0.%20C%2B%2B%20기본과%20객체지향%20기초/01-is_a&has_a.md)
+- [생성자_기본_제거](./0.%20C%2B%2B%20기본과%20객체지향%20기초/02-생성자_기본_제거.md)
+- [생성자_기본_제거](./0.%20C%2B%2B%20기본과%20객체지향%20기초/03-생성자_기본_제거.md)
+- [복사_생성자_가이드](./0.%20C%2B%2B%20기본과%20객체지향%20기초/04-copy_constructor_guide.md)
+- [가상함수](./0.%20C%2B%2B%20기본과%20객체지향%20기초/05-virtual.md)
+- [final](./0.%20C%2B%2B%20기본과%20객체지향%20기초/06-final.md)
+- [위임_생성자](./0.%20C%2B%2B%20기본과%20객체지향%20기초/07-delegate_constructor.md)
+- [순수_가상_클래스](./0.%20C%2B%2B%20기본과%20객체지향%20기초/08-pure_virtual_class.md)
+- [연산자_오버로딩](./0.%20C%2B%2B%20기본과%20객체지향%20기초/09-operator_overloading.md)
+- [연산자_오버로딩_가이드](./0.%20C%2B%2B%20기본과%20객체지향%20기초/10-operator_overloading_guide.md)
+- [가상소멸자_가이드](./0.%20C%2B%2B%20기본과%20객체지향%20기초/11-virtual_destructor_guide.md)
+- [가상_상속](./0.%20C%2B%2B%20기본과%20객체지향%20기초/12-virtual_Inheritance.md)
+- [const와_mutable](./0.%20C%2B%2B%20기본과%20객체지향%20기초/13-const_mutable.md)
+- [friend](./0.%20C%2B%2B%20기본과%20객체지향%20기초/14-friend.md)
+- [friend_상세](./0.%20C%2B%2B%20기본과%20객체지향%20기초/15-friend_상세.md)
+- [단항연산자중복](./0.%20C%2B%2B%20기본과%20객체지향%20기초/16-단항연산자중복.md)
+- [단항연산자중복_심화](./0.%20C%2B%2B%20기본과%20객체지향%20기초/17-단항연산자중복_심화.md)
+- [복사생성자](./0.%20C%2B%2B%20기본과%20객체지향%20기초/18-복사생성자.md)
+- [static_cast](./0.%20C%2B%2B%20기본과%20객체지향%20기초/19-static_cast.md)
+- [dynamic_cast](./0.%20C%2B%2B%20기본과%20객체지향%20기초/20-dynamic_cast.md)
+- [가상함수_심화](./0.%20C%2B%2B%20기본과%20객체지향%20기초/21-가상함수_심화.md)
+- [대입연산자_심화](./0.%20C%2B%2B%20기본과%20객체지향%20기초/22-13-10.대입연산자_심화.md)
+- [가상함수_심화](./0.%20C%2B%2B%20기본과%20객체지향%20기초/22-가상함수_심화.md)
+- [static](./0.%20C%2B%2B%20기본과%20객체지향%20기초/23-static.md)
+- [static_심화](./0.%20C%2B%2B%20기본과%20객체지향%20기초/24-static_심화.md)
+- [namespace](./0.%20C%2B%2B%20기본과%20객체지향%20기초/25-namespace.md)
+- [enum_class](./0.%20C%2B%2B%20기본과%20객체지향%20기초/26-enum_class.md)
+- [inline](./0.%20C%2B%2B%20기본과%20객체지향%20기초/27-inline.md)
+- 
 ## 1. Modern C++ 핵심 문법
 - 02-decltype.md
 - 26.auto_type.md
