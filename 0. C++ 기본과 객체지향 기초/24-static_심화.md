@@ -60,8 +60,6 @@ int main() {
 
 
 ## 🔹 메모리 구조 시각화
-![static](/image/static_variable.jpg)
-
 ```mermaid
 flowchart LR
   ClassA["Class A<br/><code>static int a;</code><br/><code>int b;</code><br/><code>int c;</code>"]
