@@ -5,7 +5,7 @@
 - [Polymorphism_basic](./03-Polymorphism_basic.md)
 - [복사_생성자_가이드](./04-copy_constructor_guide.md)
 - [가상함수](./05-virtual.md)
-- [final](./6-final.md)
+- [final](./06-final.md)
 - [위임_생성자](./07-delegate_constructor.md)
 - [순수_가상_클래스](./08-pure_virtual_class.md)
 - [연산자_오버로딩](./09-operator_overloading.md)
