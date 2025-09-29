@@ -37,6 +37,7 @@
 - [7. 메모리 관리 & 시스템](#7-메모리-관리--시스템)
 - [8. 입출력 & 유틸리티](#8-입출력--유틸리티)
 - [9. 고급 주제 & 패턴](#9-고급-주제--패턴)
+- [10. vcpkg로 테스트 통합](#10-vcpkg로-테스트-통합)
 - [A. Design Pattern](#A-Design-Pattern)
 - [B. 실전 문제 적용](#B-실전-문제-적용)
 
@@ -219,6 +220,9 @@
 - [static_variable](./9.%20고급%20주제%20%26%20패턴/20-static_variable.md)
 - [Decorator](./9.%20고급%20주제%20%26%20패턴/21-Decorator.md)
 - [Regexpression_수량자](./9.%20고급%20주제%20%26%20패턴/22-Regexpression_수량자.md)
+
+## 10. vcpkg로 테스트 통합
+- [vcpkg 테스트 환경 조성](./01-vcpkg_테스트환경_조성.md)
 
 
 ## A. Design Pattern
