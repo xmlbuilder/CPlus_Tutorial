@@ -77,8 +77,6 @@ friend Vector2 operator++(Vector2& other, int); // 후위
 - 외부 연산자 함수가 Vector2의 private 멤버에 접근 가능
 
 ### 그림 참조
-![friend](/image/frend2.jpg)
-
 ```mermaid
 flowchart TB
   Note["전위/후위 연산자 오버로딩<br/>- 전위: 객체 참조 반환<br/>- 후위: 연산 후 객체의 복사본 반환"]
