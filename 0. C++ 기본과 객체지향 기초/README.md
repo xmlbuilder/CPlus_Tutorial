@@ -2,7 +2,7 @@
 
 - [is_a&has](./01-is_a&has_a.md)
 - [생성자_기본_제거](./02-생성자_기본_제거.md)
-- [생성자_기본_제거](./03-생성자_기본_제거.md)
+- [Polymorphism_basic](./03-Polymorphism_basic.md)
 - [복사_생성자_가이드](./04-copy_constructor_guide.md)
 - [가상함수](./05-virtual.md)
 - [final](./6-final.md)
