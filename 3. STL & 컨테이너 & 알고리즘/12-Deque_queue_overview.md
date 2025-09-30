@@ -11,6 +11,32 @@
 ## 🧱 deque 한눈에 보기
 
 ![Deque Ops](/image/deque_ops.svg)
+```mermaid
+flowchart LR
+  %% deque cells
+  subgraph D["Deque"]
+    direction LR
+    q5["5"]
+    q1["1"]
+    q2["2"]
+    q6["6"]
+    q7["7"]
+    q11["11"]
+    q5 --- q1 --- q2 --- q6 --- q7 --- q11
+  end
+
+  %% endpoints (both insertion & deletion)
+  F["Front<br/>(insertion, deletion)"]
+  R["Rear<br/>(insertion, deletion)"]
+
+  F --> q5
+  R --> q11
+
+  %% styling
+  classDef cell fill:#e75c5c,stroke:#c44,stroke-width:1.2,rx:6,ry:6,color:#fff;
+  class q5,q1,q2,q6,q7,q11 cell;
+
+```
 
 - `push_front`, `push_back`, `pop_front`, `pop_back` 등 **양끝 조작** 지원
 - 중간 위치의 `insert/erase`도 가능 (성능은 컨테이너 특성에 의존)
