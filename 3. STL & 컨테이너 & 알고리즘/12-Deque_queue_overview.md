@@ -58,8 +58,6 @@ int main() {
 
 ## 📬 queue 한눈에 보기
 
-![Queue FIFO](/image//queue_fifo.svg)
-
 ```mermaid
 flowchart LR
   %% queue cells
