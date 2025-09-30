@@ -77,6 +77,23 @@ int main(void) {
 - 비교 함수를 전달하여 내림차순, 특정 조건 기반 정렬 가능
 - 람다식을 활용하면 코드 간결화 가능
 
----
 
 📌 **Tip** : `std::array`뿐만 아니라 `std::vector`, C 배열 등 반복자가 지원되는 컨테이너에서 모두 사용 가능
+
+---
+
+## 실무 사용
+```cpp
+- vector에 float 값을 담아 작은 순서에서 큰 순서로 정렬에 사용
+
+std::vector<float> vecFloat;
+GrpPt2f *parPoint = pData1->getGrpPtArray()->getArray();
+for(int i=0; i< pData1->getCount() ; i++)
+{
+    vecFloat.push_back(parPoint[i].fy);
+}
+
+//std::less -> sort
+std::sort(vecFloat.begin(), vecFloat.end(), std::less<float>());
+```
+
