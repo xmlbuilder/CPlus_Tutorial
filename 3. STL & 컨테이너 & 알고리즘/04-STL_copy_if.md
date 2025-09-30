@@ -1,9 +1,10 @@
-# stl::copy_if 응용 - Point3D Distance Filter 에 적용해 보기
+# stl::copy_if 
+- 응용 - Point3D Distance Filter 에 적용해 보기
 
 ## 📌 std::copy_if란?
 
 `std::copy_if`는 C++ 표준 라이브러리 `<algorithm>`에 포함된 알고리즘으로,  
-**주어진 범위에서 조건(Predicate)을 만족하는 원소만 다른 컨테이너로 복사**할 때 사용합니다.
+**주어진 범위에서 조건(Predicate)을 만족하는 원소만 다른 컨테이너로 복사** 할 때 사용합니다.
 
 - **형태**:
 ```cpp
