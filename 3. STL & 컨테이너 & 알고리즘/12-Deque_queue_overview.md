@@ -60,6 +60,30 @@ int main() {
 
 ![Queue FIFO](/image//queue_fifo.svg)
 
+```mermaid
+flowchart LR
+  %% Queue cells
+  subgraph Q["Queue"]
+    direction LR
+    q5["5"]
+    q1["1"]
+    q2["2"]
+    q6["6"]
+    q7["7"]
+    q11["11"]
+    q5 --- q1 --- q2 --- q6 --- q7 --- q11
+  end
+
+  %% Arrows for front/rear
+  F["Front<br/>(deletion)"] --> q5
+  q11 <-- R["Rear<br/>(insertion)"]
+
+  %% Styling (optional)
+  classDef cell fill:#e75c5c,stroke:#c44,stroke-width:1.2,rx:6,ry:6,color:#fff;
+  class q5,q1,q2,q6,q7,q11 cell;
+
+```
+
 - **FIFO(First-In, First-Out)**  
 - 내부적으로 `deque`(기본) 또는 `list`/`vector` 등으로 구성 가능한 **컨테이너 어댑터**
 
