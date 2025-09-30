@@ -106,3 +106,36 @@ m_vecChannelMngr.erase(
 - 요소가 사용자 정의 타입이면 `operator==` 또는 조건자 필요
 
 ---
+
+## 실무 응용
+- 특정한 정보를 찾아 지우는 용도로 사용 가능
+- 여기서는 ChannelManager에서 특정한 Channel을 지우는 용도로 사용
+
+```cpp
+void ChannelTreeWidget::delSelChnMngrs(std::vector<ChannelManagerBase*>& arChnMngr)
+{
+    const QMessageBox::StandardButton ret = QMessageBox::warning(this, tr("InjuryReport"),
+                                                                 tr("Do you want to delete seleted channels?"),
+                                                                 QMessageBox::Ok | QMessageBox::Cancel);
+    switch (ret) {
+    case QMessageBox::Ok:
+        break;
+    default:
+        return;
+    }
+    int nFirst = m_vecChannelMngr.size();
+    for(int i=0; i<arChnMngr.size(); i++)
+    {
+
+        // find_if -> erase
+        m_vecChannelMngr.erase(std::find_if(m_vecChannelMngr.begin(), m_vecChannelMngr.end(), [&](ChannelManagerBase* c) {
+            return arChnMngr[i] == c; }));
+
+
+    }
+    if(nFirst != m_vecChannelMngr.size())
+    {
+        updateTrees();
+    }
+}
+```
