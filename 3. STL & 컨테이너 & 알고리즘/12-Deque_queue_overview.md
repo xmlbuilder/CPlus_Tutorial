@@ -10,7 +10,6 @@
 
 ## 🧱 deque 한눈에 보기
 
-![Deque Ops](/image/deque_ops.svg)
 ```mermaid
 flowchart LR
   %% deque cells
