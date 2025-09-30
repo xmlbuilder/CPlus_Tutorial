@@ -83,9 +83,9 @@ int main(void) {
 ---
 
 ## 실무 사용
-```cpp
 - vector에 float 값을 담아 작은 순서에서 큰 순서로 정렬에 사용
-
+  
+```cpp
 std::vector<float> vecFloat;
 GrpPt2f *parPoint = pData1->getGrpPtArray()->getArray();
 for(int i=0; i< pData1->getCount() ; i++)
