@@ -62,7 +62,7 @@ int main() {
 
 ```mermaid
 flowchart LR
-  %% Queue cells
+  %% queue cells
   subgraph Q["Queue"]
     direction LR
     q5["5"]
@@ -74,13 +74,17 @@ flowchart LR
     q5 --- q1 --- q2 --- q6 --- q7 --- q11
   end
 
-  %% Arrows for front/rear
-  F["Front<br/>(deletion)"] --> q5
-  q11 <-- R["Rear<br/>(insertion)"]
+  %% endpoints
+  F["Front<br/>(deletion)"]
+  R["Rear<br/>(insertion)"]
 
-  %% Styling (optional)
+  F --> q5
+  R --> q11
+
+  %% styling
   classDef cell fill:#e75c5c,stroke:#c44,stroke-width:1.2,rx:6,ry:6,color:#fff;
   class q5,q1,q2,q6,q7,q11 cell;
+
 
 ```
 
