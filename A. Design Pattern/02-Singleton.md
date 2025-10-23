@@ -95,6 +95,7 @@ classDiagram
         + get(key)
     }
 
-    note for AppConfig "Singleton 설정 관리 클래스\n인스턴스는 하나만 생성됨"
+    note for AppConfig "Singleton 설정 관리 클래스
+    인스턴스는 하나만 생성됨"
 ```
 ---
