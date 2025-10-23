@@ -70,6 +70,51 @@ print(config1 is config2)    # 출력: True (같은 인스턴스)
 ```
 
 
+## 🧪 데코레이터 기반 Singleton 예제
+```python
+def singleton(cls):
+    instances = {}
+
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return get_instance
+```
+
+## 🎯 사용 예: 설정 관리 클래스
+```python
+@singleton
+class ConfigManager:
+    def __init__(self):
+        self.settings = {}
+
+    def set(self, key, value):
+        self.settings[key] = value
+
+    def get(self, key):
+        return self.settings.get(key, None)
+```
+
+### 🔍 테스트 코드
+```python
+cfg1 = ConfigManager()
+cfg2 = ConfigManager()
+
+cfg1.set("theme", "dark")
+print(cfg2.get("theme"))  # 출력: dark
+print(cfg1 is cfg2)       # 출력: True (같은 인스턴스)
+```
+
+### 🧩 요약: 데코레이터 기반 Singleton 패턴
+| 구성 요소       | 설명 |
+|----------------|------|
+| `singleton(cls)` | 클래스 인스턴스를 하나만 유지하도록 감싸주는 데코레이터 함수 |
+| `@singleton`     | 클래스 선언 시 데코레이터를 적용하여 Singleton 패턴을 활성화 |
+| `instances` 딕셔너리 | 클래스별로 인스턴스를 저장하고 재사용하는 내부 저장소 |
+
+
 ## 🧩 Singleton 패턴: 언제 쓰면 좋을까?
 
 | 사용 사례                      | 이유 및 효과 |
