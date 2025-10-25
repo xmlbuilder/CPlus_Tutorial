@@ -22,3 +22,4 @@
 - [static_variable](./20-static_variable.md)
 - [Decorator](./21-Decorator.md)
 - [Regexpression_수량자](./22-Regexpression_수량자.md)
+- [상속시_virtual함수_초기화문제](./23-상속시_virtual함수_초기화문제.md)
