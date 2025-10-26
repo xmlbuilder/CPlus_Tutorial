@@ -29,5 +29,6 @@
 - [enum_class](./26-enum_class.md)
 - [inline](./27-inline.md)
 - [대입연산자_심화](./28-대입연산자_심화.md)
+- [Bit연산](./29-Bit연산.md)
 
 
