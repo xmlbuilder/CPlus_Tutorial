@@ -1,3 +1,84 @@
+# hash32_ordered_map
+- hash32_ordered_map 은 한마디로 말하면:
+  - 삽입 순서를 기억하는 해시 기반 map (내부는 Hash32Table + intrusive Node + Hash32PoolAllocator) 입니다.
+
+## 1. Hash32OrderedMap 구조와 특징
+템플릿 정의:
+```cpp
+template<
+  typename Key,
+  typename T,
+  typename Hash  = DefaultHash32<Key>,
+  typename Equal = std::equal_to<Key>,
+  std::size_t PoolBlockSize = 256
+>
+class Hash32OrderedMap;
+```
+
+- 내부 구성
+
+- Node 구조
+```cpp
+struct Node : public Hash32Item
+{
+  Key key;
+  T   value;
+
+  Node* prev_order = nullptr;
+  Node* next_order = nullptr;
+};
+```
+
+- Hash32Item 상속 → 해시 테이블에서 쓰는 intrusive node
+- prev_order / next_order → 삽입 순서 유지용 이중 연결 리스트
+
+### 해시 테이블
+```cpp
+Hash32Table m_table;
+```
+- hash32_set.h에서 만든 intrusive 해시 테이블
+- key 해시값으로 bucket 선택 → 체이닝으로 Node 연결
+
+### 메모리 풀
+```cpp
+using NodePool = Hash32PoolAllocator<Node, PoolBlockSize>;
+NodePool m_pool;
+```
+- Node를 new/delete 대신 풀에서 할당/해제
+- 대량 삽입/삭제 시 성능 + 메모리 효율 ↑
+
+### 삽입 순서 리스트
+
+```cpp
+Node* m_head = nullptr;
+Node* m_tail = nullptr;
+```
+
+- 모든 Node를 삽입 순서대로 이중 연결 리스트로 묶어둠
+- begin()/end() iterator 는 이 리스트를 따라 순회
+
+## 주요 특징
+
+### 삽입 순서 유지
+
+- insert, insert_or_assign, operator[], emplace 로 들어간 키들은 처음 삽입된 순서대로 유지
+- insert_or_assign 으로 값만 바꾸면 순서는 그대로 유지
+
+### Key → Value 맵핑 + O(1) 평균 조회
+- find, contains, at, operator[] 모두 해시 기반
+- 평균 시간 복잡도: O(1)
+
+### 키는 유일, 값은 수정 가능
+- 이미 존재하는 키에 대해 insert → 실패 (false 반환)
+- insert_or_assign → 존재하면 값 덮어쓰기
+
+### 메모리 풀 기반 Node 관리
+- pool.allocate() + placement new 로 Node 생성
+- erase / clear 시에는 pool.destroy(node) 로 소멸자 호출 + free list에 반환
+- 컨테이너 수명 동안 Node 메모리를 효율적으로 재사용
+
+--- 
+
 ## 소스 코드
 ```cpp
 #pragma once
@@ -408,4 +489,227 @@ namespace util_hash
   };
 
 } // namespace util_hash
-````
+```
+---
+
+## 테스트 코드 예제 (hash32_ordered_map 전용)
+```cpp
+#include <iostream>
+#include <string>
+#include <cassert>
+
+#include "hash_set32.h"          // Hash32Item, Hash32Table, DefaultHash32
+#include "hash32_pool_allocator.h"
+#include "hash32_ordered_map.h"  // 우리가 만든 Hash32OrderedMap
+
+using util_hash::Hash32OrderedMap;
+
+bool test_insert_and_order()
+{
+  std::cout << "[TEST] insert & order\n";
+
+  Hash32OrderedMap<std::string, int> m;
+
+  // 삽입 순서: apple, banana, cherry
+  bool ok1 = m.insert("apple",  1);
+  bool ok2 = m.insert("banana", 2);
+  bool ok3 = m.insert("cherry", 3);
+
+  assert(ok1 && ok2 && ok3);
+  assert(m.size() == 3);
+
+  // 삽입 순서 확인
+  const char* expected_keys[] = { "apple", "banana", "cherry" };
+  int         expected_vals[] = { 1, 2, 3 };
+
+  int idx = 0;
+  for (auto it = m.begin(); it != m.end(); ++it, ++idx)
+  {
+    auto pair = *it; // ValueRef { const Key& first, T& second }
+    const std::string& k = pair.first;
+    int&               v = pair.second;
+
+    assert(k == expected_keys[idx]);
+    assert(v == expected_vals[idx]);
+  }
+  assert(idx == 3);
+
+  std::cout << "  OK\n";
+  return true;
+}
+
+bool test_insert_or_assign_and_order()
+{
+  std::cout << "[TEST] insert_or_assign keeps order\n";
+
+  Hash32OrderedMap<std::string, int> m;
+
+  m.insert("apple",  1);
+  m.insert("banana", 2);
+  m.insert("cherry", 3);
+
+  // 기존 키 banana의 값을 변경 (순서는 바뀌면 안 됨)
+  bool inserted_new = m.insert_or_assign("banana", 20);
+  assert(inserted_new == false); // 새로 삽입된 것은 아니다
+  assert(m.size() == 3);
+
+  const char* expected_keys[] = { "apple", "banana", "cherry" };
+  int         expected_vals[] = { 1, 20, 3 };
+
+  int idx = 0;
+  for (auto it = m.begin(); it != m.end(); ++it, ++idx)
+  {
+    auto pair = *it;
+    const std::string& k = pair.first;
+    int&               v = pair.second;
+
+    assert(k == expected_keys[idx]);
+    assert(v == expected_vals[idx]);
+  }
+  assert(idx == 3);
+
+  std::cout << "  OK\n";
+  return true;
+}
+
+bool test_operator_brackets()
+{
+  std::cout << "[TEST] operator[] behavior\n";
+
+  Hash32OrderedMap<std::string, int> m;
+
+  // 없는 키에 대해 [] 사용 -> { key, 0 } 삽입 후 참조
+  m["apple"] = 10;
+  m["banana"] = 20;
+
+  assert(m.size() == 2);
+  assert(m.at("apple")  == 10);
+  assert(m.at("banana") == 20);
+
+  // 이미 존재하는 키에 대해 [] -> 덮어쓰기
+  m["apple"] = 100;
+
+  assert(m.at("apple") == 100);
+
+  // 삽입 순서 체크: apple, banana
+  const char* expected_keys[] = { "apple", "banana" };
+  int         expected_vals[] = { 100, 20 };
+
+  int idx = 0;
+  for (auto it = m.begin(); it != m.end(); ++it, ++idx)
+  {
+    auto pair = *it;
+    const std::string& k = pair.first;
+    int&               v = pair.second;
+
+    assert(k == expected_keys[idx]);
+    assert(v == expected_vals[idx]);
+  }
+  assert(idx == 2);
+
+  std::cout << "  OK\n";
+  return true;
+}
+
+bool test_find_contains_erase()
+{
+  std::cout << "[TEST] find / contains / erase\n";
+
+  Hash32OrderedMap<std::string, int> m;
+
+  m.insert("apple",  1);
+  m.insert("banana", 2);
+  m.insert("cherry", 3);
+
+  assert(m.contains("banana"));
+  assert(!m.contains("orange"));
+
+  {
+    auto it = m.find("banana");
+    assert(it != m.end());
+    auto pair = *it;
+    assert(pair.first == "banana");
+    assert(pair.second == 2);
+  }
+
+  // erase 존재하는 키
+  bool removed = m.erase("banana");
+  assert(removed);
+  assert(m.size() == 2);
+  assert(!m.contains("banana"));
+
+  // erase 없는 키
+  removed = m.erase("banana");
+  assert(!removed);
+  assert(m.size() == 2);
+
+  // 남은 순서: apple, cherry
+  const char* expected_keys[] = { "apple", "cherry" };
+  int         expected_vals[] = { 1, 3 };
+  int idx = 0;
+  for (auto it = m.begin(); it != m.end(); ++it, ++idx)
+  {
+    auto pair = *it;
+    const std::string& k = pair.first;
+    int&               v = pair.second;
+
+    assert(k == expected_keys[idx]);
+    assert(v == expected_vals[idx]);
+  }
+  assert(idx == 2);
+
+  std::cout << "  OK\n";
+  return true;
+}
+
+bool test_clear_and_reuse()
+{
+  std::cout << "[TEST] clear & reuse\n";
+
+  Hash32OrderedMap<std::string, int> m;
+
+  m.insert("apple",  1);
+  m.insert("banana", 2);
+  m.insert("cherry", 3);
+
+  assert(m.size() == 3);
+
+  m.clear();
+  assert(m.size() == 0);
+  assert(m.begin() == m.end());
+
+  // 다시 사용 (pool 재사용 확인)
+  m.insert("dog",   10);
+  m.insert("eleph", 20);
+
+  assert(m.size() == 2);
+  assert(m.contains("dog"));
+  assert(m.contains("eleph"));
+
+  std::cout << "  OK\n";
+  return true;
+}
+
+int main()
+{
+  bool ok = true;
+
+  ok = ok && test_insert_and_order();
+  ok = ok && test_insert_or_assign_and_order();
+  ok = ok && test_operator_brackets();
+  ok = ok && test_find_contains_erase();
+  ok = ok && test_clear_and_reuse();
+
+  if (ok)
+  {
+    std::cout << "\n=== ALL Hash32OrderedMap TESTS PASSED ===\n";
+    return 0;
+  }
+  else
+  {
+    std::cerr << "\n=== SOME TESTS FAILED ===\n";
+    return 1;
+  }
+}
+```
+---
