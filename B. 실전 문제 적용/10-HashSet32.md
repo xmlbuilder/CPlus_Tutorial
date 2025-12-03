@@ -1,10 +1,84 @@
 # HashSet32
 
-## 📌 메모리 사용 관점
-- 원본(OpenNurbs)
-- 직접 onmalloc/onfree로 버킷 배열 관리
-- 아이템은 외부에서 생성·소멸 책임 → 테이블은 포인터만 관리
-- 메모리 풀(ON_FixedSizePool)과 연동 가능 → CAD처럼 대량 객체 관리에 최적화
+## 🔎 HashSet 개념 및 특징 정리
+### 1. 개요
+#### ✔ HashSet
+- 중복 없는 데이터 집합(Set) 자료구조
+- 저장되는 것은 값(value)만 값 자체가 키(key) 역할을 하며, 동일성 판단은 hash(value) + equal(value1, value2)로 수행
+- 예: { 10, 20, 30 }
+
+### 2. 내부 구조 비교
+- 저장되는 요소	Value 단일값
+- Key 역할	Value 자체가 Key
+- 저장 노드	Node(Value) 형태
+- 중복 처리	동일 값 저장 불가
+- 비교 방식	hash(value)
+
+### 3. 동작 원리
+- 요소(또는 Key)에 대해 **해시 함수(hash)** 를 계산
+- 테이블 크기(capacity) 모듈로써 bucket index 선택
+- 해당 bucket의 체인(Linked List) 또는 Open Addressing 방식에서 요소 검색
+- 요소가 없으면 삽입, 있으면 중복 처리
+- 대부분 O(1) 평균 시간으로 처리되지만,
+- 해시 충돌이 지나치게 많을 경우 최악의 경우 O(n)까지 늘어날 수 있다.
+
+## 4. HashSet 특징
+### ✔ 장점
+- 중복 자동 제거
+- 많은 데이터에서 unique 처리에 매우 빠름.
+- 검색 속도 빠름
+- 평균 O(1)으로 존재 여부 체크 가능.
+- 메모리 절약 (intrusive 구조일 경우)
+- Node를 객체 내부에 넣는 intrusive 방식에서는 추가 노드 할당이 필요 없음.
+### ✔ 단점
+- 정렬된 순서가 없음
+- 항상 삽입 순서도 유지되지 않는다.
+- 해시 충돌이 많으면 성능 저하
+- 잘못된 해시 함수 사용 시 오래 걸릴 수 있음.
+- Value = Key라서 키 값을 변경하는 구조를 허용하면 안 됨  
+  - Key를 변경하면 해시 위치가 달라져 테이블이 깨짐
+
+
+## 5. 해시 충돌 처리 방식
+
+HashSet 은 두 가지 방식 중 하나를 사용한다.
+### ✔ 1) Separate Chaining (체이닝)
+- 같은 버킷에 여러 요소가 들어가면 연결 리스트로 연결
+- 장점: 구현 간단, 확장 용이
+- 단점: 메모리 증가
+
+### ✔ 2) Open Addressing (개방 주소법)
+- 충돌 시 테이블 내 다른 위치를 탐색하여 저장
+- 장점: 포인터가 없어 메모리 효율적
+- 단점: 삭제 처리 어렵고, 클러스터링 문제 발생
+  
+- Hash 구조는 Separate Chaining 기반이며, intrusive 구조라서 Node 메모리 효율이 높다.
+
+### 6. intrusive 특징
+- Node가 사용자 클래스에 직접 포함됨
+- 외부에서 노드 메모리를 따로 할당하지 않음
+- 메모리 단편화 및 할당/해제 오버헤드가 없음
+- 속도가 매우 빠름
+- 장점
+  - 고성능, 메모리 효율적
+  - CAD 엔진에서 수만~수백만 단위 데이터 처리에 적합
+- 단점
+  - 자료구조가 객체 내부에 결합되므로 다소 복잡
+  - 키 변경 금지
+
+### 7. HashSet성능적 중요성
+NURBS, BRep, Mesh 엔진에서는 다음 작업에 HashSet이 필수적이다:
+- ✔ 중복 Vertex/Edge 제거
+  - (Topology 생성)
+- ✔ Trim Curve 중복 관리 / 빠른 lookup
+  - (surfaces / brep loops)
+- ✔ Mesh face, edge indexing
+- ✔ Curve / Surface intersection 시 seed 관리
+- ✔ Boolean 연산 시 새로운 Edge/Vertex 병합
+- 이런 작업에서 O(1) 평균 시간 lookup은 큰 성능 차이를 만든다.
+
+---
+
 
 ## 소스 코드
 ### 1. hash_set32.h
