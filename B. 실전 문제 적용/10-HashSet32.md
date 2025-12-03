@@ -416,3 +416,335 @@ int main()
   return 0;
 }
 ```
+
+---
+
+
+## Template 버전
+### 1. hash_set32_template.h
+```cpp
+#pragma once
+
+#include "hash_set32.h"  // 앞에서 만든 Hash32Item / Hash32Table 정의
+#include <functional>
+#include <iterator>
+#include <cstdint>
+#include <cstddef>
+#include <utility>
+
+namespace util_hash
+{
+  /// 기본 32bit 해시:
+  /// std::hash<T>의 결과를 32bit로 잘라서 사용
+  template<typename T>
+  struct DefaultHash32
+  {
+    std::uint32_t operator()(const T& v) const
+    {
+      using H = std::hash<T>;
+      return static_cast<std::uint32_t>(H{}(v));
+    }
+  };
+
+  /// T값을 보관하는 non-intrusive hash set 래퍼
+  /// - 내부적으로 Hash32Table + intrusive 노드(Node) 사용
+  /// - 인터페이스는 unordered_set<T>와 비슷하게 구성 (간단 버전)
+  template<
+    typename T,
+    typename Hash  = DefaultHash32<T>,
+    typename Equal = std::equal_to<T>
+  >
+  class Hash32Set
+  {
+    struct Node : public Hash32Item
+    {
+      T value;
+
+      explicit Node(const T& v)
+        : value(v)
+      {
+      }
+
+      template<typename... Args>
+      explicit Node(std::in_place_t, Args&&... args)
+        : value(std::forward<Args>(args)...)
+      {
+      }
+    };
+
+    Hash32Table m_table;
+    std::size_t m_size  = 0;
+    Hash        m_hash;
+    Equal       m_equal;
+
+  public:
+    // ----- iterator: set 특성상 const T&만 제공 -----
+    class const_iterator
+    {
+      using Table = Hash32Table;
+      using Item  = Hash32Item;
+
+      const Table* m_table = nullptr;
+      Item*        m_item  = nullptr; // non-const Node 접근은 금지 (set 특성상 수정하면 안 됨)
+
+    public:
+      using iterator_category = std::forward_iterator_tag;
+      using value_type        = T;
+      using difference_type   = std::ptrdiff_t;
+      using pointer           = const T*;
+      using reference         = const T&;
+
+      const_iterator() = default;
+
+      const_iterator(const Table* table, Item* item)
+        : m_table(table), m_item(item)
+      {
+      }
+
+      reference operator*() const
+      {
+        const Node* n = static_cast<const Node*>(m_item);
+        return n->value;
+      }
+
+      pointer operator->() const
+      {
+        const Node* n = static_cast<const Node*>(m_item);
+        return &n->value;
+      }
+
+      const_iterator& operator++()
+      {
+        if (m_table && m_item)
+          m_item = const_cast<Item*>(m_table->nextTableItem(m_item));
+        return *this;
+      }
+
+      const_iterator operator++(int)
+      {
+        const_iterator tmp(*this);
+        ++(*this);
+        return tmp;
+      }
+
+      friend bool operator==(const const_iterator& a, const const_iterator& b)
+      {
+        return a.m_item == b.m_item && a.m_table == b.m_table;
+      }
+
+      friend bool operator!=(const const_iterator& a, const const_iterator& b)
+      {
+        return !(a == b);
+      }
+    };
+
+    using iterator = const_iterator;
+
+    // ----- 생성 / 소멸 -----
+    Hash32Set() = default;
+
+    explicit Hash32Set(const Hash& h, const Equal& eq = Equal())
+      : m_hash(h), m_equal(eq)
+    {
+    }
+
+    ~Hash32Set()
+    {
+      clear();
+    }
+
+    Hash32Set(const Hash32Set&)            = delete;
+    Hash32Set& operator=(const Hash32Set&) = delete;
+
+    // ----- 기본 프로퍼티 -----
+    bool empty() const noexcept { return m_size == 0; }
+    std::size_t size() const noexcept { return m_size; }
+
+    // ----- 반복자 -----
+    iterator begin()
+    {
+      return iterator(&m_table, m_table.firstTableItem());
+    }
+
+    iterator end()
+    {
+      return iterator(&m_table, nullptr);
+    }
+
+    const_iterator begin() const
+    {
+      return const_iterator(&m_table,
+                            const_cast<Hash32Item*>(m_table.firstTableItem()));
+    }
+
+    const_iterator end() const
+    {
+      return const_iterator(&m_table, nullptr);
+    }
+
+    const_iterator cbegin() const { return begin(); }
+    const_iterator cend()   const { return end();   }
+
+    // ----- 내부 유틸 -----
+  private:
+    std::uint32_t make_hash32(const T& value) const
+    {
+      std::uint32_t h = m_hash(value);
+      // 해시값이 0이어도 문제는 없지만, 0을 특별히 피하고 싶다면 여기서 조정 가능
+      return h;
+    }
+
+    Node* find_node(const T& value) const
+    {
+      if (m_size == 0)
+        return nullptr;
+
+      const std::uint32_t h = make_hash32(value);
+
+      for (Hash32Item* it = m_table.firstItemWithHash(h);
+           it;
+           it = m_table.nextItemWithHash(it))
+      {
+        Node* n = static_cast<Node*>(it);
+        if (m_equal(n->value, value))
+          return n;
+      }
+      return nullptr;
+    }
+
+  public:
+    // ----- 조회 -----
+    bool contains(const T& value) const
+    {
+      return find_node(value) != nullptr;
+    }
+
+    const_iterator find(const T& value) const
+    {
+      Node* n = find_node(value);
+      if (!n)
+        return end();
+
+      return const_iterator(&m_table,
+                            static_cast<Hash32Item*>(n));
+    }
+
+    // ----- 삽입 -----
+    // 이미 있는 값이면 삽입 실패(false) / 포기
+    bool insert(const T& value)
+    {
+      if (find_node(value))
+        return false; // set 특성: 중복 허용 안 함
+
+      std::uint32_t h = make_hash32(value);
+      Node* node = new Node(value);
+
+      if (!m_table.addItem(h, node))
+      {
+        delete node;
+        return false;
+      }
+
+      ++m_size;
+      return true;
+    }
+
+    template<typename... Args>
+    bool emplace(Args&&... args)
+    {
+      // emplace는 key가 args로부터 만들어지므로,
+      // 중복 체크를 하려면 일단 임시 T를 만들어야 함
+      // (성능이 크게 중요하지 않다면 이렇게 단순하게 가도 무방)
+      T tmp(std::forward<Args>(args)...);
+      if (find_node(tmp))
+        return false;
+
+      std::uint32_t h = make_hash32(tmp);
+      Node* node = new Node(std::in_place, std::forward<Args>(args)...);
+
+      if (!m_table.addItem(h, node))
+      {
+        delete node;
+        return false;
+      }
+
+      ++m_size;
+      return true;
+    }
+
+    // ----- 삭제 -----
+    bool erase(const T& value)
+    {
+      Node* node = find_node(value);
+      if (!node)
+        return false;
+
+      if (!m_table.removeItem(node))
+        return false;
+
+      delete node;
+      --m_size;
+      return true;
+    }
+
+    void clear()
+    {
+      // 먼저 모든 노드 delete
+      for (Hash32Item* it = m_table.firstTableItem();
+           it;
+           )
+      {
+        Hash32Item* next = m_table.nextTableItem(it);
+        Node*       node = static_cast<Node*>(it);
+        delete node;
+        it = next;
+      }
+
+      m_table.removeAllItems();
+      m_size = 0;
+    }
+  };
+
+} // namespace util_hash
+```
+
+### 테스트 코드
+```cpp
+#include <iostream>
+#include "hash_set32_template.h"
+
+
+int main()
+{
+
+    util_hash::Hash32Set<int> int_set;
+    int_set.insert(10);
+    int_set.insert(20);
+    int_set.insert(10); 
+
+    if (int_set.contains(20))
+        std::cout << "20 is in the set\n";
+
+    for (auto&& v : int_set)
+        std::cout << "int_set: " << v << "\n";
+
+
+    util_hash::Hash32Set<std::string> str_set;
+    str_set.emplace("apple");
+    str_set.emplace("banana");
+    str_set.emplace("apple"); // 중복 무시
+
+    if (auto it = str_set.find("banana"); it != str_set.end())
+        std::cout << "found: " << *it << "\n";
+
+    str_set.erase("banana");
+
+    for (auto&& s : str_set)
+        std::cout << "str_set: " << s << "\n";
+
+    return 0;
+}
+```
+
+---
+
