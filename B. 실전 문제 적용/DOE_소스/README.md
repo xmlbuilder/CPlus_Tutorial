@@ -375,6 +375,9 @@ public:
       - Mean point (circle, colored: red for high sig, green for low sig, gray otherwise)
       - Short horizontal UDL/LDL ticks above/below the point
       - Group name text below X-axis
+    
+### Anom Chart
+![Anom Chart](/image/anom_chart.png)
 
 ## 4. Response Surface Quadratic (response_surface_quadratic.hpp)
 
