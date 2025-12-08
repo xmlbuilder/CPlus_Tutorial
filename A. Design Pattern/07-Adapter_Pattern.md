@@ -707,21 +707,21 @@ void registerPlugin(PrinterFactory& factory) {
 ```mermaid
 flowchart LR
     subgraph CoreApp[Core application]
-      Factory[PrinterFactory (Registry)]
-      Loader[PluginLoader (dlopen/LoadLibrary)]
+      Factory[PrinterFactory （Registry）]
+      Loader[PluginLoader （dlopen/LoadLibrary）]
       Main[main.cpp]
     end
 
-    subgraph XMLPlugin[XML plugin (DLL/so)]
+    subgraph XMLPlugin[XML plugin （DLL/so）]
       XMLAdapter[XMLPrinterAdapter : ModernPrinter]
       LegacyXML[LegacyXMLPrinter]
-      RegisterXML[extern "C" registerPlugin()]
+      RegisterXML[extern “C” registerPlugin（）]
     end
 
-    subgraph JSONPlugin[JSON plugin (DLL/so)]
+    subgraph JSONPlugin[JSON plugin （DLL/so）]
       JSONAdapter[JSONPrinterAdapter : ModernPrinter]
       LegacyJSON[LegacyJSONPrinter]
-      RegisterJSON[extern "C" registerPlugin()]
+      RegisterJSON[extern “C” registerPlugin（）]
     end
 
     Main --> Loader
