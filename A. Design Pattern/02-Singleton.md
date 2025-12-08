@@ -1,146 +1,219 @@
-# 🧠 Singleton 패턴이란?
-Singleton(싱글톤) 패턴은 클래스의 인스턴스를 하나만 생성하도록 보장하는 디자인 패턴입니다.  
-어디서 호출하든 항상 같은 객체를 공유하게 되므로, 설정값, 로그, DB 연결 등 전역 상태를 유지해야 하는 경우에 자주 사용됩니다. 
+# Singleton
+- C++에서 싱글턴(Singleton) 은 프로그램 전체에서 하나의 인스턴스만 존재하도록 보장하는 디자인 패턴입니다.  
+- 주로 전역 상태 관리나 리소스 공유(예: 로그 시스템, 설정 객체, DB 연결 등)에 사용됩니다.
 
-## ✅ Python에서 Singleton 구현 방식
-Python에서는 여러 방식으로 Singleton을 구현할 수 있습니다.  
-대표적인 3가지 방법을 소개:
+## 📌 Singleton 개념
+- 핵심 아이디어: 클래스의 인스턴스를 하나만 만들고, 어디서든 접근할 수 있도록 한다.
+- 구현 포인트:
+    - 생성자를 private 또는 protected로 막아 외부에서 new 불가.
+    - 정적 메서드(getInstance)를 통해 유일한 객체를 반환.
+    - 복사/이동 생성자와 대입 연산자를 삭제(delete)해서 중복 생성 방지.
 
-### 1. 클래스 내부에서 인스턴스 제어
-```python
-class Singleton:
-    _instance = None
+## 📌 기본 구현 (Raw Pointer 버전)
+```cpp
+#include <iostream>
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+class Singleton {
+private:
+    Singleton() { std::cout << "Singleton created\n"; }
+    ~Singleton() { std::cout << "Singleton destroyed\n"; }
+
+    // 복사/이동 금지
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+public:
+    static Singleton& getInstance() {
+        static Singleton instance; // 프로그램 종료 시 자동 소멸
+        return instance;
+    }
+
+    void doSomething() {
+        std::cout << "Singleton doing something\n";
+    }
+};
+```
+```cpp
+int main() {
+    Singleton& s1 = Singleton::getInstance();
+    Singleton& s2 = Singleton::getInstance();
+
+    s1.doSomething();
+    std::cout << "Same instance? " << (&s1 == &s2) << "\n";
+}
 ```
 
-### 2. 데코레이터 사용
-```python
-def singleton(cls):
-    instances = {}
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-    return get_instance
-
-@singleton
-class Config:
-    pass
+### 출력:
 ```
-
-### 3. 모듈 자체를 Singleton처럼 사용
-- Python은 모듈이 한 번만 로딩되므로, 모듈 수준 변수를 Singleton처럼 사용할 수 있습니다.
-
-## 🧪 실전 예제: 설정 관리 클래스
-```python
-class AppConfig:
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance._initialized = False
-        return cls._instance
-
-    def __init__(self):
-        if self._initialized:
-            return
-        self._initialized = True
-        self.settings = {}
-
-    def set(self, key, value):
-        self.settings[key] = value
-
-    def get(self, key):
-        return self.settings.get(key, None)
-```
-
-### 🔍 사용 예시
-```python
-config1 = AppConfig()
-config1.set("theme", "dark")
-
-config2 = AppConfig()
-print(config2.get("theme"))  # 출력: dark
-print(config1 is config2)    # 출력: True (같은 인스턴스)
+Singleton created
+Singleton doing something
+Same instance? 1
+Singleton destroyed
 ```
 
 
-## 🧪 데코레이터 기반 Singleton 예제
-```python
-def singleton(cls):
-    instances = {}
+## 📌 스마트 포인터 연동 버전
+싱글턴을 **스마트 포인터(std::unique_ptr)** 로 관리하면, 자원 해제가 더 명확해지고, 필요 시 커스텀 소멸자도 붙일 수 있습니다.
+```cpp
+#include <iostream>
+#include <memory>
 
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
+class Singleton {
+private:
+    Singleton() { std::cout << "Singleton created\n"; }
+    ~Singleton() { std::cout << "Singleton destroyed\n"; }
 
-    return get_instance
+    // 복사/이동 금지
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+public:
+    static Singleton& getInstance() {
+        static std::unique_ptr<Singleton> instance{new Singleton()};
+        return *instance;
+    }
+
+    void doSomething() {
+        std::cout << "Singleton doing something\n";
+    }
+};
+```
+```cpp
+int main() {
+    Singleton& s1 = Singleton::getInstance();
+    Singleton& s2 = Singleton::getInstance();
+
+    s1.doSomething();
+    std::cout << "Same instance? " << (&s1 == &s2) << "\n";
+}
 ```
 
-## 🎯 사용 예: 설정 관리 클래스
-```python
-@singleton
-class ConfigManager:
-    def __init__(self):
-        self.settings = {}
 
-    def set(self, key, value):
-        self.settings[key] = value
+## 📊 Singleton 구현 비교
 
-    def get(self, key):
-        return self.settings.get(key, None)
-```
-
-### 🔍 테스트 코드
-```python
-cfg1 = ConfigManager()
-cfg2 = ConfigManager()
-
-cfg1.set("theme", "dark")
-print(cfg2.get("theme"))  # 출력: dark
-print(cfg1 is cfg2)       # 출력: True (같은 인스턴스)
-```
-
-### 🧩 요약: 데코레이터 기반 Singleton 패턴
-| 구성 요소       | 설명 |
-|----------------|------|
-| `singleton(cls)` | 클래스 인스턴스를 하나만 유지하도록 감싸주는 데코레이터 함수 |
-| `@singleton`     | 클래스 선언 시 데코레이터를 적용하여 Singleton 패턴을 활성화 |
-| `instances` 딕셔너리 | 클래스별로 인스턴스를 저장하고 재사용하는 내부 저장소 |
+| 구현 방식                  | 특징 |
+|----------------------------|------|
+| static Singleton instance  | 가장 단순, 프로그램 종료 시 자동 소멸, 성능 오버헤드 없음 |
+| static unique_ptr<Singleton> | 자원 관리 유연, 커스텀 소멸자 가능, 동적 생성 제어 가능 |
 
 
-## 🧩 Singleton 패턴: 언제 쓰면 좋을까?
-
-| 사용 사례                      | 이유 및 효과 |
-|-------------------------------|--------------|
-| 설정 관리 (Config Manager)     | 앱 전체에서 동일한 설정 값을 공유하고 유지 |
-| 로그 시스템 (Logger)           | 로그 파일 핸들러를 하나만 유지하여 중복 방지 |
-| DB 연결 (Database Connection)  | 커넥션 풀을 하나만 유지하여 리소스 절약 |
-| 캐시 관리 (Global Cache)       | 전역 캐시를 하나의 객체로 유지하여 일관성 확보 |
-| 상태 추적 (App State Tracker) | 앱의 전역 상태를 하나의 인스턴스로 관리 |
-| GUI 컨트롤러 (Main Controller) | 사용자 인터페이스의 중심 제어 객체를 단일화 |
-
+## ✅ 요약
+- Singleton은 인스턴스를 하나만 보장하는 패턴.
+- 스마트 포인터 연동을 통해 자원 관리와 소멸을 더 안전하게 할 수 있음.
+- 실무에서는 static 객체 버전이 가장 흔하지만, 스마트 포인터 버전은 확장성이 필요할 때 유용합니다.
 
 ## 클래스 다이아 그램
 ```mermaid
 classDiagram
-    class AppConfig {
-        - _instance : AppConfig
-        - _initialized : bool
-        - settings : dict
-        + __new__(cls)
-        + __init__()
-        + set(key, value)
-        + get(key)
+    class Singleton {
+        - Singleton()
+        - ~Singleton()
+        - Singleton(const Singleton&) = delete
+        - operator=(const Singleton&) = delete
+        + static getInstance() Singleton&
+        + doSomething()
     }
-
-    note for AppConfig "Singleton 설정 관리 클래스
-    인스턴스는 하나만 생성됨"
 ```
 ---
+
+## thread-safe
+
+- 싱글턴을 멀티스레드 환경에서 안전하게 만들려면 thread-safe 초기화가 핵심입니다. 
+- C++11 이후에는 정적 지역 변수(static) 초기화가 컴파일러 차원에서 thread-safe로 보장되므로, 별도의 락을 쓰지 않아도 안전합니다.
+
+## 📌 Thread-safe Singleton (C++11 이후)
+```cpp
+#include <iostream>
+#include <memory>
+
+class Singleton {
+private:
+    Singleton() { std::cout << "Singleton created\n"; }
+    ~Singleton() { std::cout << "Singleton destroyed\n"; }
+
+    // 복사/이동 금지
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+public:
+    static Singleton& getInstance() {
+        // C++11 이후 정적 지역 변수 초기화는 thread-safe 보장
+        static Singleton instance;
+        return instance;
+    }
+
+    void doSomething() {
+        std::cout << "Singleton doing something\n";
+    }
+};
+```
+```cpp
+int main() {
+    Singleton& s1 = Singleton::getInstance();
+    Singleton& s2 = Singleton::getInstance();
+
+    s1.doSomething();
+    std::cout << "Same instance? " << (&s1 == &s2) << "\n";
+}
+```
+## 📌 스마트 포인터 연동 + thread-safe
+- 스마트 포인터를 쓰고 싶다면 std::call_once 와 std::once_flag를 이용해 초기화를 보장할 수 있습니다.
+```cpp
+#include <iostream>
+#include <memory>
+#include <mutex>
+
+class Singleton {
+private:
+    Singleton() { std::cout << "Singleton created\n"; }
+    ~Singleton() { std::cout << "Singleton destroyed\n"; }
+
+    // 복사/이동 금지
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+    static std::unique_ptr<Singleton> instance;
+    static std::once_flag initFlag;
+
+public:
+    static Singleton& getInstance() {
+        std::call_once(initFlag, []() {
+            instance.reset(new Singleton());
+        });
+        return *instance;
+    }
+
+    void doSomething() {
+        std::cout << "Singleton doing something\n";
+    }
+};
+```
+```cpp
+// 정적 멤버 정의
+std::unique_ptr<Singleton> Singleton::instance;
+std::once_flag Singleton::initFlag;
+
+int main() {
+    Singleton& s1 = Singleton::getInstance();
+    Singleton& s2 = Singleton::getInstance();
+
+    s1.doSomething();
+    std::cout << "Same instance? " << (&s1 == &s2) << "\n";
+}
+```
+
+
+## 📊 Thread-safe Singleton 구현 비교
+
+| 구현 방식                  | 특징 |
+|----------------------------|------|
+| static Singleton instance  | C++11 이후 정적 지역 변수 초기화는 thread-safe 보장, 가장 단순하고 성능 오버헤드 없음 |
+| unique_ptr + call_once     | 스마트 포인터로 자원 관리, 커스텀 소멸자 가능, 초기화 제어 유연하지만 코드 복잡도 증가 |
+
+
+## ✅ 요약
+- C++11 이후라면 static 지역 변수 초기화만으로 thread-safe Singleton 구현 가능.
+- 스마트 포인터와 std::call_once를 쓰면 자원 관리와 초기화 제어를 더 유연하게 할 수 있음.
+
+---
+
