@@ -333,5 +333,171 @@ classDiagram
 - std::unique_ptr로 메모리 자동 관리.
 - Mermaid 다이어그램으로 구조를 시각화 → Factory가 Adapter를 생성해 ModernPrinter 인터페이스로 제공.
 
+---
+## 📌 코드 예제 (자동 등록 플러그인 구조)
+```cpp
+#include <iostream>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <functional>
+
+// Modern Printer 인터페이스
+class ModernPrinter {
+public:
+    virtual void print(const std::string& content) = 0;
+    virtual ~ModernPrinter() = default;
+};
+```
+```cpp
+// Registry 기반 Factory
+class PrinterFactory {
+    using Creator = std::function<std::unique_ptr<ModernPrinter>()>;
+    static std::unordered_map<std::string, Creator>& registry() {
+        static std::unordered_map<std::string, Creator> instance;
+        return instance;
+    }
+
+public:
+    static void registerPrinter(const std::string& key, Creator creator) {
+        registry()[key] = creator;
+    }
+
+    static std::unique_ptr<ModernPrinter> createPrinter(const std::string& key) {
+        auto it = registry().find(key);
+        if (it != registry().end()) {
+            return it->second();
+        }
+        return nullptr;
+    }
+};
+```
+```cpp
+// ---------------- 플러그인 모듈: XML ----------------
+class LegacyXMLPrinter {
+public:
+    void printXML(const std::string& content) {
+        std::cout << "<xml>" << content << "</xml>\n";
+    }
+};
+```
+```cpp
+class XMLPrinterAdapter : public ModernPrinter {
+    std::unique_ptr<LegacyXMLPrinter> adaptee;
+public:
+    XMLPrinterAdapter() : adaptee(std::make_unique<LegacyXMLPrinter>()) {}
+    void print(const std::string& content) override {
+        adaptee->printXML(content);
+    }
+};
+```
+```cpp
+// 자동 등록 헬퍼
+struct XMLPrinterRegistration {
+    XMLPrinterRegistration() {
+        PrinterFactory::registerPrinter("XML", [](){ return std::make_unique<XMLPrinterAdapter>(); });
+    }
+};
+```
+```cpp
+// 정적 객체 → 프로그램 시작 시 자동 등록
+static XMLPrinterRegistration xmlReg;
+```
+```cpp
+// ---------------- 플러그인 모듈: JSON ----------------
+class LegacyJSONPrinter {
+public:
+    void printJSON(const std::string& content) {
+        std::cout << "{ \"data\": \"" << content << "\" }\n";
+    }
+};
+```
+```cpp
+class JSONPrinterAdapter : public ModernPrinter {
+    std::unique_ptr<LegacyJSONPrinter> adaptee;
+public:
+    JSONPrinterAdapter() : adaptee(std::make_unique<LegacyJSONPrinter>()) {}
+    void print(const std::string& content) override {
+        adaptee->printJSON(content);
+    }
+};
+```
+```cpp
+struct JSONPrinterRegistration {
+    JSONPrinterRegistration() {
+        PrinterFactory::registerPrinter("JSON", [](){ return std::make_unique<JSONPrinterAdapter>(); });
+    }
+};
+```
+```cpp
+static JSONPrinterRegistration jsonReg;
+```
+```cpp
+// ---------------- main ----------------
+int main() {
+    // main에서는 단순히 createPrinter만 호출
+    auto printer1 = PrinterFactory::createPrinter("XML");
+    auto printer2 = PrinterFactory::createPrinter("JSON");
+
+    if (printer1) printer1->print("Hello XML Plugin!");
+    if (printer2) printer2->print("Hello JSON Plugin!");
+
+    return 0;
+}
+```
+
+## 📊 실행 결과 (예상)
+```
+<xml>Hello XML Plugin!</xml>
+{ "data": "Hello JSON Plugin!" }
+```
+
+
+## 📌 크래스 다이어그램
+```mermaid
+classDiagram
+    class ModernPrinter {
+        <<interface>>
+        +print(content: string)
+    }
+
+    class PrinterFactory {
+        +registerPrinter(key: string, creator)
+        +createPrinter(key: string) ModernPrinter
+    }
+
+    class XMLPrinterAdapter {
+        -adaptee : unique_ptr<LegacyXMLPrinter>
+        +print(content: string)
+    }
+
+    class JSONPrinterAdapter {
+        -adaptee : unique_ptr<LegacyJSONPrinter>
+        +print(content: string)
+    }
+
+    class XMLPrinterRegistration {
+        +XMLPrinterRegistration()
+    }
+
+    class JSONPrinterRegistration {
+        +JSONPrinterRegistration()
+    }
+
+    ModernPrinter <|-- XMLPrinterAdapter
+    ModernPrinter <|-- JSONPrinterAdapter
+    XMLPrinterAdapter --> LegacyXMLPrinter
+    JSONPrinterAdapter --> LegacyJSONPrinter
+    PrinterFactory --> ModernPrinter
+    XMLPrinterRegistration --> PrinterFactory
+    JSONPrinterRegistration --> PrinterFactory
+```
+
+## ✅ 요약
+- 각 플러그인 모듈(XML, JSON)은 정적 Registration 객체를 통해 Factory에 자동 등록.
+- 메인 코드에서는 createPrinter("XML")처럼 호출만 하면 됨.
+- 새로운 플러그인 추가 시 Factory 수정 불필요 → 확장성 극대화.
+- 스마트 포인터(std::unique_ptr)로 메모리 자동 관리.
+  
 
   
