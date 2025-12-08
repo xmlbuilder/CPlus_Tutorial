@@ -499,5 +499,249 @@ classDiagram
 - 새로운 플러그인 추가 시 Factory 수정 불필요 → 확장성 극대화.
 - 스마트 포인터(std::unique_ptr)로 메모리 자동 관리.
   
+---
+## Dynamic plugin system for runtime-loaded printers
+- DLL/so를 런타임에 로드해, 로딩 시점에 자동으로 Factory에 등록되는 **진짜 플러그인 시스템** 을 구성합니다. 
+- 핵심은 공용 Registry를 메인 프로세스가 갖고, 각 플러그인이 로딩되면 노출된 엔트리 포인트를 통해 자신의 Adapter 생성기를 등록하는 구조입니다.
+
+## Architecture overview
+- Core app:
+    - ModernPrinter 인터페이스, PrinterFactory(Registry) 보유.
+    - 플랫폼별 로더로 DLL/so를 로드, 각 플러그인의 **registerPlugin()** 를 호출.
+- Plugin (DLL/so):
+    - 자신만의 LegacyPrinter + Adapter 구현.
+    - extern "C"로 내보낸 registerPlugin(PrinterFactory&) 함수를 통해 Registry에 생성기를 등록.
+
+## Core application (shared registry + loader)
+```cpp
+// core_app.hpp
+#pragma once
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <functional>
+
+class ModernPrinter {
+public:
+    virtual void print(const std::string& content) = 0;
+    virtual ~ModernPrinter() = default;
+};
+
+
+class PrinterFactory {
+    using Creator = std::function<std::unique_ptr<ModernPrinter>()>;
+    std::unordered_map<std::string, Creator> registry;
+public:
+    // Registry API
+    void registerPrinter(const std::string& key, Creator creator) {
+        registry[key] = std::move(creator);
+    }
+    std::unique_ptr<ModernPrinter> createPrinter(const std::string& key) const {
+        auto it = registry.find(key);
+        if (it != registry.end()) return (it->second)();
+        return nullptr;
+    }
+};
+
+// 플러그인 엔트리 포인트 시그니처 (각 DLL/so가 구현)
+using RegisterPluginFn = void(*)(PrinterFactory&);
+```
+```cpp
+// plugin_loader.hpp
+#pragma once
+#include "core_app.hpp"
+#include <string>
+#include <vector>
+
+#if defined(_WIN32)
+  #include <windows.h>
+#else
+  #include <dlfcn.h>
+#endif
+
+struct LoadedPlugin {
+#if defined(_WIN32)
+    HMODULE handle;
+#else
+    void* handle;
+#endif
+    std::string path;
+};
+
+class PluginLoader {
+public:
+    // 간단한 로더: 파일 경로들을 받아 로드하고 registerPlugin 호출
+    static std::vector<LoadedPlugin> loadPlugins(PrinterFactory& factory,
+                                                 const std::vector<std::string>& pluginPaths) {
+        std::vector<LoadedPlugin> loaded;
+        for (const auto& path : pluginPaths) {
+#if defined(_WIN32)
+            HMODULE h = LoadLibraryA(path.c_str());
+            if (!h) { continue; }
+            auto fn = reinterpret_cast<RegisterPluginFn>(
+                GetProcAddress(h, "registerPlugin"));
+            if (!fn) { FreeLibrary(h); continue; }
+            fn(factory); // 플러그인 등록
+            loaded.push_back({h, path});
+#else
+            void* h = dlopen(path.c_str(), RTLD_NOW);
+            if (!h) { continue; }
+            auto fn = reinterpret_cast<RegisterPluginFn>(
+                dlsym(h, "registerPlugin"));
+            if (!fn) { dlclose(h); continue; }
+            fn(factory); // 플러그인 등록
+            loaded.push_back({h, path});
+#endif
+        }
+        return loaded;
+    }
+
+    static void unloadPlugins(std::vector<LoadedPlugin>& plugins) {
+        for (auto& p : plugins) {
+#if defined(_WIN32)
+            if (p.handle) FreeLibrary(p.handle);
+#else
+            if (p.handle) dlclose(p.handle);
+#endif
+        }
+        plugins.clear();
+    }
+};
+```
+```cpp
+// main.cpp (Core 앱)
+#include "core_app.hpp"
+#include "plugin_loader.hpp"
+#include <iostream>
+
+int main() {
+    PrinterFactory factory;
+
+    // 실제 환경에서는 설정 파일/디렉터리 스캔으로 경로 수집
+#if defined(_WIN32)
+    std::vector<std::string> plugins = { "xml_printer_plugin.dll", "json_printer_plugin.dll" };
+#else
+    std::vector<std::string> plugins = { "./libxml_printer_plugin.so", "./libjson_printer_plugin.so" };
+#endif
+
+    auto loaded = PluginLoader::loadPlugins(factory, plugins);
+
+    // 런타임에 등록된 키로 프린터 생성
+    if (auto xml = factory.createPrinter("XML")) {
+        xml->print("Hello from dynamic XML plugin!");
+    }
+    if (auto json = factory.createPrinter("JSON")) {
+        json->print("Hello from dynamic JSON plugin!");
+    }
+
+    PluginLoader::unloadPlugins(loaded);
+    return 0;
+}
+```
+```cpp
+XML plugin (DLL/so)
+// xml_plugin.cpp (빌드: Windows DLL / Linux SO)
+#include "core_app.hpp"
+#include <memory>
+#include <iostream>
+
+// Legacy + Adapter
+class LegacyXMLPrinter {
+public:
+    void printXML(const std::string& content) {
+        std::cout << "<xml>" << content << "</xml>\n";
+    }
+};
+class XMLPrinterAdapter : public ModernPrinter {
+    std::unique_ptr<LegacyXMLPrinter> adaptee = std::make_unique<LegacyXMLPrinter>();
+public:
+    void print(const std::string& content) override {
+        adaptee->printXML(content);
+    }
+};
+
+// 플러그인 엔트리 포인트
+extern "C"
+#if defined(_WIN32)
+__declspec(dllexport)
+#endif
+void registerPlugin(PrinterFactory& factory) {
+    factory.registerPrinter("XML", []() {
+        return std::make_unique<XMLPrinterAdapter>();
+    });
+}
+```
+```cpp
+JSON plugin (DLL/so)
+// json_plugin.cpp
+#include "core_app.hpp"
+#include <memory>
+#include <iostream>
+
+class LegacyJSONPrinter {
+public:
+    void printJSON(const std::string& content) {
+        std::cout << "{ \"data\": \"" << content << "\" }\n";
+    }
+};
+class JSONPrinterAdapter : public ModernPrinter {
+    std::unique_ptr<LegacyJSONPrinter> adaptee = std::make_unique<LegacyJSONPrinter>();
+public:
+    void print(const std::string& content) override {
+        adaptee->printJSON(content);
+    }
+};
+
+extern "C"
+#if defined(_WIN32)
+__declspec(dllexport)
+#endif
+void registerPlugin(PrinterFactory& factory) {
+    factory.registerPrinter("JSON", []() {
+        return std::make_unique<JSONPrinterAdapter>();
+    });
+}
+```
+
+## Mermaid diagram
+```mermaid
+flowchart LR
+    subgraph CoreApp[Core application]
+      Factory[PrinterFactory (Registry)]
+      Loader[PluginLoader (dlopen/LoadLibrary)]
+      Main[main.cpp]
+    end
+
+    subgraph XMLPlugin[XML plugin (DLL/so)]
+      XMLAdapter[XMLPrinterAdapter : ModernPrinter]
+      LegacyXML[LegacyXMLPrinter]
+      RegisterXML[extern "C" registerPlugin()]
+    end
+
+    subgraph JSONPlugin[JSON plugin (DLL/so)]
+      JSONAdapter[JSONPrinterAdapter : ModernPrinter]
+      LegacyJSON[LegacyJSONPrinter]
+      RegisterJSON[extern "C" registerPlugin()]
+    end
+
+    Main --> Loader
+    Loader --> RegisterXML
+    Loader --> RegisterJSON
+    RegisterXML --> Factory
+    RegisterJSON --> Factory
+    XMLAdapter --> LegacyXML
+    JSONAdapter --> LegacyJSON
+    Main --> Factory
+```
+
+## Notes and tips
+- 빌드/링크: 플러그인들이 core_app.hpp를 포함하므로 헤더를 공유하고, 각 플러그인을 별도 DLL/so로 빌드.
+- 심볼 노출: extern "C"로 C 방식 심볼명을 사용하면 이름 맹글링을 피하고 dlsym/GetProcAddress로 쉽게 찾을 수 있습니다.
+- 메모리 안전: Adapter 내부는 std::unique_ptr로 Legacy 인스턴스를 관리해 누수 없이 안전합니다.
+- 확장성: 새로운 플러그인 추가 시 main/Factory 수정 없이 DLL/so만 추가하면 됩니다.
+- 디렉터리 스캔으로 플러그인 목록을 자동 탐색하는 것도 좋습니다.
+
+---
+
 
   
