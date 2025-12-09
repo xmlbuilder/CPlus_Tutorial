@@ -23,47 +23,126 @@ classDiagram
 ```
 
 
-🧩 C# 버전
+## 💻 C++ 버전
 ```cpp
-using System;
-using System.Collections.Generic;
+#include <iostream>
+#include <memory>
+#include <unordered_map>
 
 class TreeType {
-    public string Name { get; }
-    public string Texture { get; }
+public:
+    TreeType(std::string name, std::string texture)
+        : name(name), texture(texture) {}
 
-    public TreeType(string name, string texture) {
-        Name = name;
-        Texture = texture;
+    void draw(int x, int y) {
+        std::cout << "Drawing " << name << " with texture " << texture
+                  << " at (" << x << ", " << y << ")\n";
     }
 
-    public void Draw(int x, int y) {
-        Console.WriteLine($"Drawing {Name} with texture {Texture} at ({x}, {y})");
-    }
-}
-
+private:
+    std::string name;
+    std::string texture;
+};
+```
+```cpp
 class TreeFactory {
-    private Dictionary<string, TreeType> types = new();
-
-    public TreeType GetTreeType(string name, string texture) {
-        string key = name + texture;
-        if (!types.ContainsKey(key)) {
-            types[key] = new TreeType(name, texture);
+public:
+    std::shared_ptr<TreeType> getTreeType(const std::string& name, const std::string& texture) {
+        std::string key = name + texture;
+        if (types.find(key) == types.end()) {
+            types[key] = std::make_shared<TreeType>(name, texture);
         }
         return types[key];
     }
-}
 
-class Program {
-    static void Main() {
-        var factory = new TreeFactory();
-        var tree1 = factory.GetTreeType("Oak", "Green");
-        var tree2 = factory.GetTreeType("Oak", "Green");
+private:
+    std::unordered_map<std::string, std::shared_ptr<TreeType>> types;
+};
+```
+```cpp
+int main() {
+    TreeFactory factory;
+    auto tree1 = factory.getTreeType("Oak", "Green");
+    auto tree2 = factory.getTreeType("Oak", "Green");
 
-        tree1.Draw(10, 20);
-        tree2.Draw(30, 40);
-    }
+    tree1->draw(10, 20);
+    tree2->draw(30, 40);
 }
 
 ```
 ---
+
+## 수정된 코드 (스마트 포인터 은닉화)
+```cpp
+#include <iostream>
+#include <memory>
+#include <unordered_map>
+
+class TreeType {
+public:
+    TreeType(std::string name, std::string texture)
+        : name(std::move(name)), texture(std::move(texture)) {}
+
+    void draw(int x, int y) {
+        std::cout << "Drawing " << name << " with texture " << texture
+                  << " at (" << x << ", " << y << ")\n";
+    }
+
+private:
+    std::string name;
+    std::string texture;
+};
+```
+```cpp
+class TreeFactory {
+public:
+    TreeType* getTreeType(const std::string& name, const std::string& texture) {
+        std::string key = name + texture;
+        if (types.find(key) == types.end()) {
+            types[key] = std::make_shared<TreeType>(name, texture);
+        }
+        // 내부에서는 shared_ptr 관리, 외부에는 raw pointer만 제공
+        return types[key].get();
+    }
+
+private:
+    std::unordered_map<std::string, std::shared_ptr<TreeType>> types;
+};
+```
+```cpp
+int main() {
+    TreeFactory factory;
+    TreeType* tree1 = factory.getTreeType("Oak", "Green");
+    TreeType* tree2 = factory.getTreeType("Oak", "Green");
+
+    tree1->draw(10, 20);
+    tree2->draw(30, 40);
+}
+```
+
+
+## 🔹 특징
+- TreeFactory 내부에서 shared_ptr로 객체를 관리 → 메모리 안전성 유지.
+- 외부에는 TreeType*만 반환 → 클라이언트는 스마트 포인터를 몰라도 됨.
+- 클라이언트가 delete를 호출할 필요 없음 → 팩토리 소멸 시 자동 정리.
+
+## 🔹 클래스 다이어그램
+```mermaid
+classDiagram
+    class TreeType {
+        -string name
+        -string texture
+        +TreeType(string name, string texture)
+        +draw(int x, int y)
+    }
+
+    class TreeFactory {
+        -unordered_map<string, shared_ptr<TreeType>> types
+        +getTreeType(string name, string texture) TreeType*
+    }
+
+    TreeFactory --> TreeType
+```
+- 👉 이렇게 하면 클라이언트 코드가 스마트 포인터를 직접 다루지 않고도 안전하게 객체를 사용할 수 있습니다.
+
+
