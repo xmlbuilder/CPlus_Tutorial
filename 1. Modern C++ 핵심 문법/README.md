@@ -14,3 +14,4 @@
 - [initializer_list](./12-initializer_list.md)
 - [user_literal](./13-user_literal.md)
 - [RTTI](./14-RTTI.md)
+- [Smart Pointer](./15-Smart_Pointer.md)
