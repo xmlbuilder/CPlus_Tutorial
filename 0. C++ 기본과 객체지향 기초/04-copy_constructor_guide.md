@@ -26,8 +26,8 @@ flowchart TB
   %% 가로 배치 영역
   subgraph row[" "]
     direction LR
-    SRC["기존의 객체(src)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
-    DST["새로운 객체(dest)<br/><br/>speed: 100<br/>gear : 3<br/>color: \"red\""]
+    SRC["기존의 객체(src)<br/><br/>speed: 100<br/>gear : 3<br/>color: "red""]
+    DST["새로운 객체(dest)<br/><br/>speed: 100<br/>gear : 3<br/>color: "red""]
   end
 
   CC --> SRC
