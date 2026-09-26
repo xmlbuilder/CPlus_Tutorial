@@ -8,7 +8,7 @@ has-a : 하나의 객체가 다른 객체를 가지고 있는 관계이다.
 자동차는 엔진을 가지고 있고 집을 목욕탕을 가지고 있다.
 
 
-### is‑a (상속, 일반화–특수화)
+### 📌 is‑a (상속, 일반화–특수화)
 > “A는 B의 한 종류다.”
 
 - 의미: **하위 타입(subtype)** 이 상위 타입(supertype)의 **대체 가능성** 을 만족해야 함
@@ -16,7 +16,7 @@ has-a : 하나의 객체가 다른 객체를 가지고 있는 관계이다.
 - 특징: 다형성(polymorphism), 인터페이스 공유.
 - 잘못 쓰면: 상속으로 구현 세부사항까지 엮여 **결합도↑, 취약한 기반 클래스 문제** 발생.
 
-### C++ 예시
+### 📌 C++ 예시
 ```cpp
 struct ICurve { virtual ~ICurve() = default; virtual double Length() const = 0; };
 
@@ -34,7 +34,7 @@ struct LineCurve : ICurve {
 // is-a: NurbsCurve, LineCurve 는 ICurve 의 ‘한 종류’
 ```
 
-### LSP 위반 대표 사례 (피해야 함)
+### 📌 LSP 위반 대표 사례 (피해야 함)
 ```cpp
 struct Rectangle { virtual void SetWidth(double); virtual void SetHeight(double); };
 struct Square : Rectangle { // “정사각형은 직사각형” 논리로 상속하면
@@ -44,7 +44,7 @@ struct Square : Rectangle { // “정사각형은 직사각형” 논리로 상�
 
 ---
 
-### has‑a (구성, 합성/집합)
+### 📌 has‑a (구성, 합성/집합)
 > “A는 B를 **가지고 있다**.”
 
 - 의미: 객체 **내부에 다른 객체를 보유** 하여 기능을 구성.
@@ -53,7 +53,7 @@ struct Square : Rectangle { // “정사각형은 직사각형” 논리로 상�
   - **합성(Composition)** : 강한 소유/생명주기 동일 (부품이 주체에 종속)
   - **집합(Aggregation)** : 약한 소유/공유 (부품 생명주기 독립)
 
-### C++ 예시 (엔진을 가진 자동차)
+### 📌 C++ 예시 (엔진을 가진 자동차)
 ```cpp
 // 합성: Car가 Engine을 '소유' (생명주기 함께)
 class Engine {
@@ -76,7 +76,7 @@ public:
 };
 ```
 
-### 현대 C++ 소유권 모델
+### 📌 현대 C++ 소유권 모델
 ```cpp
 class Renderer {
     std::unique_ptr<Device> device_;   // 합성(독점 소유)
@@ -87,7 +87,7 @@ class Renderer {
 
 ---
 
-### 언제 is‑a / has‑a?
+### 📌 언제 is‑a / has‑a?
 - **is‑a**:
   - 진짜로 "대체 가능" 해야 함 (상위 타입의 계약을 충실히 이행).
   - 인터페이스를 공유해 다형성이 목적일 때.
@@ -101,7 +101,7 @@ class Renderer {
 ---
 
 
-#### is‑a (상속, 일반화)
+#### 📌 is‑a (상속, 일반화)
 ```
    ICurve
      ▲
@@ -111,7 +111,7 @@ class Renderer {
 NurbsCurve   LineCurve
 ```
 
-### has‑a (합성: 강한 소유)
+### 📌 has‑a (합성: 강한 소유)
 ```
 Car ──has-a──▶ Engine
 [filled diamond at Car side]
@@ -122,7 +122,7 @@ Car
  └─ engine_: Engine   (by value / unique_ptr)  ← Composition
 ```
 
-### has‑a (집합: 약한 소유/공유)
+### 📌 has‑a (집합: 약한 소유/공유)
 ```
 Garage ──o──▶ Car
 [open diamond at Garage side]
@@ -137,7 +137,7 @@ Garage
 
 ## CAD 맥락 예시
 
-### 올바른 is‑a
+### 📌 올바른 is‑a
 ```
 ISurface
   ▲
@@ -146,14 +146,14 @@ ISurface
   └─ RevolvedSurface
 ```
 
-### has‑a (BRep/Trim 구조)
+### 📌 has‑a (BRep/Trim 구조)
 ```
 BrepFace  has-a  Surface (소유)
 BrepFace  has-a  vector<BrepTrim*> (집합/참조)
 BrepTrim  has-a  ICurve* (참조; 곡선 공유 가능)
 ```
 
-### pImpl로 구현 세부 캡슐화 (has‑a의 한 형태)
+### 📌 pImpl로 구현 세부 캡슐화 (has‑a의 한 형태)
 ```cpp
 class SurfaceTessellator {
 public:
@@ -168,7 +168,7 @@ private:
 
 ---
 
-### 안티패턴 체크리스트
+### 📌 안티패턴 체크리스트
 - [ ] 상속을 "코드 재사용" 목적으로만 썼다 → 합성으로 변경 고려.
 - [ ] LSP 깨질 여지가 있다(사전/사후조건 변경, 불변식 위반).
 - [ ] 기반 클래스가 구체 구현을 노출한다("Fragile Base Class").
@@ -177,7 +177,7 @@ private:
 
 ---
 
-### 두 개를 섞는 현명한 패턴
+### 📌 두 개를 섞는 현명한 패턴
 
 - **인터페이스는 is‑a, 구현은 has‑a**
   - 순수 가상 인터페이스(`IGCurve`)로 다형성을 확보(is‑a)
