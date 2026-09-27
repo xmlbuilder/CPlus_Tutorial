@@ -11,7 +11,7 @@
 
 ---
 
-### 방법 A) `_wfopen`으로 직접 열기 (가장 단순/안정)
+### 📌 방법 A) `_wfopen`으로 직접 열기 (가장 단순/안정)
 
 ```cpp
 #include <windows.h>
@@ -55,7 +55,7 @@ bool fopen_u8_long(const std::string& utf8Path, const wchar_t* wmode, FILE*& fp)
 }
 ```
 
-### 사용 예
+### 📌 사용 예
 ```cpp
 FILE* fp = nullptr;
 std::string path = u8R"(D:\작업\아주아주아주긴\경로\파일.txt)";
@@ -67,13 +67,13 @@ if (fopen_u8_long(path, L"wb", fp)) {
 }
 ```
 
-### 팁
+### 📌 팁
 - ASCII 규약이면 BOM 없이 ASCII 바이트만 기록.
 - L"wt, ccs=UTF-8" 모드는 디버그 CRT에서 assert가 발생할 수 있으니 주의.
 
 ---
 
-### 방법 B) std::filesystem::path(wide)로 열기
+### 📌 방법 B) std::filesystem::path(wide)로 열기
 
 ```cpp
 #include <windows.h>
@@ -118,7 +118,7 @@ if (ofs) {
 
 ---
 
-### 체크리스트 (Windows)
+### 📌 체크리스트 (Windows)
 
 - 절대경로에 \\?\ 적용
 - UNC 경로는 \\?\UNC\server\share\...
@@ -127,14 +127,14 @@ if (ofs) {
 -경로 끝 공백/점 제거
 - ASCII 규약이면 BOM 없이 ASCII만 기록
 
-### Linux/macOS에서는?
+### 📌 Linux/macOS에서는?
 - 대부분 UTF-8 경로 지원
 - std::filesystem::u8path() 정상 동작
 - MAX_PATH 제약 없음 (보통 전체 경로 4096바이트 제한)
 - UTF-8 로케일 필요 (LANG=ko_KR.UTF-8)
 - 기존 소스가 UTF-8이면 문제 거의 없음
 
-### 결론
+### 📌 결론
 - Windows: UTF-8→UTF-16 + 확장 경로(\\?\) + _wfopen 또는 wide 기반 std::filesystem::path
 - Linux: UTF-8 로케일만 맞추면 기존 소스로 충분
 
