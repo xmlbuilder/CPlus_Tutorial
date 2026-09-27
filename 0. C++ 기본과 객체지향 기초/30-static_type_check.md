@@ -1,13 +1,10 @@
-# C++ Compile-Time Type Relationship Utilities
+## C++ Compile-Time Type Relationship Utilities
 
-C++ 타입 사이의 관계를 **컴파일 타임(compile
-time)** 에 확인하기 위한 간단한 유틸리티 함수 모음이다.
-
+- C++ 타입 사이의 관계를 **컴파일 타임(compile time)** 에 확인하기 위한 간단한 유틸리티 함수 모음이다.
 - 주요 목적은 다음 세 가지이다.
-
-    -   두 타입이 정확히 같은 타입인지 확인
-    -   한 클래스가 다른 클래스의 기반(base) 타입인지 확인
-    -   한 타입이 기반 클래스 자신이거나 그 파생 클래스인지 확인
+    - 두 타입이 정확히 같은 타입인지 확인
+    - 한 클래스가 다른 클래스의 기반(base) 타입인지 확인
+    - 한 타입이 기반 클래스 자신이거나 그 파생 클래스인지 확인
 
 이 함수들은 `<type_traits>`의 `std::is_same_v`, `std::is_base_of_v`를
 읽기 쉬운 함수 형태로 감싼 것이다.
@@ -19,7 +16,7 @@ time)** 에 확인하기 위한 간단한 유틸리티 함수 모음이다.
 
 ------------------------------------------------------------------------
 
-## 1. 전체 소스
+### 📌 1. 전체 소스
 
 ``` cpp
 #pragma once
@@ -61,9 +58,9 @@ constexpr bool IsSameOrDerivedType()
 
 ------------------------------------------------------------------------
 
-## 2. 기본 테스트 클래스
+### 📌 2. 기본 테스트 클래스
 
-각 함수의 차이를 보기 위해 다음과 같은 간단한 클래스 계층을 사용한다.
+- 각 함수의 차이를 보기 위해 다음과 같은 간단한 클래스 계층을 사용한다.
 
 ``` cpp
 class Object {};
@@ -95,9 +92,8 @@ Mesh     // 위 계층과 관계 없음
 
 ------------------------------------------------------------------------
 
-## 3. `IsSameType<T1, T2>()`
-
-두 타입이 **정확히 동일한 C++ 타입** 인지 확인한다.
+### 📌 3. `IsSameType<T1, T2>()`
+- 두 타입이 **정확히 동일한 C++ 타입** 인지 확인한다.
 
 ``` cpp
 template <typename T1, typename T2>
@@ -107,7 +103,7 @@ constexpr bool IsSameType()
 }
 ```
 
-### 사용 예
+#### 사용 예
 
 ``` cpp
 static_assert(IsSameType<Curve, Curve>());
@@ -135,9 +131,9 @@ IsSameType<Curve, NurbsCurve>()   // false
 
 ------------------------------------------------------------------------
 
-## 4. `IsBaseType<Base, Derived>()`
+### 📌 4. `IsBaseType<Base, Derived>()`
 
-`Derived`가 `Base`로부터 상속된 타입인지 확인한다.
+- `Derived`가 `Base`로부터 상속된 타입인지 확인한다.
 
 ``` cpp
 template <typename Base, typename Derived>
@@ -147,7 +143,7 @@ constexpr bool IsBaseType()
 }
 ```
 
-### 사용 예
+#### 사용 예
 
 ``` cpp
 static_assert(IsBaseType<Object, Geometry>());
@@ -158,7 +154,7 @@ static_assert(!IsBaseType<NurbsCurve, Curve>());
 static_assert(!IsBaseType<Object, Mesh>());
 ```
 
-상속 계층 전체를 따라 검사할 수 있다.
+- 상속 계층 전체를 따라 검사할 수 있다.
 
 ``` text
 Object
@@ -173,7 +169,7 @@ Curve
 NurbsCurve
 ```
 
-따라서:
+- 따라서:
 
 ``` cpp
 IsBaseType<Object, NurbsCurve>()    // true
@@ -181,22 +177,22 @@ IsBaseType<Geometry, NurbsCurve>()  // true
 IsBaseType<Curve, NurbsCurve>()     // true
 ```
 
-### 주의점
+#### 주의점
 
-`std::is_base_of`는 같은 타입도 `true`로 판단한다.
+- `std::is_base_of`는 같은 타입도 `true`로 판단한다.
 
 ``` cpp
 IsBaseType<Curve, Curve>()   // true
 ```
 
-즉 이 함수에서 `Base`라는 이름은 의미상 기반 타입을 나타내지만, **동일
+- 즉 이 함수에서 `Base`라는 이름은 의미상 기반 타입을 나타내지만, **동일
 타입도 허용된다.**
 
 ------------------------------------------------------------------------
 
-## 5. `IsDerivedType<Base, Derived>()`
+### 📌 5. `IsDerivedType<Base, Derived>()`
 
-`IsBaseType()`과 비슷하지만 **Base와 Derived가 동일한 타입인 경우를
+- `IsBaseType()`과 비슷하지만 **Base와 Derived가 동일한 타입인 경우를
 제외** 한다.
 
 ``` cpp
@@ -208,7 +204,7 @@ constexpr bool IsDerivedType()
 }
 ```
 
-### 사용 예
+#### 사용 예
 
 ``` cpp
 static_assert(IsDerivedType<Object, Geometry>());
@@ -226,17 +222,16 @@ static_assert(!IsDerivedType<Object, Mesh>());
 | `<Object, NurbsCurve>` | true | true |
 | `<Object, Mesh>` | false | false |
 
-따라서 이름 그대로 **"정말 파생된 다른 타입인가?"** 를 검사할 때
+- 따라서 이름 그대로 **"정말 파생된 다른 타입인가?"** 를 검사할 때
 사용한다.
 
 ------------------------------------------------------------------------
 
-## 6. `IsSameOrDerivedType<Base, Type>()`
+### 📌 6. `IsSameOrDerivedType<Base, Type>()`
 
-`Type`이 다음 둘 중 하나이면 `true`이다.
-
-1.  `Base`와 정확히 같은 타입
-2.  `Base`로부터 파생된 타입
+- `Type`이 다음 둘 중 하나이면 `true`이다.
+    - 1. `Base`와 정확히 같은 타입
+    - 2. `Base`로부터 파생된 타입
 
 ``` cpp
 template <typename Base, typename Type>
@@ -247,7 +242,7 @@ constexpr bool IsSameOrDerivedType()
 }
 ```
 
-### 사용 예
+#### 사용 예
 
 ``` cpp
 static_assert(IsSameOrDerivedType<Curve, Curve>());
@@ -271,7 +266,7 @@ NurbsCurve                  true   ← derived
 Mesh                        false
 ```
 
-템플릿에서 특정 기반 타입 계열만 허용하고 싶을 때 유용하다.
+- 템플릿에서 특정 기반 타입 계열만 허용하고 싶을 때 유용하다.
 
 ``` cpp
 template <typename T>
@@ -287,7 +282,7 @@ void ProcessCurve()
 
 ------------------------------------------------------------------------
 
-## 7. 네 함수의 차이
+### 📌 7. 네 함수의 차이
 
 ``` text
                         Object
@@ -311,7 +306,7 @@ void ProcessCurve()
 | `IsDerivedType` | false | true | false | false |
 | `IsSameOrDerivedType` | true | true | false | false |
 
-정리하면:
+- 정리하면:
 
 ``` text
 IsSameType
@@ -331,11 +326,10 @@ IsSameOrDerivedType
 
 ------------------------------------------------------------------------
 
-## 8. 컴파일 타임 검사
+### 📌 8. 컴파일 타임 검사
 
-이 유틸리티의 중요한 특징은 모두 `constexpr`이라는 점이다.
-
-따라서 다음처럼 `static_assert`에 사용할 수 있다.
+- 이 유틸리티의 중요한 특징은 모두 `constexpr`이라는 점이다.
+- 따라서 다음처럼 `static_assert`에 사용할 수 있다.
 
 ``` cpp
 static_assert(IsSameType<int, int>());
@@ -347,10 +341,10 @@ static_assert(IsSameOrDerivedType<Geometry, Geometry>());
 static_assert(IsSameOrDerivedType<Geometry, NurbsCurve>());
 ```
 
-조건이 맞지 않으면 프로그램 실행 중에 실패하는 것이 아니라 **컴파일
+- 조건이 맞지 않으면 프로그램 실행 중에 실패하는 것이 아니라 **컴파일
 단계에서 오류를 검출** 할 수 있다.
 
-예:
+- 예:
 
 ``` cpp
 template <typename T>
@@ -366,17 +360,17 @@ void AddGeometry(T* geometry)
 
 ------------------------------------------------------------------------
 
-## 9. 런타임 타입 검사와의 차이
+### 📌 9. 런타임 타입 검사와의 차이
 
-이 함수들이 가장 혼동되기 쉬운 부분이다.
+- 이 함수들이 가장 혼동되기 쉬운 부분이다.
 
 ``` cpp
 Object* object = new NurbsCurve;
 ```
 
-실제 객체는 `NurbsCurve`이지만 변수의 정적 타입은 `Object*`이다.
+- 실제 객체는 `NurbsCurve`이지만 변수의 정적 타입은 `Object*`이다.
 
-`IsSameType`, `IsBaseType`, `IsDerivedType`, `IsSameOrDerivedType`은
+- `IsSameType`, `IsBaseType`, `IsDerivedType`, `IsSameOrDerivedType`은
 실제 객체를 검사하는 것이 아니라 **컴파일러가 알고 있는 타입 정의 사이의
 관계** 를 검사한다.
 
@@ -394,7 +388,7 @@ if (curve)
 }
 ```
 
-프로젝트 자체 RTTI가 있다면 같은 역할을 프로젝트의 `Cast()` 계열 함수로
+- 프로젝트 자체 RTTI가 있다면 같은 역할을 프로젝트의 `Cast()` 계열 함수로
 수행할 수도 있다.
 
 ``` text
@@ -429,10 +423,9 @@ dynamic_cast
 
 ------------------------------------------------------------------------
 
-## 10. CAD 코드에서의 사용 예
+### 📌 10. CAD 코드에서의 사용 예
 
-CAD 커널에서는 특정 `Geometry` 계열만 허용하는 템플릿 API에서 사용할 수
-있다.
+- CAD 커널에서는 특정 `Geometry` 계열만 허용하는 템플릿 API에서 사용할 수 있다.
 
 ``` cpp
 template <typename T>
@@ -459,9 +452,9 @@ if constexpr (IsDerivedType<Geometry, T>())
 
 ------------------------------------------------------------------------
 
-## 11. 요약
+### 📌 11. 요약
 
-이 유틸리티는 **런타임 RTTI를 대체하기 위한 코드가 아니라 템플릿 및
+- 이 유틸리티는 **런타임 RTTI를 대체하기 위한 코드가 아니라 템플릿 및
 컴파일 타임 타입 검증을 읽기 쉽게 만들기 위한 코드** 이다.
 
 ``` text
@@ -487,7 +480,7 @@ IsSameOrDerivedType<Base, Type>
         └─ Base 자신이거나 Base에서 파생되었는가?
 ```
 
-특히 CAD 커널처럼 `Object → Geometry → Curve/Surface/...` 형태의 타입
+- 특히 CAD 커널처럼 `Object → Geometry → Curve/Surface/...` 형태의 타입
 계층과 템플릿 코드가 많은 프로젝트에서는 잘못된 타입 사용을 컴파일
 단계에서 제한하는 용도로 사용할 수 있다.
 
