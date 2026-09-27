@@ -1,13 +1,13 @@
-# 📘 Windows 전용 메모리 재할당(onrealloc) 유틸
+## 📘 Windows 전용 메모리 재할당(onrealloc) 유틸
 
-## 핵심 포인트
+### 핵심 포인트
 - `onrealloc`은 **MSVC 6.0(_MSC_VER==1200)** 의 `realloc()` 버그(Q225099) 회피를 위해, 해당 컴파일러에서만 **직접 `malloc+memcpy+free`** 로 재구현합니다.
 - 그 외 컴파일러/버전에서는 표준 `realloc()`을 그대로 사용합니다.
-- `onmsize()`는 Windows 전용 비표준 함수 `_msize()`를 래핑해 **할당 블록 크기**를 조회합니다(다른 OS에서는 0 반환).
+- `onmsize()`는 Windows 전용 비표준 함수 `_msize()`를 래핑해 **할당 블록 크기** 를 조회합니다(다른 OS에서는 0 반환).
 
 ---
 
-## 주석 보강 코드
+### 주석 보강 코드
 
 ```c
 #include <stdlib.h>
@@ -140,7 +140,7 @@ size_t onmsize(const void* memblock)
 
 ---
 
-## 왜 이렇게 하나요?
+### 왜 이렇게 하나요?
 
 - **`realloc`의 계약**
   - `realloc(NULL, sz)` → `malloc(sz)`와 동일.
@@ -149,12 +149,12 @@ size_t onmsize(const void* memblock)
   - 오래된 MSVC 6.0 CRT의 `realloc` 버그로 크래시가 보고됨(MSDN Q225099).
   - 해당 버전에서만 `malloc+memcpy(+free)`로 안전 경로를 탑니다.
 - **`_msize` 사용**
-  - Windows CRT가 제공하는 비표준 API로, **할당된 블록의 실제 크기**를 조회.
+  - Windows CRT가 제공하는 비표준 API로, **할당된 블록의 실제 크기** 를 조회.
   - 포터블 코드가 아니므로 Windows 한정 사용.
 
 ---
 
-## 주의할 점
+### 주의할 점
 
 1. **이식성**: `_msize`는 Windows CRT 전용. 다른 OS에선 `onmsize()`가 0을 반환.
 2. **예외/스레드 안전성**: C 스타일 메모리 API를 감싸며 예외를 던지지 않음. DLL별 CRT 혼용은 피할 것.
@@ -164,7 +164,7 @@ size_t onmsize(const void* memblock)
 
 ---
 
-## 간단 사용 예
+### 간단 사용 예
 
 ```c
 #include <stdio.h>
@@ -198,8 +198,10 @@ int main(void)
 
 ---
 
-## 대안/확장 아이디어
+### 대안/확장 아이디어
 - **사이즈 안전 연산**: `num*sz` 오버플로 검사 추가.
 - **디버그 헬퍼**: 디버그 빌드에서 메모리 패턴 채우기.
 - **플랫폼 추상화**: Linux/Posix는 `malloc_usable_size()`로 대체.
 - **C++ 사용 시**: new/delete와 혼용 금지.
+
+---
