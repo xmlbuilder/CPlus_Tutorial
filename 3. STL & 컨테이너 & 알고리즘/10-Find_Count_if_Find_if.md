@@ -1,12 +1,11 @@
-# 📚 C++ STL `find`, `count_if`, `find_if` 정리
+## 📚 C++ STL `find`, `count_if`, `find_if` 정리
 
-## 🧩 개요
-STL 알고리즘 `find`, `count_if`, `find_if`는 반복자 구간에서 조건에 맞는 요소를 찾거나 개수를 세는 데 사용됩니다.
+### 📌 개요
+- STL 알고리즘 `find`, `count_if`, `find_if`는 반복자 구간에서 조건에 맞는 요소를 찾거나 개수를 세는 데 사용됩니다.
 
----
 
-## 🔍 `std::find`
-**특정 값과 일치하는 첫 번째 요소를 찾는 알고리즘**
+### 📌 `std::find`
+- **특정 값과 일치하는 첫 번째 요소를 찾는 알고리즘**
 
 ```cpp
 #include <iostream>
@@ -25,15 +24,15 @@ int main() {
 }
 ```
 
-- **비교 연산**은 `operator==`를 사용하므로, 사용자 정의 타입은 이를 오버로딩해야 함
+- **비교 연산** 은 `operator==`를 사용하므로, 사용자 정의 타입은 이를 오버로딩해야 함
 - 찾지 못하면 `end()` 반복자를 반환
 
----
 
-## 🔢 `std::count_if`
-**조건에 맞는 요소의 개수를 세는 알고리즘**
 
-### 함수 포인터 사용 예
+### 📌 `std::count_if`
+- **조건에 맞는 요소의 개수를 세는 알고리즘**
+
+#### 함수 포인터 사용 예
 ```cpp
 #include <iostream>
 #include <vector>
@@ -51,7 +50,7 @@ int main() {
 }
 ```
 
-### 람다식 사용 예
+#### 람다식 사용 예
 ```cpp
 int n = std::count_if(vec.begin(), vec.end(), [](int num){
     return (num % 2) == 0;
@@ -59,10 +58,9 @@ int n = std::count_if(vec.begin(), vec.end(), [](int num){
 std::cout << "even count : " << n << std::endl;
 ```
 
----
 
-## 🎯 `std::find_if`
-**조건을 만족하는 첫 번째 요소를 찾는 알고리즘**
+### 📌 `std::find_if`
+- **조건을 만족하는 첫 번째 요소를 찾는 알고리즘**
 
 ```cpp
 #include <iostream>
@@ -81,7 +79,7 @@ void rtrim(std::string &s) {
 }
 ```
 
-### 컨테이너에서 객체 찾기
+#### 컨테이너에서 객체 찾기
 ```cpp
 m_vecChannelMngr.erase(
     std::find_if(m_vecChannelMngr.begin(), m_vecChannelMngr.end(),
@@ -91,23 +89,21 @@ m_vecChannelMngr.erase(
 );
 ```
 
----
 
-## 📌 요약
+### 📌 요약
 | 알고리즘 | 설명 | 반환값 |
 |----------|------|--------|
 | `find` | 값과 일치하는 첫 번째 요소 | 해당 요소 반복자 or `end()` |
 | `count_if` | 조건을 만족하는 요소 개수 | 정수 개수 |
 | `find_if` | 조건을 만족하는 첫 번째 요소 | 해당 요소 반복자 or `end()` |
 
-✅ **Tip:**  
+#### ✅ Tip:
 - 모든 알고리즘은 반복자를 사용하므로, 범위를 지정해 동작
 - 람다식을 사용하면 함수 정의 없이 간단히 조건 작성 가능
 - 요소가 사용자 정의 타입이면 `operator==` 또는 조건자 필요
 
----
 
-## 실무 응용
+### 📌 실무 응용
 - 특정한 정보를 찾아 지우는 용도로 사용 가능
 - 여기서는 ChannelManager에서 특정한 Channel을 지우는 용도로 사용
 
@@ -139,3 +135,6 @@ void ChannelTreeWidget::delSelChnMngrs(std::vector<ChannelManagerBase*>& arChnMn
     }
 }
 ```
+
+---
+
