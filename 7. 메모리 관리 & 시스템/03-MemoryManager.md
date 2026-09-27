@@ -16,7 +16,7 @@
 
 ### 📌 핵심 개념
 
-| Java 개념              | ON_SafeMemMgrEx 대응               |
+| Java 개념              | SafeMemMgrEx 대응               |
 |------------------------|------------------------------------|
 | `new T()`              | `AllocObject<T>(tag, args...)`     |
 | `obj.close()` 또는 GC  | `FreeObject(tag, obj)`             |
