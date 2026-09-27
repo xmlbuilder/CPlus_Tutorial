@@ -308,7 +308,7 @@ BSplineSurface(
     GetSurface());
 ```
 
-------------------------------------------------------------------------
+---
 
 ### 📌 실무 기억법
 
@@ -323,3 +323,103 @@ operator delete(void*,extra...)
 도 같이 만든다.
 ```
 ---
+
+### 샘플 코드
+```cpp
+#pragma once
+#include <iostream>
+#include <ostream>
+
+class ChannelMemMgr
+{
+public:
+    bool Add()
+    {
+        this->counter++;
+        std::cout<<"Add "<< this->counter << std::endl;
+        return true;
+    }
+    bool Delete()
+    {
+        this->counter--;
+        std::cout<<"Delete "<< this->counter << std::endl;
+        return true;
+    }
+private:
+    int counter = 0;
+};
+```
+```cpp
+#pragma once
+#include "chnnel_mem_mgr.h"
+
+class Channel
+{
+public:
+    void* operator new(
+       const size_t size,
+       ChannelMemMgr* ctx)
+   {
+       ctx->Add();
+       return std::malloc(size);
+   }
+
+    void operator delete(
+        void* p,
+        ChannelMemMgr* ctx)
+    {
+        ctx->Delete();
+        std::free(p);
+    }
+
+    void operator delete(
+        void* p)
+    {
+        std::free(p);
+    }
+
+    static void Destroy(
+        Channel* p,
+        ChannelMemMgr* mem_mgr)
+    {
+        if (p == nullptr)
+            return;
+
+        p->~Channel();
+        operator delete(p, mem_mgr);
+    }
+
+    static void Print()
+    {
+        std::cout << "Channel " <<  std::endl;
+    }
+};
+```
+```cpp
+#include <iostream>
+
+#include "channel.h"
+#include "chnnel_mem_mgr.h"
+
+int main()
+{
+    ChannelMemMgr mem_mgr;
+    {
+        auto* p = new(&mem_mgr) Channel;
+        p->Print();
+        // p->~Channel();
+        // Channel::operator delete(p, &mem_mgr);
+        Channel::Destroy(p, &mem_mgr);
+    }
+    return 0;
+}
+```
+
+### 결과 출력
+```text
+Add 1
+Channel
+Delete 0
+```
+----
+
