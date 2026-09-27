@@ -4,8 +4,6 @@
 본 문서는 `CFixedSizeMemMgr`, `ON_FixedSizeMemMgr`, `ON_EnhancedMemMgr`, `ON_SafeMemMgrEx` 등 고정 크기 메모리 풀 관리 클래스들의 구조, 특징, 장단점, 사용 예제를 정리한 자료입니다.  
 게임 엔진, CAD, 실시간 시뮬레이션 등에서 할당/해제 성능을 극대화하기 위해 사용됩니다.
 
----
-
 ### 📌 1. CFixedSizeMemMgr
 #### 목적
 - **고정 크기** 의 객체를 매우 빠르게 할당/해제
@@ -34,8 +32,6 @@ mgr.Free(p);
 mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 ```
 
----
-
 ### 📌 2. ON_FixedSizeMemMgr
 #### 목적
 - `CFixedSizeMemMgr`의 변형
@@ -49,7 +45,6 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 - 다양한 크기 관리 가능
 - 재사용성 높음
 
----
 
 ### 📌 3. ON_EnhancedMemMgr
 ### 목적
@@ -64,7 +59,6 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 - 다양한 크기 할당에 대응
 - Pool 내부 재사용성 극대화
 
----
 
 ### 4. ON_SafeMemMgrEx
 #### 목적
@@ -82,7 +76,6 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 #### 주의
 - `allocSize` 계산 시 반드시 **정확한 객체 크기** 사용 필요
 
----
 
 ### 📌 비교표
 
@@ -93,7 +86,7 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 | ON_EnhancedMemMgr    | ✅           | ❌         | `std::mutex` | 크기별 Pool 관리 |
 | ON_SafeMemMgrEx      | ✅           | ❌         | `std::mutex` | 태그 기반 그룹 해제 |
 
----
+
 
 ### 📌 성능 튜닝 팁
 - 1. **Chunk Size 조정**
@@ -106,7 +99,7 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
    - 기존 포인터 전부 무효화
 
 
----
+
 
 ### 📌 예제: 멀티풀 매니저 사용
 ```cpp
@@ -123,7 +116,7 @@ mgr.Free(obj1);
 mgr.Free(obj2);
 ```
 
----
+
 
 ### 📌 예제: 태그 기반 해제
 ```cpp
@@ -139,8 +132,6 @@ mgr.FreeObjectsByTag("SceneA");
 // SceneB 개별 해제
 mgr.Free(obj3);
 ```
-
----
 
 ### 📌 메모리 풀 내부 동작 다이어그램
 
@@ -177,7 +168,7 @@ mgr.Free(obj3);
 - `FreeAllMem()` 후 남아있는 포인터 접근 금지
 - Pool 관리 클래스는 new/delete 혼용 금지
 
----
+
 
 ### 📌 소스
 ```cpp
@@ -611,3 +602,4 @@ std::ostream& operator<<(std::ostream& out, const ON_FixedSizeMemMgr& item)
 }
 
 ```
+---
