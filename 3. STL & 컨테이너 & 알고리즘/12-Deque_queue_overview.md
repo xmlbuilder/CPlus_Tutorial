@@ -1,9 +1,9 @@
 
-# 📦 C++ STL `deque` & `queue` 정리
+## 📦 C++ STL `deque` & `queue` 정리
 
-## 🧩 개요
+### 🧩 개요
 
-- **deque**(double-ended queue): 양쪽 끝에서 **삽입/삭제**가 가능한 **동적 배열 컨테이너**  
+- **deque**(double-ended queue): 양쪽 끝에서 **삽입/삭제** 가 가능한 **동적 배열 컨테이너**  
 - **queue**: 한쪽에서 넣고 다른 쪽에서 꺼내는 **FIFO** 구조의 **컨테이너 어댑터** (기본 구현은 `deque`)
 
 ---
@@ -26,7 +26,7 @@ flowchart LR
 
   %% endpoints (both insertion & deletion)
   F["Front<br/>(insertion, deletion)"]
-  R["Rear<br/>(insertion, deletion)"]
+  R["Back<br/>(insertion, deletion)"]
 
   F --> q5
   R --> q11
