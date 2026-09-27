@@ -1,4 +1,4 @@
-## Bit 연산
+## Bit 스트링
 - Integer.toBinaryString()은 Java에서 정수를 2진 문자열로 변환하는 메서드  
 - Rust와 C++에서도 비슷한 기능을 직접 구현할 수 있음.  
 - 아래에 두 언어로 각각 예제.  
