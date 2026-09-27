@@ -11,7 +11,7 @@
 - [For_each_example](./09-For_each_example.md)
 - [For_each_example](./10-For_each_example.md)
 - [Sort](./11-Sort.md)
-- [Deque_queue_overview](./12-Deque_queue_overview.md)
+- [Deque_Queue_overview](./12-Deque_Queue_overview.md)
 - [Manual_list_before_stl](./13-Manual_list_before_stl.md)
 - [Map_summary](./14-Map_summary.md)
 - [Vector_overview](./15-Vector_overview.md)
