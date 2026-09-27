@@ -1,30 +1,30 @@
-# 📘 Memory Manager 확장판 가이드
+## 📘 Memory Manager 확장판 가이드
 
-## 📌 개요
-본 문서는 `CFixedSizeMemMgr`, `ON_FixedSizeMemMgr`, `CFixedAllocNoSync`, `ON_EnhancedMemMgr`, `ON_SafeMemMgrEx` 등 고정 크기 메모리 풀 관리 클래스들의 구조, 특징, 장단점, 사용 예제를 정리한 자료입니다.  
+### 📌 개요
+본 문서는 `CFixedSizeMemMgr`, `ON_FixedSizeMemMgr`, `ON_EnhancedMemMgr`, `ON_SafeMemMgrEx` 등 고정 크기 메모리 풀 관리 클래스들의 구조, 특징, 장단점, 사용 예제를 정리한 자료입니다.  
 게임 엔진, CAD, 실시간 시뮬레이션 등에서 할당/해제 성능을 극대화하기 위해 사용됩니다.
 
 ---
 
-## 1. CFixedSizeMemMgr
-### 목적
-- **고정 크기**의 객체를 매우 빠르게 할당/해제
-- 할당/해제가 **매우 빈번한 경우**에 최적
+### 📌 1. CFixedSizeMemMgr
+#### 목적
+- **고정 크기** 의 객체를 매우 빠르게 할당/해제
+- 할당/해제가 **매우 빈번한 경우** 에 최적
 
-### 특징
+#### 특징
 - **Thread-Safe**: `std::mutex`로 동기화
 - 내부적으로 **chunk 단위 메모리 풀** 사용
 - 모든 블록은 **동일 크기**
 
-### 장점
+#### 장점
 - malloc/free 대비 매우 빠름
 - 캐시 친화적 구조
 
-### 단점
+#### 단점
 - 내부 단편화 발생 가능
 - chunk 단위로만 메모리 반환
 
-### 사용 예시
+#### 사용 예시
 ```cpp
 CFixedSizeMemMgr mgr(sizeof(MyStruct), 1024*10);
 
@@ -36,41 +36,22 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 
 ---
 
-## 2. ON_FixedSizeMemMgr
-### 목적
+### 📌 2. ON_FixedSizeMemMgr
+#### 목적
 - `CFixedSizeMemMgr`의 변형
 - OpenNURBS 환경 최적화
 
-### 특징
+#### 특징
 - Thread-Safe (`std::mutex` 사용)
 - Free List + Chunk 관리
 
-### 장점
+#### 장점
 - 다양한 크기 관리 가능
 - 재사용성 높음
 
 ---
 
-## 3. CFixedAllocNoSync
-### 목적
-- **싱글 스레드 환경**에서 고속 메모리 관리
-- MFC `CPlex` 기반
-
-### 특징
-- **Thread-Unsafe** (NoSync)
-- 매우 가벼운 오버헤드
-
-### 장점
-- 동기화 비용 없음
-- MFC 환경에서 바로 사용 가능
-
-### 단점
-- 멀티스레드 환경에서 사용 불가
-- MFC 의존성 → 비 MFC 환경에서는 대체 필요
-
----
-
-## 4. ON_EnhancedMemMgr
+### 📌 3. ON_EnhancedMemMgr
 ### 목적
 - 확장형 고정 크기 메모리 관리자
 - 할당 크기별 Pool 관리
@@ -85,52 +66,49 @@ mgr.FreeAllMem(); // 모든 chunk 해제, 기존 포인터 무효
 
 ---
 
-## 5. ON_SafeMemMgrEx
-### 목적
+### 4. ON_SafeMemMgrEx
+#### 목적
 - **태그 기반 객체 추적** 및 해제
 - 특정 그룹 단위 해제 가능
 
-### 특징
+#### 특징
 - Thread-Safe
 - `tag`를 사용하여 관련 객체 묶음 관리
 
-### 장점
+#### 장점
 - 게임/시뮬레이션에서 특정 장면 단위 메모리 해제 가능
 - 디버깅에 유리 (메모리 누수 추적)
 
-### 주의
+#### 주의
 - `allocSize` 계산 시 반드시 **정확한 객체 크기** 사용 필요
 
 ---
 
-## 📊 비교표
+### 📌 비교표
 
 | 클래스명              | Thread-Safe | 크기 고정 | 동기화 방식  | 특징 |
 |----------------------|-------------|-----------|--------------|------|
 | CFixedSizeMemMgr     | ✅           | ✅         | `std::mutex` | Chunk 단위 고정 크기 |
 | ON_FixedSizeMemMgr   | ✅           | ✅         | `std::mutex` | OpenNURBS 최적화 |
-| CFixedAllocNoSync    | ❌           | ✅         | 없음         | MFC `CPlex` 기반 |
 | ON_EnhancedMemMgr    | ✅           | ❌         | `std::mutex` | 크기별 Pool 관리 |
 | ON_SafeMemMgrEx      | ✅           | ❌         | `std::mutex` | 태그 기반 그룹 해제 |
 
 ---
 
-## 💡 성능 튜닝 팁
-1. **Chunk Size 조정**
+### 📌 성능 튜닝 팁
+- 1. **Chunk Size 조정**
    - 초기 할당 크기를 실제 사용량에 맞춰 설정
    - 너무 작으면 잦은 할당 → 성능 저하
    - 너무 크면 메모리 낭비
 
-2. **FreeAllMem() 사용 시 주의**
+- 2. **FreeAllMem() 사용 시 주의**
    - 호출 즉시 모든 메모리 해제
    - 기존 포인터 전부 무효화
 
-3. **싱글 스레드 환경**
-   - `CFixedAllocNoSync` 사용 시 동기화 비용 절감
 
 ---
 
-## 📜 예제: 멀티풀 매니저 사용
+### 📌 예제: 멀티풀 매니저 사용
 ```cpp
 ON_EnhancedMemMgr mgr;
 
@@ -147,7 +125,7 @@ mgr.Free(obj2);
 
 ---
 
-## 📜 예제: 태그 기반 해제
+### 📌 예제: 태그 기반 해제
 ```cpp
 ON_SafeMemMgrEx mgr;
 
@@ -164,7 +142,7 @@ mgr.Free(obj3);
 
 ---
 
-## 🖼 메모리 풀 내부 동작 다이어그램
+### 📌 메모리 풀 내부 동작 다이어그램
 
 ```text
 +-------------------------------+
@@ -181,27 +159,27 @@ mgr.Free(obj3);
 |   +-------+  +-------+  +-------+
 +--------------------------------+
 
-할당 과정:
-1. Free List에서 첫 번째 블록 Pop
-2. 사용자가 포인터 획득
-3. Free List 헤드 변경
+- 할당 과정:
+   - 1. Free List에서 첫 번째 블록 Pop
+   - 2. 사용자가 포인터 획득
+   - 3. Free List 헤드 변경
 
-해제 과정:
-1. 반환된 블록을 Free List 헤드에 Push
-2. 블록 내부 next 포인터 갱신
-3. 재사용 대기
+- 해제 과정:
+   - 1. 반환된 블록을 Free List 헤드에 Push
+   - 2. 블록 내부 next 포인터 갱신
+   - 3. 재사용 대기
 ```
 
 ---
 
-## ⚠️ 주의사항
+### 📌 주의사항
 - 멀티스레드 환경에서는 반드시 Thread-Safe 버전 사용
 - `FreeAllMem()` 후 남아있는 포인터 접근 금지
 - Pool 관리 클래스는 new/delete 혼용 금지
 
-
 ---
-## 소스
+
+### 📌 소스
 ```cpp
 
 #pragma once
