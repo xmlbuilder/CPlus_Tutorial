@@ -10,4 +10,4 @@
 - [unique_ptr](./08.unique_ptr.md)
 - [bigobj의 역할](./09-bigobj의_역할.md)
 - [new placement deconstructor](./10.new_placement_deconstructor.md)
-
+- [operator_new_delete](./11-operator_new_delete.md)
