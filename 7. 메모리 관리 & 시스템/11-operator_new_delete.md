@@ -1,6 +1,6 @@
-# `operator new` / `operator delete`
+## `operator new` / `operator delete`
 
-## 1. 일반 `new`
+### 📌 1. 일반 `new`
 
 ``` cpp
 class Test
@@ -19,7 +19,7 @@ int main()
 }
 ```
 
-### 실제 동작 개념:
+#### 실제 동작 개념:
 
 ``` cpp
 void* memory = operator new(sizeof(Test));
@@ -34,9 +34,9 @@ Test* p = new(memory) Test();
 4.  소멸자 호출
 5.  메모리 해제
 
-------------------------------------------------------------------------
+---
 
-## 2. 사용자 정의 `operator new`
+### 📌 2. 사용자 정의 `operator new`
 
 ``` cpp
 class Test
@@ -61,13 +61,13 @@ public:
 };
 ```
 
-### 호출:
+#### 호출:
 
 ``` cpp
 Test* p = new Test();
 ```
 
-### 컴파일러 내부 개념:
+#### 컴파일러 내부 개념:
 
 ``` cpp
 void* memory =
@@ -79,7 +79,7 @@ Test* p =
 
 ------------------------------------------------------------------------
 
-## 3. 추가 인자를 받는 `operator new`
+### 📌 3. 추가 인자를 받는 `operator new`
 
 ``` cpp
 struct MyContext
@@ -117,7 +117,7 @@ public:
 };
 ```
 
-### 사용:
+#### 사용:
 
 ``` cpp
 MyContext ctx{"Main"};
@@ -126,7 +126,7 @@ Test* p =
     new(&ctx) Test(123);
 ```
 
-### 실제 의미:
+#### 실제 의미:
 
 ``` cpp
 void* memory =
@@ -141,44 +141,43 @@ Test* p =
 
 ------------------------------------------------------------------------
 
-## 가장 중요한 공식
+### 📌 가장 중요한 공식
 
-### 형식:
+#### 형식:
 
 ``` cpp
 new(A) Type(B)
 ```
 
-### 의미:
+#### 의미:
 
 ``` text
 A → operator new 로 전달
 B → 생성자로 전달
 ```
 
-### 예:
+#### 예:
 
 ``` cpp
 new(&context)
-IwBSplineSurface(oldSurface)
+    BSplineSurface(oldSurface)
 ```
 
-### 실제:
+#### 실제:
 
 ``` cpp
-IwObject::operator new(
-    sizeof(IwBSplineSurface),
+Object::operator new(
+    sizeof(BSplineSurface),
     &context);
 
-IwBSplineSurface(
-    oldSurface);
+BSplineSurface(oldSurface);
 ```
 
 ------------------------------------------------------------------------
 
-## operator delete도 같이 만드는 이유
+### 📌 operator delete도 같이 만드는 이유
 
-### 나쁜 예:
+#### 나쁜 예:
 
 ``` cpp
 class Test
@@ -193,7 +192,7 @@ public:
 };
 ```
 
-### 문제:
+#### 문제:
 
 ``` text
 new → malloc 사용
@@ -202,7 +201,7 @@ delete → 기본 delete 사용
 
 - 메모리 관리 방식이 섞일 수 있음.
 
-### 좋은 예:
+#### 좋은 예:
 
 ``` cpp
 class Test
@@ -223,9 +222,10 @@ public:
 };
 ```
 
-------------------------------------------------------------------------
+---
 
-## 추가 인자 operator delete
+
+### 📌 추가 인자 operator delete
 
 ``` cpp
 class Test
@@ -254,7 +254,7 @@ public:
 };
 ```
 
-### 이유:
+#### 이유:
 
 - 생성자 중 예외가 발생하면:
 
@@ -273,44 +273,44 @@ operator delete(
 
 - 를 호출할 수 있음.
 
-------------------------------------------------------------------------
+---
 
-## CAD 코드 해석
+### 📌 CAD 코드 해석
 
 ``` cpp
-IwBSplineSurface* p =
-new(GetContext())
-IwBSplineSurface(
-    *(IwBSplineSurface*)
+BSplineSurface* p =
+    new(GetContext())
+BSplineSurface(
+    *(BSplineSurface*)
     GetSurface());
 ```
 
-### 해석:
+#### 해석:
 
 ``` text
 GetContext()
     → operator new(size, GetContext())
 
 GetSurface()
-    → IwBSplineSurface 생성자 인자
+    → BSplineSurface 생성자 인자
 ```
 
-### 실제:
+#### 실제:
 
 ``` cpp
 void* memory=
-IwObject::operator new(
-sizeof(IwBSplineSurface),
-GetContext());
+    Object::operator new(
+    sizeof(BSplineSurface),
+    GetContext());
 
-IwBSplineSurface(
-*(IwBSplineSurface*)
-GetSurface());
+BSplineSurface(
+    *(BSplineSurface*)
+    GetSurface());
 ```
 
 ------------------------------------------------------------------------
 
-## 실무 기억법
+### 📌 실무 기억법
 
 ``` text
 operator new 만들면
