@@ -1,4 +1,4 @@
-# Windows 전용 메모리 재할당(onrealloc) 유틸
+# 📘 Windows 전용 메모리 재할당(onrealloc) 유틸
 
 ## 핵심 포인트
 - `onrealloc`은 **MSVC 6.0(_MSC_VER==1200)** 의 `realloc()` 버그(Q225099) 회피를 위해, 해당 컴파일러에서만 **직접 `malloc+memcpy+free`** 로 재구현합니다.
