@@ -1,4 +1,4 @@
-## 📘 C++에서의 가상 상속 (Virtual Inheritance)
+## C++에서의 가상 상속 (Virtual Inheritance)
 
 ### 📌 개념 요약
 - 가상 상속은 다중 상속 시 기본 클래스의 멤버 중복 문제를 해결하기 위한 C++의 기능입니다.  
