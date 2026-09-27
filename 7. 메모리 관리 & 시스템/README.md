@@ -8,5 +8,6 @@
 - [windows shared memory](./06.windows_shared_memory.md)
 - [linux shared_memory](./07.linux_shared_memory.md)
 - [unique_ptr](./08.unique_ptr.md)
-- [new placement deconstructor](./09.new_placement_deconstructor.md)
-- [bigobj의 역할](./10-bigobj의_역할.md)
+- [bigobj의 역할](./09-bigobj의_역할.md)
+- [new placement deconstructor](./10.new_placement_deconstructor.md)
+
