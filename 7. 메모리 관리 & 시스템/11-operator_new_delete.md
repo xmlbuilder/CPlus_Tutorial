@@ -1,4 +1,4 @@
-## `operator new` / `operator delete`
+## 📘 `operator new` / `operator delete`
 
 ### 📌 1. 일반 `new`
 
