@@ -1,4 +1,4 @@
-# 🧠 Memory Manager 확장판 가이드
+# 📘 Memory Manager 확장판 가이드
 
 ## 📌 개요
 본 문서는 `CFixedSizeMemMgr`, `ON_FixedSizeMemMgr`, `CFixedAllocNoSync`, `ON_EnhancedMemMgr`, `ON_SafeMemMgrEx` 등 고정 크기 메모리 풀 관리 클래스들의 구조, 특징, 장단점, 사용 예제를 정리한 자료입니다.  
