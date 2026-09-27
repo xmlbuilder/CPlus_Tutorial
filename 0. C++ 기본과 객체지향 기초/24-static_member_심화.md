@@ -1,14 +1,14 @@
-# C++ static 멤버 변수 심화 정리
-## 🔹 개념 요약
+## C++ static 멤버 변수 심화 정리
+### 📌 개념 요약
 - static 멤버 변수는 모든 객체가 공유하는 변수
 - 프로그램 시작 시 메모리에 할당되고, 종료 시까지 유지
 - 객체 생성 전에도 존재하며, 객체와 독립적으로 존재
 - 클래스 이름으로 접근 가능 (ClassName::member)
 - 객체 이름으로도 접근 가능하지만, 주소는 동일
 
-## 🔹 선언 vs 정의
+### 📌 선언 vs 정의
 
-### ✅ 선언 (Declaration)
+#### ✅ 선언 (Declaration)
 ```cpp
 class Something {
 public:
@@ -19,16 +19,15 @@ public:
 - 컴파일러에 변수 정보만 전달
 - 실제 메모리 할당은 없음
 
-### ✅ 정의 (Definition)
+#### ✅ 정의 (Definition)
 ```cpp
 int Something::m_value = 1;  // 정의 및 초기화
 ```
-
-- 전역 범위에서 정의해야 함 (.cpp 파일에서)
+- `전역 범위에서 정의` 해야 함 (.cpp 파일에서)
 - 실제 메모리 할당이 이루어짐
 - 반드시 초기화 필요 (Java처럼 클래스 내부 초기화 불가)
 
-## 🔹 예제 코드
+### 📌 예제 코드
 ```cpp
 #include <iostream>
 using namespace std;
@@ -59,12 +58,12 @@ int main() {
 ```
 
 
-## 🔹 메모리 구조 시각화
+### 📌 메모리 구조 시각화
 ```mermaid
 flowchart LR
   ClassA["Class A<br/><code>static int a;</code><br/><code>int b;</code><br/><code>int c;</code>"]
 
-  Static["static int a<br/><br/>- 프로그램 시작~종료까지 유지<br/>- 객체 생성 전부터 존재<br/>- 모든 A 객체와 독립적으로 '하나만' 존재"]
+  Static["static int a<br/><br/>-프로그램 시작~종료 유지<br/>-객체 생성 전부터 존재<br/>-모든 A 객체와 독립적으로 '하나만' 존재"]
 
   subgraph INST["A 타입 객체들"]
     direction TB
@@ -84,7 +83,7 @@ flowchart LR
 ```
 
 
-## 🔹 핵심 요약
+### 📌 핵심 요약
 | 항목 | 설명 | 
 |------|-------|
 | 메모리 할당 시점 | 프로그램 시작 시 | 
