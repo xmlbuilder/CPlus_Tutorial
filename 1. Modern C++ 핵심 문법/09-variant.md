@@ -14,10 +14,9 @@ std::variant<int, std::string, double> v = 1;
 v = "abc";
 v = 3.14;
 ```
-
-- v.index() → 현재 저장된 타입의 인덱스 반환 (0부터 시작)
-- std::get<T>(v) → 저장된 값을 지정한 타입으로 가져옴
-- std::get<I>(v) → 인덱스로 접근도 가능
+- `v.index()` - 현재 저장된 타입의 인덱스 반환 (0부터 시작)
+- `std::get<T>(v)` : 저장된 값을 지정한 타입으로 가져옴
+- `std::get<I>(v)` : 인덱스로 접근도 가능
   
 #### 🔍 출력 예시
 ```cpp
@@ -59,7 +58,7 @@ std::cout << std::get<1>(vunion); // double 타입이 1번째 인덱스
 ```
 
 - 인덱스는 선언 순서 기준
-- std::get<0>, std::get<1> 등으로 접근 가능
+- `std::get<0>`, `std::get<1>` 등으로 접근 가능
 
 ### 5️⃣ 문자열 리터럴과 std::string
 ```cpp
@@ -84,11 +83,11 @@ std::visit([](auto&& arg) {
 ### 📌 요약
 | 기능 | 설명 | 예시 | 
 |------|-----|------|
-| std::variant<Ts...> | 여러 타입 중 하나 저장 | std::variant<int, std::string> | 
-| v.index() | 현재 저장된 타입의 인덱스 반환 | v.index() | 
-| std::get<T>(v) | 지정 타입으로 값 가져오기 (예외 발생 가능) | std::get<int>(v) | 
-| std::holds_alternative<T>(v) | 현재 타입인지 확인 | std::holds_alternative<double>(v) | 
-| std::get_if<T>(&v) | 포인터로 안전하게 접근 | if (auto p = std::get_if<T>(&v)) | 
-| std::visit | 방문자 패턴으로 타입별 처리 | std::visit([](auto&& x){}, v) | 
+| `std::variant<Ts...>` | 여러 타입 중 하나 저장 | `std::variant<int, std::string>` | 
+| `v.index()` | 현재 저장된 타입의 인덱스 반환 | `v.index()` | 
+| `std::get<T>(v)` | 지정 타입으로 값 가져오기 (예외 발생 가능) | `std::get<int>(v)` | 
+| `std::holds_alternative<T>(v)` | 현재 타입인지 확인 | `std::holds_alternative<double>(v)` | 
+| `std::get_if<T>(&v)` | 포인터로 안전하게 접근 | `if (auto p = std::get_if<T>(&v))` | 
+| `std::visit` | 방문자 패턴으로 타입별 처리 | `std::visit([](auto&& x){}, v)` | 
 
 ---
