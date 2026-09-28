@@ -1,11 +1,11 @@
-# 📘 문자열 유틸리티 개선 및 문서
+## 📘 문자열 유틸리티 개선 및 문서
 
-## 1. using namespace std; 지양하기
+### 📌 1. using namespace std; 지양하기
 - 전역 네임스페이스을 가급적 쓰지 말것
 - std::를 명시적으로 사용하는 것이 안전합니다.
 
-## 2. 공백 제거 함수 (trim, ltrim, rtrim)
-### ✅ 현재 구현
+### 📌 2. 공백 제거 함수 (trim, ltrim, rtrim)
+#### 🔹 현재 구현
 
 ```cpp
 void ltrim(std::string &s);
@@ -52,7 +52,7 @@ std::string trim_copy(std::string s) {
 }
 ```
 
-## 3. 문자열 대소문자 변환 (ToUpper, ToLower, strUpr, strLwr)
+### 📌 3. 문자열 대소문자 변환 (ToUpper, ToLower, strUpr, strLwr)
 ```cpp
 int strUpr(char *str)
 {
@@ -95,14 +95,14 @@ std::string ToLower(const std::string& input)
 }
 ```
 
-### 🔧 개선 포인트
+#### 🔹 개선 포인트
 - std::string_view를 활용하면 복사 비용 없이 처리 가능 (C++17 이상)
 
 
 
-## 4. 문자열 토큰 분리 (tokenParam, tokenpParamWithEmpty)
+### 📌 4. 문자열 토큰 분리 (tokenParam, tokenpParamWithEmpty)
 
-### ✅ 현재 구현
+#### 🔹 현재 구현
 - std::regex와 sregex_token_iterator를 사용하여 분리
 ```cpp
 bool tokenParam(const std::string& strParam, 
@@ -160,12 +160,12 @@ bool tokensParamWithEmpty(const std::string& strParam,
 }
 ```
 
-### 🔧 개선 포인트
+#### 🔹 개선 포인트
 - std::string_view를 사용하면 성능 향상 가능
 
 
 ## 5. 문자열 → 실수 변환 (strToFloat)
-### ✅ 현재 구현
+#### 🔹 현재 구현
 
 ```cpp
 double strToFloat(const std::string& str, bool& error) {
@@ -293,8 +293,9 @@ double StringToDouble(const Type *szBuf, bool &error)
 	if (number == HUGE_VAL) error = true;
 	return number;
 }
-
 ```
+---
+
 
 
 
