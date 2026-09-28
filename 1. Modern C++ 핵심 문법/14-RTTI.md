@@ -1,16 +1,13 @@
-# Runtime Type Information (RTTI) & (Proto) Reflection in C++
+## 📘 RTTI(Runtime Type Information) & (Proto) Reflection
 
-## 목표
-
+### 📌 목표
 - typeid, std::type_info, dynamic_cast를 정확히 이해하고 안전하게 쓰기
 - std::type_index, std::any, std::variant로 런타임 타입 처리 패턴 익히기
-- C++20 이후 “진짜 리플렉션”이 표준화되지 않았다는 현실과, 대신 활용 가능한 기법 정리
+- **진짜 리플렉션** 이 표준화되지 않았다는 현실과, 대신 활용 가능한 기법 정리
 - 다형성과 클래스 계층 이해를 돕는 실용 예제 제공
 
-### 1) RTTI란?
-
-RTTI (Run-Time Type Information) 는 실행 중 객체의 실제(dynamic) 타입 정보를 알기 위한 메커니즘.
-
+### 📌 1) RTTI란?
+- RTTI (Run-Time Type Information) 는 실행 중 객체의 실제(dynamic) 타입 정보를 알기 위한 메커니즘.
 - 대표 기능:
     - typeid(expr) → std::type_info 반환
     - dynamic_cast<T*>(ptr) / dynamic_cast<T&>(ref) → 안전한 다운캐스팅(실패 시 nullptr 또는 std::bad_cast)
@@ -19,7 +16,7 @@ RTTI (Run-Time Type Information) 는 실행 중 객체의 실제(dynamic) 타입
     - GCC/Clang: -fno-rtti를 켜면 RTTI 기능이 빠집니다.
     - MSVC: 기본 활성화.
 
-### 2) typeid의 규칙 요약
+### 📌 2) typeid의 규칙 요약
 
 - typeid(T) (T가 타입) → 컴파일타임 타입 정보
 - typeid(expr) (expr이 폴리모픽 타입의 glvalue이고, 참조/역참조를 통해 접근한 경우) → 동적 타입
@@ -33,10 +30,8 @@ Base* p = new Derived;
 typeid(p)        // => Base*  (포인터의 정적 타입)
 typeid(*p)       // => Derived (폴리모픽 + 역참조 → 동적 타입)
 ```
-std::type_info::name()은 구현 의존적(난독화된(mangled) 이름 가능), hash_code()는 프로세스 간 안정 보장 X.
 
-### 3) dynamic_cast 안전 다운캐스팅
-
+### 📌 3) dynamic_cast 안전 다운캐스팅
 - 포인터 변환: 실패 시 nullptr
 - 참조 변환: 실패 시 std::bad_cast 예외
 
@@ -45,31 +40,23 @@ Derived* d = dynamic_cast<Derived*>(p); // p: Base*
 if (!d) { /* 실패 처리 */ }
 ```
 
-static_cast는 컴파일타임만 보고 변환하여 런타임 안전성 없음. 다운캐스팅에 static_cast 사용은 주의.
+- static_cast는 컴파일타임만 보고 변환하여 런타임 안전성 없음.
+- 다운캐스팅에 static_cast 사용은 주의.
 
-### 4) C++20 “리플렉션” 현황 (요약)
+### 📌 4) C++20 “리플렉션” 현황 (요약)
 
-- 2025년 현재 공식 표준 리플렉션은 없음. (과거 P1240, P0385 등의 제안이 있었으나 채택 X)
+- 2025년 현재 공식 표준 리플렉션은 없음.
 
 - 대안:
     - 컴파일러별 확장/라이브러리: magic_get, nameof, Boost.PFR(Plain Function Reflection: POD 구조체를 튜플처럼 다루기) 등
     - 메타프로그래밍/컨셉/타입트레이트: std::is_base_of_v<>, std::is_same_v<>, std::is_polymorphic_v<> 등
     - 런타임 컨테이너: std::any, std::variant + 방문자
 
-### 5) 실전 패턴
 
-#### 5.1 std::type_index로 맵핑
 
-- std::type_info 는 비교 연산자 정의가 제한적이므로, 키로 쓰려면 std::type_index 사용.
-```cpp
-#include <typeindex>
-#include <unordered_map>
-#include <memory>
-```
+### 📌 5) 예제 코드 모음
 
-### 6) 예제 코드 모음
-
-### 📄 Case 01 rtti_typeid
+#### 📄 Case 01 rtti_typeid
 ```cpp
 #include <iostream>
 #include <typeinfo>
@@ -92,7 +79,7 @@ int main() {
 }
 ```
 
-### 📄 Case 02 dynamic_cast
+#### 📄 Case 02 dynamic_cast
 ```cpp
 #include <iostream>
 #include <typeinfo>
@@ -118,7 +105,7 @@ int main() {
 }
 ```
 
-### 📄 Case 03 type_index_map
+#### 📄 Case 03 type_index_map
 ```cpp
 #include <iostream>
 #include <unordered_map>
@@ -148,7 +135,7 @@ int main() {
 }
 ```
 
-### 📄 Case 04 any_variant
+#### 📄 Case 04 any_variant
 ```cpp
 #include <any>
 #include <variant>
@@ -174,7 +161,8 @@ int main() {
     std::visit([](auto&& x){ std::cout << "variant holds: " << x << "\n"; }, v);
 }
 ```
-### 📄 Case 05 manual_tagged_variant
+
+#### 📄 Case 05 manual_tagged_variant
 ```cpp
 #include <iostream>
 #include <memory>
@@ -206,15 +194,16 @@ int main() {
 }
 ```
 
-### 7) 언제 무엇을 쓰나?
+### 📌 6) 언제 무엇을 쓰나?
 - 다형 계층에서 안전 다운캐스팅 필요 → dynamic_cast
 - 런타임 타입 기반 디스패치 → typeid + std::type_index 맵, 또는 std::variant + std::visit
 - 정말 다양한 타입 수용(플러그인/스크립팅 등) → std::any (단, 사용 지점에서 캐스팅 필요)
 - 성능 민감이고 타입이 제한적 → std::variant가 보통 더 빠르고 안전
 
-### 8) 흔한 함정 & 권장사항
+### 📌 7) 흔한 함정 & 권장사항
 - 베이스 클래스에는 반드시 가상 소멸자를 두자 (다형 삭제 안전성).
-- type_info::name()은 사용자 표시용으로 그대로 쓰지 말고, 필요 시 demangle(플랫폼별).
 - dynamic_cast 남발은 설계 신호일 수 있음 → 방문자 패턴, 가상 함수 오버라이드로 해결 가능한지 먼저 검토.
 - std::any는 남발 시 “원시형”으로 회귀 → API 경계에서 최소화하고, 내부에서는 구체 타입/variant를 선호.
 - RTTI 비활성 빌드를 고려해야 하는 프로젝트(임베디드 등)라면, 태그드 유니온 / variant / 가상함수로 대체 설계.
+
+---
