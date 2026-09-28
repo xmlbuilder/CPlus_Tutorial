@@ -1,10 +1,10 @@
-# 🧠 C++ 함수 표현 방식 예제
+## C++ 함수 표현 방식 예제
 
-이 프로젝트는 C++에서 다양한 함수 표현 방식—**일반 함수**, **Functor(함수 객체)**, **Lambda 함수**—를 `std::function`을 통해 다루는 방법을 보여줍니다.
+- 이 프로젝트는 C++에서 다양한 함수 표현 방식 **일반 함수**, **Functor(함수 객체)**, **Lambda 함수** 를 `std::function`을 통해 다루는 방법을 보여줍니다.
 
-## ✨ 주요 개념
+### 📌 주요 개념
 
-### 1. 일반 함수 (Local Function)
+#### 1. 일반 함수 (Local Function)
 ```cpp
 int func1(const std::string& a) {
     std::cout << "Func1 call! " << a << std::endl;
@@ -12,7 +12,7 @@ int func1(const std::string& a) {
 }
 ```
 
-### 2. Functor (함수 객체)
+#### 2. Functor (함수 객체)
 ```cpp
 struct S {
     void operator()(char c) {
@@ -21,15 +21,15 @@ struct S {
 };
 ```
 
-### 3. Lambda 함수
+#### 3. Lambda 함수
 ```cpp
 std::function<void()> f3 = []() {
     std::cout << "Lambda function call!" << std::endl;
 };
 ```
 
-## 고급 예제: 함수 전달 및 캡처
-람다를 std::function으로 전달하고 외부 변수 캡처:
+### 📌 고급 예제: 함수 전달 및 캡처
+- 람다를 std::function으로 전달하고 외부 변수 캡처:
 
 ```cpp
 void func1(const std::function<void(Model*)>& f, Model* model) {
@@ -42,24 +42,25 @@ func1([&](Model* model) {
 }, &model);
 ```
 
-## 📦 요구 사항
+### 📌 요구 사항
 - C++11 이상
-- <functional>, <iostream>, <string> 헤더 포함
+- `<functional>`, `<iostream>`, `<string>` 헤더 포함
 
-## 🚀 실행 방법
+### 📌 실행 방법
+```
 g++ -std=c++11 function_examples.cpp -o function_examples
 ./function_examples
-
+```
 
 ### 📌 출력 예시
+```text
 Func1 call! hello
 Functor call! c
 Lambda function call!
 7
 100
 10
-
----
+```
 
 ### 📄 `function_examples.cpp`
 
@@ -123,4 +124,5 @@ int main() {
     return 0;
 }
 ```
+---
 
