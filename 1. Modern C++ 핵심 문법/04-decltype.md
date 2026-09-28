@@ -1,14 +1,14 @@
-# 📚 C++ `decltype` & `decltype(auto)` 완전 정리
+## C++ `decltype` & `decltype(auto)` 완전 정리
 
-## 1. 개념
-- **`auto`** : 변수의 **타입을 추론**하여 새로운 변수를 정의.
+### 📌 1. 개념
+- **`auto`** : 변수의 **타입을 추론** 하여 새로운 변수를 정의.
 - **`decltype`** : **표현식(expression)** 을 받아, 그 표현식의 **타입을 가져옴**.
-- **`decltype(auto)`** : `auto` 추론 규칙과 `decltype`의 참조/const 유지 규칙을 결합.
+- **decltype(auto)** : `auto` 추론 규칙과 `decltype`의 참조/const 유지 규칙을 결합.
 - decltype 은 C++11 에서 추가된 키워드로 한마디로 값에 맞는 타입을 추출해낸다
 
----
 
-## 2. 기본 사용 예
+
+### 📌 2. 기본 사용 예
 ```cpp
 #include <iostream>
 #include <type_traits>
@@ -27,15 +27,15 @@ int main() {
 }
 ```
 
-출력:
+- 출력:
 ```
 a is int
 b is const int&
 ```
 
----
 
-## 3. 함수 반환 타입에서의 `decltype`
+
+### 📌 3. 함수 반환 타입에서의 `decltype`
 ```cpp
 template<typename T, typename U>
 auto add_auto(T a, U b) {
@@ -48,9 +48,8 @@ decltype(auto) add_decltype(T&& a, U&& b) {
 }
 ```
 
----
 
-## 4. `decltype`의 괄호 규칙
+### 📌 4. `decltype`의 괄호 규칙
 `decltype(x)`와 `decltype((x))`는 다를 수 있음.
 
 ```cpp
@@ -60,9 +59,9 @@ decltype(n) a = n;     // int
 decltype((n)) b = n;   // int& (괄호가 있으면 lvalue 표현식 → 참조)
 ```
 
----
 
-## 5. 참조 반환 유지 예시
+
+### 📌 5. 참조 반환 유지 예시
 ```cpp
 class C {
     int data[5] = {1, 2, 3, 4, 5};
@@ -82,11 +81,11 @@ int main() {
 }
 ```
 
----
 
-## 6. 실무 패턴
-- **Generic 프로그래밍**에서 `decltype`은 템플릿 인자의 연산 결과 타입 추출에 사용됨.
-- **Perfect forwarding**과 결합해 참조/const를 유지.
+
+### 📌 6. 실무 패턴
+- **Generic 프로그래밍** 에서 `decltype`은 템플릿 인자의 연산 결과 타입 추출에 사용됨.
+- **Perfect forwarding** 과 결합해 참조/const를 유지.
 - 예:
 ```cpp
 template<typename T, typename U>
@@ -95,18 +94,18 @@ decltype(auto) multiply(T&& a, U&& b) {
 }
 ```
 
----
 
-## 7. 핵심 정리
+
+### 📌 7. 핵심 정리
 | 구분            | 참조/const 유지 | 주 용도 |
 |-----------------|----------------|---------|
 | `auto`          | ❌              | 단순 변수 타입 추론 |
 | `decltype(expr)`| ⭕              | 표현식의 원본 타입 추출 |
 | `decltype(auto)`| ⭕              | 반환 타입 추론 시 참조/const 유지 |
 
----
 
-## 8. 전체 예제
+
+### 📌 8. 전체 예제
 ```cpp
 #include <iostream>
 #include <type_traits>
@@ -149,3 +148,5 @@ int main() {
     cout << myclass[3] << endl; // 100
 }
 ```
+---
+
