@@ -1,4 +1,4 @@
-## 📚 C++ STL `std::for_each` 예제
+## 📘 `std::for_each` 예제
 
 ### 📌 개요
 
