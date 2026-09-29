@@ -1,5 +1,5 @@
 
-## `std::vector::emplace_back` vs `std::vector::push_back`
+## 📘 `std::vector::emplace_back` vs `std::vector::push_back`
 
 ### 📌 Core Principle
 - **Rvalue에 대해서만 `emplace_back`을 사용** 하는 것이 권장된다.
