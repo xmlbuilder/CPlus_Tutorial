@@ -1,5 +1,5 @@
 
-## C++ STL `deque` & `queue` 정리
+## 📘 `deque` & `queue` 정리
 
 ### 📌 개요
 
