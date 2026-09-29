@@ -1,4 +1,4 @@
-## 📚 C++ STL `std::vector` 정리
+## 📘 `std::vector` 정리
 
 ### 📌 개요
 
