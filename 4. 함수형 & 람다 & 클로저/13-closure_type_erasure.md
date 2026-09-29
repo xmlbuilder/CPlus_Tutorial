@@ -282,7 +282,7 @@ private:
     // The actual callable (Model) is shared via shared_ptr.
     //
     // Closure A ─┐
-    //             ├──> Model<F> ──> callable
+    //            ├──> Model<F> ──> callable
     // Closure B ─┤
     // Closure C ─┘
     //
@@ -321,24 +321,541 @@ Closure<R, Args...>
 
 int main() {
     // 두 정수 합
-    ON_Closure<int, int, int> add = [](int a, int b) { return a + b; };
+    Closure<int, int, int> add = [](int a, int b) { return a + b; };
     std::cout << add(3, 4) << "\n"; // 7
 
     // 문자열 길이 반환
-    ON_Closure<std::size_t, const std::string&> len =
+    Closure<std::size_t, const std::string&> len =
         [](const std::string& s){ return s.size(); };
     std::cout << len(std::string("hello")) << "\n"; // 5
 
     // move-only 캡처
     auto p = std::make_unique<int>(42);
-    ON_Closure<int, int> plusP{ [q = std::move(p)](int x){ return x + *q; } };
+    Closure<int, int> plusP{ [q = std::move(p)](int x){ return x + *q; } };
     std::cout << plusP(8) << "\n"; // 50
 
     // 멤버 함수 호출은 람다로 감싸서
     struct Greeter { int n=0; int hello(const std::string& who){ return ++n, (std::cout<<"hi "<<who<<"\n", n); } };
     Greeter g;
-    ON_Closure<int, const std::string&> call = [&g](const std::string& w){ return g.hello(w); };
+    Closure<int, const std::string&> call = [&g](const std::string& w){ return g.hello(w); };
     std::cout << call("world") << "\n"; // 1
+}
+```
+```cpp
+#include "closure.hpp"
+
+#include "closure_tests.h"
+
+#include <iostream>
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <memory>
+#include <cmath>
+#include <ranges>
+
+static int g_pass = 0;
+static int g_fail = 0;
+
+static void Check(bool condition, const char* message)
+{
+    if (condition)
+    {
+        ++g_pass;
+        std::cout << "[PASS] " << message << '\n';
+    }
+    else
+    {
+        ++g_fail;
+        std::cout << "[FAIL] " << message << '\n';
+    }
+}
+
+// ============================================================
+// Normal function
+// ============================================================
+static double Square(double x)
+{
+    return x * x;
+}
+
+// ============================================================
+// Functor
+// ============================================================
+struct Multiply
+{
+    double scale;
+
+    double operator()(double x) const
+    {
+        return x * scale;
+    }
+};
+
+// ============================================================
+// Test 1
+// Empty Closure
+// ============================================================
+static void TestEmptyClosure()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 1 - Empty Closure\n"
+        << "========================================\n";
+
+    Closure<double(double)> func;
+
+    Check(!func, "default Closure is invalid");
+    Check(func.empty(), "empty() returns true");
+
+    bool exceptionThrown = false;
+
+    try
+    {
+        func(10.0);
+    }
+    catch (const std::bad_function_call&)
+    {
+        exceptionThrown = true;
+    }
+
+    Check(
+        exceptionThrown,
+        "empty Closure throws bad_function_call"
+    );
+}
+
+
+// ============================================================
+// Test 2
+// Lambda
+// ============================================================
+static void TestLambda()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 2 - Lambda\n"
+        << "========================================\n";
+
+    Closure<double(double)> func =
+        [](double x)
+        {
+            return x * 2.0;
+        };
+
+    Check(!func.empty(), "lambda Closure is valid");
+
+    Check(
+        std::abs(func(10.0) - 20.0) < 1e-12,
+        "lambda invocation works"
+    );
+}
+
+
+// ============================================================
+// Test 3
+// Captured Lambda
+// ============================================================
+static void TestCapturedLambda()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 3 - Captured Lambda\n"
+        << "========================================\n";
+
+    double scale = 3.5;
+
+    Closure<double(double)> func =
+        [scale](double x)
+        {
+            return x * scale;
+        };
+
+    Check(
+        std::abs(func(2.0) - 7.0) < 1e-12,
+        "captured value preserved"
+    );
+}
+
+
+// ============================================================
+// Test 4
+// Function pointer
+// ============================================================
+static void TestFunctionPointer()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 4 - Function Pointer\n"
+        << "========================================\n";
+
+    Closure<double(double)> func = &Square;
+
+    Check(
+        std::abs(func(5.0) - 25.0) < 1e-12,
+        "normal function invocation works"
+    );
+}
+
+
+// ============================================================
+// Test 5
+// Functor
+// ============================================================
+static void TestFunctor()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 5 - Functor\n"
+        << "========================================\n";
+
+    Multiply multiply{4.0};
+
+    Closure<double(double)> func = multiply;
+
+    Check(
+        std::abs(func(3.0) - 12.0) < 1e-12,
+        "functor invocation works"
+    );
+}
+
+// ============================================================
+// Test 6
+// Multiple arguments
+// ============================================================
+static void TestMultipleArguments()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 6 - Multiple Arguments\n"
+        << "========================================\n";
+
+    Closure<double(double, double, double)> func =
+        [](double x, double y, double z)
+        {
+            return x + y + z;
+        };
+
+    Check(
+        std::abs(func(1.0, 2.0, 3.0) - 6.0) < 1e-12,
+        "multiple arguments work"
+    );
+}
+
+
+// ============================================================
+// Test 7
+// std::string
+// ============================================================
+static void TestString()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 7 - std::string\n"
+        << "========================================\n";
+
+    Closure<std::string(const std::string&)> func =
+        [](const std::string& s)
+        {
+            return "[CAD] " + s;
+        };
+
+    Check(
+        func("NURBS Surface") ==
+            "[CAD] NURBS Surface",
+        "std::string argument/result works"
+    );
+}
+
+// ============================================================
+// Test 8
+// void return
+// ============================================================
+static void TestVoidReturn()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 8 - void Return\n"
+        << "========================================\n";
+
+    int value = 0;
+
+    Closure<void(int)> func =
+        [&value](int x)
+        {
+            value += x;
+        };
+
+    func(10);
+    func(20);
+
+    Check(
+        value == 30,
+        "void Closure invocation works"
+    );
+}
+
+
+// ============================================================
+// Test 9
+// Copy
+// ============================================================
+static void TestCopy()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 9 - Copy\n"
+        << "========================================\n";
+
+    Closure<double(double)> func1 =
+        [](double x)
+        {
+            return x * 10.0;
+        };
+
+    Closure<double(double)> func2 = func1;
+
+    Check(!func1.empty(), "original Closure valid");
+    Check(!func2.empty(), "copied Closure valid");
+
+    Check(
+        std::abs(func1(3.0) - 30.0) < 1e-12,
+        "original Closure works"
+    );
+
+    Check(
+        std::abs(func2(3.0) - 30.0) < 1e-12,
+        "copied Closure works"
+    );
+}
+
+
+// ============================================================
+// Test 10
+// Shared captured state
+//
+// Closure 복사 시 Model이 공유되는 것을 검증한다.
+// ============================================================
+static void TestSharedState()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 10 - Shared Callable\n"
+        << "========================================\n";
+
+    auto counter =
+        std::make_shared<int>(0);
+
+    Closure<void()> func1 =
+        [counter]()
+        {
+            ++(*counter);
+        };
+
+    Closure<void()> func2 = func1;
+    Closure<void()> func3 = func2;
+
+    func1();
+    func2();
+    func3();
+
+    Check(
+        *counter == 3,
+        "copied Closures share captured state"
+    );
+}
+
+
+// ============================================================
+// Test 11
+// Reset
+// ============================================================
+static void TestReset()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 11 - Reset\n"
+        << "========================================\n";
+
+    Closure<int(int)> func =
+        [](int x)
+        {
+            return x + 1;
+        };
+
+    Check(!func.empty(), "Closure valid before reset");
+
+    func.reset();
+
+    Check(!func, "Closure invalid after reset");
+    Check(func.empty(), "empty after reset");
+}
+
+// ============================================================
+// Test 12
+// Move
+// ============================================================
+static void TestMove()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 12 - Move\n"
+        << "========================================\n";
+
+    Closure<int(int)> func1 =
+        [](int x)
+        {
+            return x * 2;
+        };
+
+    Closure<int(int)> func2 =
+        std::move(func1);
+
+    Check(!func1, "source empty after move");
+    Check(!func2.empty(), "destination valid after move");
+
+    Check(
+        func2(10) == 20,
+        "moved Closure works"
+    );
+}
+
+
+// ============================================================
+// Test 13
+// CAD style - curve evaluator
+// ============================================================
+static void TestCadEvaluator()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 13 - CAD Style Evaluator\n"
+        << "========================================\n";
+
+    //
+    // 실제 CAD에서는:
+    //
+    // [&curve](double t)
+    // {
+    //     return curve.PointAt(t);
+    // }
+    //
+    // 같은 형태로 사용할 수 있다.
+    //
+    Closure<double(double)> curveEvaluator =
+        [](double t)
+        {
+            // 테스트용 curve:
+            // y = t^2
+            return t * t;
+        };
+
+    Check(
+        std::abs(curveEvaluator(0.5) - 0.25)
+            < 1e-12,
+        "CAD style curve evaluator works"
+    );
+}
+
+
+// ============================================================
+// Test 14
+// CAD style predicate
+// ============================================================
+static void TestCadPredicate()
+{
+    std::cout
+        << "\n========================================\n"
+        << "Test 14 - CAD Style Predicate\n"
+        << "========================================\n";
+
+    const double tolerance = 0.01;
+
+    Closure<bool(double)> needRefine =
+        [tolerance](double error)
+        {
+            return error > tolerance;
+        };
+
+    Check(
+        !needRefine(0.001),
+        "small error does not refine"
+    );
+
+    Check(
+        needRefine(0.1),
+        "large error requests refinement"
+    );
+}
+
+int closure_tests::run_tests()
+{
+    // 1) 일반 람다
+    Closure<int(int,int)> add = [](int a, int b){ return a + b; };
+    std::cout << add(3, 4) << "\n";  // 7
+
+    // 2) void 반환
+    Closure<void(const std::string&)> print = [](const std::string& s){
+        std::cout << s << "\n";
+    };
+    print("hello");
+
+    // 3) 멤버 함수 포인터 (std::invoke로 지원)
+    struct Greeter { void hello(const std::string& who){ std::cout << "hi " << who << "\n"; } };
+    Greeter g;
+    Closure<void(Greeter&, const std::string&)> call = &Greeter::hello;
+    call(g, "world");
+
+    // 4) move-only 캡처
+    auto p = std::make_unique<int>(42);
+    Closure<int(int)> plusP{ [q = std::move(p)](int x){ return x + *q; } };
+    std::cout << plusP(8) << "\n";  // 50
+
+    // 5) 빈 상태 체크
+    Closure<int(int,int)> op;     // empty
+    if (!op) { /* 아직 대상 미설정 */ }
+    op = Closure<int(int,int)>{ [](int a,int b){ return a*b; } };
+    std::cout << op(3, 4) << "\n";   // 12
+
+    g_pass = 0;
+    g_fail = 0;
+
+    std::cout
+        << "========================================\n"
+        << "Closure Tests\n"
+        << "C++17 Type-Erased Callable\n"
+        << "========================================\n";
+
+    TestEmptyClosure();
+    TestLambda();
+    TestCapturedLambda();
+    TestFunctionPointer();
+    TestFunctor();
+    TestMultipleArguments();
+    TestString();
+    TestVoidReturn();
+    TestCopy();
+    TestSharedState();
+    TestReset();
+    TestMove();
+
+    // CAD usage
+    TestCadEvaluator();
+    TestCadPredicate();
+
+    std::cout
+        << "\n========================================\n"
+        << "Closure Test Summary\n"
+        << "========================================\n"
+        << "PASS   : " << g_pass << '\n'
+        << "FAILED : " << g_fail << '\n'
+        << "RESULT : "
+        << (g_fail == 0 ? "PASS" : "FAILED")
+        << '\n'
+        << "========================================\n";
+
+    return g_fail == 0 ? 0 : 1;
 }
 ```
 
