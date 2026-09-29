@@ -1,20 +1,20 @@
-# Thread Interrupt 정리 (Boost C++ vs Java)
+## 📘 Thread Interrupt 정리 (Boost C++ vs Java)
 
-스레드를 “강제 종료”하는 표준 C++ API는 없습니다. 대신 **협력적(cooperative) 중단**을 사용해야 합니다.  
-- **Boost C++**: `thread::interrupt()` + *interruption point*에서 `boost::thread_interrupted` 예외 발생  
-- **Java**: `Thread.interrupt()`로 **인터럽트 플래그**를 세우고, 블로킹 호출에서 `InterruptedException` 발생
+- 스레드를 “강제 종료”하는 표준 C++ API는 없습니다. 대신 **협력적(cooperative) 중단** 을 사용해야 합니다.  
+    - **Boost C++**: `thread::interrupt()` + *interruption point*에서 `boost::thread_interrupted` 예외 발생  
+    - **Java**: `Thread.interrupt()`로 **인터럽트 플래그** 를 세우고, 블로킹 호출에서 `InterruptedException` 발생
 
-> 참고: C++20에는 예외 기반 interrupt는 없지만, **`std::jthread` + `std::stop_token`**으로 협력적 중단을 공식 지원합니다(아래 “C++20 대안” 참조).
+> 참고: C++20에는 예외 기반 interrupt는 없지만, **`std::jthread` + `std::stop_token`** 으로 협력적 중단을 공식 지원합니다.
 
----
 
-## 1) Boost C++: interrupt 패턴
 
-### 핵심 개념
+### 📌 1) Boost C++: interrupt 패턴
+
+#### 🔹 핵심 개념
 - `t.interrupt()` 호출 → 타겟 스레드가 **interruption point**(예: `sleep`, `condition_variable::wait` 등)에 진입할 때 `boost::thread_interrupted` 예외가 발생.
-- 예외를 **캣치해서 정리하고 종료**해야 함(자원 정리 후 `return`).
+- 예외를 **캣치해서 정리하고 종료** 해야 함(자원 정리 후 `return`).
 
-### 예제 (사용자 제공 코드 기반)
+#### 🔹 예제
 ```cpp
 #include <iostream>
 #include <boost/thread.hpp>
@@ -53,27 +53,28 @@ int main() {
 }
 ```
 
-### 주의/팁
-- **루프가 interruption point를 전혀 호출하지 않으면** 즉시 멈추지 않습니다. 주기적으로 `sleep`, `this_thread::interruption_point()` 같은 포인트를 넣어 주세요.
-- 긴 계산 루프에는 다음처럼 **수동 interruption point**를 추가할 수 있습니다:
+#### 🔹 주의/팁
+- **루프가 interruption point를 전혀 호출하지 않으면** 즉시 멈추지 않습니다.
+- 주기적으로 `sleep`, `this_thread::interruption_point()` 같은 포인트를 넣어 줌.
+- 긴 계산 루프에는 다음처럼 **수동 interruption point** 를 추가할 수 있습니다:
   ```cpp
   for (...) {
       // ... heavy work ...
       boost::this_thread::interruption_point(); // 여기서 예외 발생 가능
   }
   ```
-- 자원 정리는 **예외 안전**하게: RAII(스마트 포인터, 스코프 가드 등)를 적극 사용.
+- 자원 정리는 **예외 안전** 하게: RAII(스마트 포인터, 스코프 가드 등)를 적극 사용.
 
 ---
 
-## 2) Java: interrupt 패턴
+### 📌 2) Java: interrupt 패턴
 
-### 핵심 개념
-- `thread.interrupt()` → 대상 스레드의 **인터럽트 플래그**가 세팅.
+#### 🔹 핵심 개념
+- `thread.interrupt()` → 대상 스레드의 **인터럽트 플래그** 가 세팅.
 - 스레드가 `Thread.sleep`, `wait`, `join` 등 **블로킹 호출** 중이면 `InterruptedException` 발생.
 - 바쁜 루프에서는 주기적으로 `Thread.currentThread().isInterrupted()`를 확인해야 함.
 
-### 예제 (사용자 제공 코드 기반, 요지 보정)
+#### 🔹 예제
 ```java
 public class ThreadStopMainV2 {
     public static void main(String[] args) {
@@ -109,8 +110,9 @@ public class ThreadStopMainV2 {
 }
 ```
 
-### 주의/팁
-- `InterruptedException`이 발생하면 **인터럽트 플래그가 자동 해제**됩니다. 상위로 전달하고 싶다면 **현재 스레드의 플래그를 다시 세팅**하는 관용구를 사용:
+#### 🔹 주의/팁
+- `InterruptedException`이 발생하면 **인터럽트 플래그가 자동 해제** 됩니다.
+- 상위로 전달하고 싶다면 **현재 스레드의 플래그를 다시 세팅** 하는 관용구를 사용:
   ```java
   catch (InterruptedException e) {
       Thread.currentThread().interrupt(); // 플래그 복구
@@ -126,7 +128,7 @@ public class ThreadStopMainV2 {
 
 ---
 
-## 3) Boost vs Java: 개념 비교
+### 📌 3) Boost vs Java: 개념 비교
 
 | 항목 | Boost C++ | Java |
 |---|---|---|
@@ -137,11 +139,10 @@ public class ThreadStopMainV2 {
 | 안전 종료 | 예외 캐치 후 자원 정리/return | 예외 캐치 후 정리, 필요 시 `interrupt()` 재설정 |
 | 강제 종료 | 지원 안 함(협력적) | 지원 안 함(협력적) |
 
----
 
-## 4) C++20 대안: `std::jthread` + `std::stop_token` (권장)
+### 📌 4) C++20 대안: `std::jthread` + `std::stop_token` (권장)
 
-표준 C++에는 interrupt 예외는 없지만, **중단 요청을 전달하는 공식 인터페이스**가 생겼습니다.
+- 표준 C++에는 interrupt 예외는 없지만, **중단 요청을 전달하는 공식 인터페이스** 가 생겼습니다.
 
 ```cpp
 #include <thread>
@@ -166,16 +167,16 @@ int main() {
 } // jthread 소멸 시 자동 join
 ```
 
-### 장점
+#### 🔹 장점
 - **예외 없이** 깔끔한 중단 신호 전달 (`stop_token`).
 - `std::jthread`는 소멸 시 자동 `join()`: 누락으로 인한 리소스 문제 방지.
 - 라이브러리 콜백/루프에 `stop_token`만 흘려보내면 어디서든 중단 가능.
 
 ---
 
-## 5) 상태·흐름 다이어그램
+### 📌 5) 상태·흐름 다이어그램
 
-### Boost interrupt 흐름
+#### 🔹 Boost interrupt 흐름
 ```mermaid
 sequenceDiagram
     participant Main
@@ -196,7 +197,7 @@ sequenceDiagram
     Main-->>Main: 종료
 ```
 
-### Java interrupt 상태 개요
+#### 🔹 Java interrupt 상태 개요
 ```mermaid
 stateDiagram-v2
     [*] --> Running
@@ -212,7 +213,7 @@ stateDiagram-v2
 
 ---
 
-## 6) 실무 팁 체크리스트
+### 📌 6) 실무 팁 체크리스트
 - **강제 종료 금지**: 프로세스/스레드 강제 kill은 데이터 손상·교착·리소스 누수 유발.
 - **자원 정리**: 파일/소켓/락 해제는 **RAII** 또는 `try/finally(자바)`로 보장.
 - **중단 지점 배치**: 긴 루프/연산에 **주기적 중단 체크**(Boost: `interruption_point()`, 자바: `isInterrupted()`).
@@ -221,7 +222,9 @@ stateDiagram-v2
 
 ---
 
-### 결론
+### 📌 결론
 - **Boost C++**: 예외 기반 interrupt. *interruption point*에 의존 → 주기적 체크 필수.  
 - **Java**: 플래그 + 예외로 광범위하게 지원. 폴링 + 블로킹 예외 처리 병행.  
-- **최신 C++**: 가능하면 **`std::jthread` + `std::stop_token`**으로 마이그레이션해, 예외 없이 명시적·협력적 중단을 구현하는 것을 권장합니다.
+- **최신 C++**: 가능하면 **`std::jthread` + `std::stop_token`** 으로 마이그레이션, 예외 없이 명시적·협력적 중단을 구현하는 것을 권장.
+
+---
