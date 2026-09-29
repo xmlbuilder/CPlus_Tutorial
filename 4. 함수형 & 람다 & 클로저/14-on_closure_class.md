@@ -37,57 +37,301 @@
 
 ```cpp
 #pragma once
+
 #include <functional>
 #include <memory>
 #include <type_traits>
 #include <utility>
 
-// 선언: Sig는 'R(Args...)' 형태여야 함
-template<class Sig>
-class ON_Closure;
 
-// 부분 특수화: 함수 시그니처 문법 지원
-template<class R, class... Args>
-class ON_Closure<R(Args...)> {
+// ============================================================
+// Closure
+//
+// Stores any callable object (function, lambda, functor, etc.)
+// behind a unified type‑erased interface of the form R(Args...).
+//
+// Similar to std::function, but the underlying callable is
+// managed via shared_ptr, so copying a Closure shares the
+// callable instead of duplicating it.
+//
+// Example:
+//
+//   Closure<double(double)> func =
+//       [](double x)
+//       {
+//           return x * 2.0;
+//       };
+//
+//   double result = func(10.0);
+//
+// ============================================================
+
+
+
+// ------------------------------------------------------------
+// Primary template
+//
+// Sig must be of the form R(Args...).
+// ------------------------------------------------------------
+
+
+template <class Sig>
+class Closure;
+
+
+// ============================================================
+// Partial specialization
+//
+// Supports function signatures of the form:
+//
+//     Closure<R(Args...)>
+//
+// ============================================================
+template <class R, class... Args>
+class Closure<R(Args...)>
+{
 public:
-  ON_Closure() = default;
 
-  template<class F>
-  ON_Closure(F&& f)
-  : func_(std::make_shared<Model<std::decay_t<F>>>(std::forward<F>(f))) {}
+    // ========================================================
+    // Default Constructor
+    //
+    // Creates an empty Closure with no callable target.
+    // ========================================================
+    Closure() noexcept = default;
 
-  // std::function과 동일하게 const 호출 연산자 제공
-  R operator()(Args... args) const {
-    if constexpr (std::is_void_v<R>) {
-      func_->invoke(std::forward<Args>(args)...);
-    } else {
-      return func_->invoke(std::forward<Args>(args)...);
+
+    // ========================================================
+    // Callable Constructor
+    //
+    // Stores various callable types inside the Closure:
+    //
+    //   - lambda
+    //   - function pointer
+    //   - functor
+    //   - captured lambda
+    //
+    // The condition DF != Closure prevents this constructor
+    // from accepting another Closure instance directly.
+    //
+    // Copying a Closure is handled by the dedicated copy
+    // constructor below.
+    // ========================================================
+    template <
+        class F,
+        class DF = std::decay_t<F>,
+        std::enable_if_t<
+            !std::is_same_v<DF, Closure>,
+            int> = 0>
+    Closure(F&& f)
+        : func_(
+            std::make_shared<Model<DF>>(
+                std::forward<F>(f)
+            )
+        )
+    {
     }
-  }
 
-  explicit operator bool() const noexcept { return static_cast<bool>(func_); }
+
+    // ========================================================
+    // Copy Constructor
+    //
+    // Does not copy the underlying callable.
+    //
+    // Copies only the shared_ptr, so both Closures
+    // share the same Model instance.
+    // ========================================================
+    Closure(const Closure&) noexcept = default;
+
+
+    // ========================================================
+    // Move Constructor
+    // ========================================================
+
+    Closure(Closure&&) noexcept = default;
+
+
+    // ========================================================
+    // Copy Assignment
+    // ========================================================
+
+    Closure& operator=(const Closure&) noexcept = default;
+
+
+    // ========================================================
+    // Move Assignment
+    // ========================================================
+
+    Closure& operator=(Closure&&) noexcept = default;
+
+
+    // ========================================================
+    // Destructor
+    // ========================================================
+
+    ~Closure() = default;
+
+
+    // ========================================================
+    // operator()
+    //
+    // Invokes the stored callable.
+    //
+    // Calling an empty Closure throws std::bad_function_call,
+    // similar to std::function.
+    //
+    // Supports callables returning void as well.
+    // ========================================================
+    R operator()(Args... args) const
+    {
+        if (!func_)
+        {
+            throw std::bad_function_call();
+        }
+
+        if constexpr (std::is_void_v<R>)
+        {
+            func_->invoke(
+                std::forward<Args>(args)...
+            );
+        }
+        else
+        {
+            return func_->invoke(
+                std::forward<Args>(args)...
+            );
+        }
+        return {};
+    }
+
+
+    // ========================================================
+    // operator bool
+    //
+    // Checks whether a callable object is stored.
+    //
+    // Example:
+    //
+    //   if (func)
+    //       func(...);
+    //
+    // ========================================================
+    explicit operator bool() const noexcept
+    {
+        return static_cast<bool>(func_);
+    }
+
+
+    // ========================================================
+    // empty
+    // ========================================================
+
+    bool empty() const noexcept
+    {
+        return !func_;
+    }
+
+    // ========================================================
+    // reset
+    //
+    // Releases the reference to the current callable.
+    //
+    // If other Closures still share the same callable,
+    // the underlying Model object is not destroyed.
+    // ========================================================
+    void reset() noexcept
+    {
+        func_.reset();
+    }
+
 
 private:
-  struct Concept {
-    virtual ~Concept() = default;
-    // perfect forwarding
-    virtual R invoke(Args&&... args) const = 0;
-  };
 
-  template<class F>
-  struct Model : Concept {
-    std::decay_t<F> f;
-    explicit Model(F&& fn) : f(std::forward<F>(fn)) {}
-    R invoke(Args&&... args) const override {
-      if constexpr (std::is_void_v<R>) {
-        std::invoke(f, std::forward<Args>(args)...);
-      } else {
-        return std::invoke(f, std::forward<Args>(args)...);
-      }
-    }
-  };
+    // ========================================================
+    // Concept
+    //
+    // Type‑erasure base class that provides a unified interface
+    // for invoking any callable object.
+    // ========================================================
+    struct Concept
+    {
+        virtual ~Concept() = default;
 
-  std::shared_ptr<const Concept> func_;
+        virtual R invoke(Args&&... args) const = 0;
+    };
+
+
+    // ========================================================
+    // Model
+    //
+    // Stores the actual callable object.
+    //
+    // F may be a lambda, functor, or function pointer.
+    // ========================================================
+    template <class F>
+    struct Model final : Concept
+    {
+        F f;
+
+
+        // ----------------------------------------------------
+        // Model Constructor
+        //
+        // Uses a forwarding constructor to store the callable,
+        // copying or moving it as appropriate.
+        // ----------------------------------------------------
+        template <class Fn>
+        explicit Model(Fn&& fn)
+            : f(std::forward<Fn>(fn))
+        {
+        }
+
+
+        // ----------------------------------------------------
+        // invoke
+        //
+        // Invokes the stored callable.
+        //
+        // Because it uses std::invoke, all callable types are
+        // handled uniformly — regular lambdas, functors,
+        // function pointers, and more.
+        // ----------------------------------------------------
+        R invoke(Args&&... args) const override
+        {
+            if constexpr (std::is_void_v<R>)
+            {
+                std::invoke(
+                    f,
+                    std::forward<Args>(args)...
+                );
+            }
+            else
+            {
+                return std::invoke(
+                    f,
+                    std::forward<Args>(args)...
+                );
+            }
+            return {};
+        }
+    };
+
+
+private:
+
+    // ========================================================
+    // Callable Storage
+    //
+    // The actual callable (Model) is shared via shared_ptr.
+    //
+    // Closure A ─┐
+    //             ├──> Model<F> ──> callable
+    // Closure B ─┤
+    // Closure C ─┘
+    //
+    // Therefore, copying a Closure does not duplicate the
+    // Model<F> or the callable object; it simply shares them.
+    // ========================================================
+    std::shared_ptr<const Concept> func_;
 };
 ```
 
