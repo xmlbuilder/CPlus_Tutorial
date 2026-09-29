@@ -1,4 +1,4 @@
-## 📦 C++ STL `std::array` 정리
+## 📘 `std::array` 정리
 
 ### 📌 개요
 
