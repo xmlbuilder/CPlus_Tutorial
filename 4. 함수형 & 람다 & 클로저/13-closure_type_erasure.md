@@ -21,52 +21,282 @@
 ## 📦 단일 헤더 (원본 구현)
 
 
-
 ```cpp
 #pragma once
+#include <functional>
 #include <memory>
+#include <type_traits>
 #include <utility>
 
-template<typename R, typename... Args>
-class ON_Closure {
-public:
-    // 생성자: 어떤 함수 객체든 받아서 저장
-    template<typename F>
-    ON_Closure(F&& f)
-        : func(std::make_shared<Model<F>>(std::forward<F>(f))) {}
+// ============================================================
+// Closure
+//
+// Stores any callable object (function, lambda, functor, etc.)
+// behind a unified type‑erased interface of the form R(Args...).
+//
+// Similar to std::function, but the underlying callable is
+// managed via shared_ptr, so copying a Closure shares the
+// callable instead of duplicating it.
+//
+// Example:
+//
+//   Closure<double(double)> func =
+//       [](double x)
+//       {
+//           return x * 2.0;
+//       };
+//
+//   double result = func(10.0);
+//
+// ============================================================
 
-    // 호출 연산자: 함수처럼 호출
-    R operator()(Args... args) const {
-        return func->invoke(std::forward<Args>(args)...);
+// ------------------------------------------------------------
+// Primary template
+//
+// Sig must be of the form R(Args...).
+// ------------------------------------------------------------
+template <class Sig>
+class Closure;
+
+// ============================================================
+// Partial specialization
+//
+// Supports function signatures of the form:
+//
+//     Closure<R(Args...)>
+//
+// ============================================================
+template <class R, class... Args>
+class Closure<R(Args...)>
+{
+public:
+
+    // ========================================================
+    // Default Constructor
+    //
+    // Creates an empty Closure with no callable target.
+    // ========================================================
+    Closure() noexcept = default;
+
+    // ========================================================
+    // Callable Constructor
+    //
+    // Stores various callable types inside the Closure:
+    //
+    //   - lambda
+    //   - function pointer
+    //   - functor
+    //   - captured lambda
+    //
+    // The condition DF != Closure prevents this constructor
+    // from accepting another Closure instance directly.
+    //
+    // Copying a Closure is handled by the dedicated copy
+    // constructor below.
+    // ========================================================
+    template <
+        class F,
+        class DF = std::decay_t<F>,
+        std::enable_if_t<
+            !std::is_same_v<DF, Closure>,
+            int> = 0>
+    Closure(F&& f)
+        : func_(
+            std::make_shared<Model<DF>>(
+                std::forward<F>(f)
+            )
+        )
+    {
+    }
+
+    // ========================================================
+    // Copy Constructor
+    //
+    // Does not copy the underlying callable.
+    //
+    // Copies only the shared_ptr, so both Closures
+    // share the same Model instance.
+    // ========================================================
+    Closure(const Closure&) noexcept = default;
+
+    // ========================================================
+    // Move Constructor
+    // ========================================================
+    Closure(Closure&&) noexcept = default;
+
+    // ========================================================
+    // Copy Assignment
+    // ========================================================
+    Closure& operator=(const Closure&) noexcept = default;
+
+    // ========================================================
+    // Move Assignment
+    // ========================================================
+    Closure& operator=(Closure&&) noexcept = default;
+
+    // ========================================================
+    // Destructor
+    // ========================================================
+    ~Closure() = default;
+
+    // ========================================================
+    // operator()
+    //
+    // Invokes the stored callable.
+    //
+    // Calling an empty Closure throws std::bad_function_call,
+    // similar to std::function.
+    //
+    // Supports callables returning void as well.
+    // ========================================================
+    R operator()(Args... args) const
+    {
+        if (!func_)
+        {
+            throw std::bad_function_call();
+        }
+
+        if constexpr (std::is_void_v<R>)
+        {
+            func_->invoke(
+                std::forward<Args>(args)...
+            );
+        }
+        else
+        {
+            return func_->invoke(
+                std::forward<Args>(args)...
+            );
+        }
+    }
+
+    // ========================================================
+    // operator bool
+    //
+    // Checks whether a callable object is stored.
+    //
+    // Example:
+    //
+    //   if (func)
+    //       func(...);
+    //
+    // ========================================================
+    explicit operator bool() const noexcept
+    {
+        return static_cast<bool>(func_);
+    }
+
+    // ========================================================
+    // empty
+    // ========================================================
+    bool empty() const noexcept
+    {
+        return !func_;
+    }
+
+    // ========================================================
+    // reset
+    //
+    // Releases the reference to the current callable.
+    //
+    // If other Closures still share the same callable,
+    // the underlying Model object is not destroyed.
+    // ========================================================
+    void reset() noexcept
+    {
+        func_.reset();
     }
 
 private:
-    // 타입 소거를 위한 추상 인터페이스
-    struct Concept {
+
+    // ========================================================
+    // Concept
+    //
+    // Type‑erasure base class that provides a unified interface
+    // for invoking any callable object.
+    // ========================================================
+    struct Concept
+    {
         virtual ~Concept() = default;
-        virtual R invoke(Args... args) const = 0;
+
+        virtual R invoke(Args&&... args) const = 0;
     };
 
-    // 실제 함수 객체를 담는 템플릿 모델
-    template<typename F>
-    struct Model : Concept {
+    // ========================================================
+    // Model
+    //
+    // Stores the actual callable object.
+    //
+    // F may be a lambda, functor, or function pointer.
+    // ========================================================
+    template <class F>
+    struct Model final : Concept
+    {
         F f;
-        explicit Model(F&& f) : f(std::forward<F>(f)) {}
-        R invoke(Args... args) const override {
-            return f(std::forward<Args>(args)...);
+
+        // ----------------------------------------------------
+        // Model Constructor
+        //
+        // Uses a forwarding constructor to store the callable,
+        // copying or moving it as appropriate.
+        // ----------------------------------------------------
+        template <class Fn>
+        explicit Model(Fn&& fn)
+            : f(std::forward<Fn>(fn))
+        {
+        }
+
+        // ----------------------------------------------------
+        // invoke
+        //
+        // Invokes the stored callable.
+        //
+        // Because it uses std::invoke, all callable types are
+        // handled uniformly — regular lambdas, functors,
+        // function pointers, and more.
+        // ----------------------------------------------------
+        R invoke(Args&&... args) const override
+        {
+            if constexpr (std::is_void_v<R>)
+            {
+                std::invoke(
+                    f,
+                    std::forward<Args>(args)...
+                );
+            }
+            else
+            {
+                return std::invoke(
+                    f,
+                    std::forward<Args>(args)...
+                );
+            }
         }
     };
 
-    std::shared_ptr<const Concept> func;
+private:
+
+    // ========================================================
+    // Callable Storage
+    //
+    // The actual callable (Model) is shared via shared_ptr.
+    //
+    // Closure A ─┐
+    //             ├──> Model<F> ──> callable
+    // Closure B ─┤
+    // Closure C ─┘
+    //
+    // Therefore, copying a Closure does not duplicate the
+    // Model<F> or the callable object; it simply shares them.
+    // ========================================================
+    std::shared_ptr<const Concept> func_;
 };
 ```
 
----
-
-## 🧠 아키텍처 한눈에
+### 📌 아키텍처 한눈에
 
 ```
-ON_Closure<R, Args...>
+Closure<R, Args...>
 └─ shared_ptr<Concept>
    ├─ virtual R invoke(Args...)
    └─ Model<F> : Concept
@@ -78,11 +308,11 @@ ON_Closure<R, Args...>
 
 ---
 
-## 🛠 사용법
+### 📌 사용법
 
 > **중요:** 이 버전은 **`<R, Args...>`** 템플릿 인자 방식을 사용합니다.
 
-### 1) 기본 예제
+#### 🔹 1) 기본 예제
 
 ```cpp
 #include <iostream>
@@ -112,7 +342,7 @@ int main() {
 }
 ```
 
-### 2) 빌드
+#### 🔹 2) 빌드
 
 ```bash
 g++ -std=c++17 -O2 main.cpp -o demo
@@ -122,47 +352,4 @@ clang++ -std=c++17 -O2 main.cpp -o demo
 
 ---
 
-## ⚠️ 제한 사항 & 주의점
-
-이 원본 구현은 아주 간단한 대신, 다음과 같은 제약이 있습니다.
-
-1. **`R = void` 미지원**
-   - `operator()`가 `return func->invoke(...);` 형태라 `R=void`일 때 컴파일 에러가 납니다.
-   - 필요하면 `if constexpr (std::is_void_v<R>)` 분기 추가가 필요합니다.
-
-2. **완전 전달(Perfect Forwarding) 아님**
-   - `operator()(Args... args)` 와 `Concept::invoke(Args... args)`가 **값 전달**이므로
-     전달 인자의 참조성/값성/우측값 정보가 보존되지 않습니다.  
-     (실전에서는 `Args&&...` + `std::forward<Args>(args)...` 권장)
-
-3. **`const` 호출만 가능**
-   - `invoke`와 `operator()`가 `const`이므로 **비-const 호출 연산자만 가진 functor**는 사용할 수 없습니다.
-     (필요하면 해당 `const`를 제거/오버로드하거나 functor 측을 `mutable`로)
-
-4. **CPO/std::invoke 미사용**
-   - 멤버 함수 포인터, `std::reference_wrapper` 등의 폭넓은 호출은 직접 람다로 감싸야 합니다.
-     (실전에서는 `std::invoke` 채택 권장)
-
-5. **SBO(소형 버퍼 최적화) 없음**
-   - 대상 보관 시 1회 힙 할당(`make_shared`)이 발생합니다.  
-     소형 객체 성능이 중요하면 SBO가 있는 구현을 고려하세요.
-
-6. **복사 의미는 “공유”**
-   - `std::shared_ptr`를 복사하므로 **동일 대상**을 공유합니다.
-   - 완전한 독립 복사(딥카피)가 필요하면 `clone()` 인터페이스를 도입하는 쪽을 고려하세요.
-
----
-
-## 💡 개선 포인트(선택)
-
-실전에서 쓰려면 아래와 같은 변경을 권장합니다.
-
-- `R = void` 지원: `if constexpr (std::is_void_v<R>)` 분기
-- **완전 전달**: `invoke(Args&&...)` + `std::forward`
-- **`std::decay_t<F>`** 저장: 참조/cv/배열/함수 타입을 보관하기 좋은 값 타입으로 정규화
-- **`std::invoke`** 사용: 함수/멤버 함수 포인터/참조 래퍼까지 호출 커버
-- (선택) 비어 있음 체크: `explicit operator bool() const`
-- (선택) SBO/clone/noexcept 전파 등 고급화
-
----
 
