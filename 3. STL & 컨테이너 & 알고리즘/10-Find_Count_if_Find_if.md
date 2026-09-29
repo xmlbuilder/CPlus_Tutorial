@@ -1,4 +1,4 @@
-## 📚 C++ STL `find`, `count_if`, `find_if` 정리
+## 📘 `find`, `count_if`, `find_if` 정리
 
 ### 📌 개요
 - STL 알고리즘 `find`, `count_if`, `find_if`는 반복자 구간에서 조건에 맞는 요소를 찾거나 개수를 세는 데 사용됩니다.
