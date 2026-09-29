@@ -1,4 +1,4 @@
-## 🔍 C++ STL `std::binary_search`와 사용자 정의 비교 함수
+## 📘 `std::binary_search`와 사용자 정의 비교 함수
 
 ### 📌 개요
 - `std::binary_search`는 **정렬된 범위** 에서 특정 값이 존재하는지 빠르게 확인하는 알고리즘입니다.  
