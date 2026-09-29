@@ -9,9 +9,7 @@
 ![람다구조](/image/lambda.png)
 
 
----
-
-#### 🔹 1. 람다의 기본 구조
+### 📌 1. 람다의 기본 구조
 
 ```cpp
 [capture](parameter_list) mutable -> return_type {
@@ -29,7 +27,7 @@
 
 ---
 
-#### 🔹 2. 캡처(Capture)
+### 📌 2. 캡처(Capture)
 
 - 람다는 외부 스코프 변수에 접근하기 위해 캡처를 사용합니다.
 
@@ -122,7 +120,7 @@ int main(){
 }
 ```
 
-#### 🔹3. mutable 키워드
+### 📌 3. mutable 키워드
 
 - 값(value) 캡처 시, 기본적으로 변수는 변경할 수 없습니다.  
 - `mutable`을 사용하면 람다 내부에서 값 캡처 변수를 수정할 수 있습니다.
@@ -132,7 +130,7 @@ int x = 10;
 [=]() mutable { x = 20; }(); // 내부에서 수정 가능 (외부 값에는 영향 없음)
 ```
 
-#### 🔹 4. 예외 명시 (throw)
+### 📌 4. 예외 명시 (throw)
 
 - 람다 뒤에 `throw()`를 붙이면 예외를 던지지 않겠다는 의미입니다.
 
@@ -143,7 +141,7 @@ int x = 10;
 ```
 
 
-#### 🔹 5. 반환 타입(Return Type)
+### 📌 5. 반환 타입(Return Type)
 
 `-> 타입` 형태로 반환 타입을 지정할 수 있습니다.
 
@@ -154,7 +152,7 @@ auto sum = [](int a, int b) -> int { return a + b; };
 - 반환 타입을 생략하면 `return`문의 타입을 추론합니다.
 
 
-#### 🔹 6. std::function과 람다
+### 📌 6. std::function과 람다
 
 - 람다는 `std::function`과 함께 사용해 고차 함수(Higher-order function) 구현이 가능합니다.
 
@@ -163,7 +161,7 @@ auto sum = [](int a, int b) -> int { return a + b; };
 std::function<int(int)> f = [](int x) { return x + 1; };
 ```
 
-#### 🔹 7. 함수 인자로 람다 전달
+### 📌 7. 함수 인자로 람다 전달
 
 ```cpp
 #include <algorithm>
@@ -175,7 +173,7 @@ std::sort(v.begin(), v.end(), [](int a, int b) {
 });
 ```
 
-#### 🔹 8. Function 과 연동
+### 📌 8. Function 과 연동
 
 ```cpp
 #include <functional>
@@ -299,7 +297,7 @@ int main(void) {
 }
 ```
 
-#### 🔹 9. Auto로 람다식 다루기
+### 📌 9. Auto로 람다식 다루기
 
 ```cpp
 #include <iostream>
@@ -325,7 +323,7 @@ int main(){
 }
 ```
 
-#### 🔹 10. 정리
+### 📌 10. 정리
 
 - 람다는 함수 객체의 문법적 설탕(syntactic sugar)
 - 외부 변수 접근을 위해 **캡처** 사용
