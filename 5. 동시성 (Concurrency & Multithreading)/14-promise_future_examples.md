@@ -1,17 +1,16 @@
-# 🎯 C++11 `std::promise` & `std::future` — 스레드 결과 반환
+## 📘 `std::promise` & `std::future` — 스레드 결과 반환
 
-## 📌 개요
-C++11에서는 `<future>` 헤더에 **`std::promise`** 와 **`std::future`** 가 추가되어  
-멀티스레드 환경에서 **스레드 실행 결과를 안전하게 반환**받을 수 있습니다.
+### 📌 개요
+- C++11에서는 `<future>` 헤더에 **`std::promise`** 와 **`std::future`** 가 추가되어  
+멀티스레드 환경에서 **스레드 실행 결과를 안전하게 반환** 받을 수 있습니다.
 
 - **`std::promise<T>`** : 값을 설정(set)하는 역할
 - **`std::future<T>`** : 값을 가져오는(get) 역할
 - `promise` → `get_future()` → `future`
 - `future.get()` 은 결과값을 얻을 때까지 블록됨
 
----
 
-## 📂 기본 예제 — `promise`와 `future`
+### 📌 기본 예제 — `promise`와 `future`
 
 ```cpp
 #include <iostream>
@@ -33,15 +32,13 @@ int main() {
 }
 ```
 
-**동작 설명**
-1. `promise<int>` → 반환값 타입 `int`
-2. `get_future()` 로 `future<int>` 생성
-3. 스레드에서 `set_value()` 호출 → 값 전달
-4. `future.get()` 호출 → 값 수신 (스레드 종료 후)
+#### 🔹 동작 설명
+- 1. `promise<int>` → 반환값 타입 `int`
+- 2. `get_future()` 로 `future<int>` 생성
+- 3. 스레드에서 `set_value()` 호출 → 값 전달
+- 4. `future.get()` 호출 → 값 수신 (스레드 종료 후)
 
----
-
-## 📂 `std::async`를 이용한 간단한 구현
+### 📌 `std::async`를 이용한 간단한 구현
 
 ```cpp
 #include <thread>
@@ -66,9 +63,8 @@ int main() {
 - `std::async`는 `thread + promise/future`를 합친 고수준 API
 - `get()` 호출 시 결과가 준비될 때까지 대기
 
----
 
-## 📂 `promise<void>` — 완료 여부 플래그로 사용
+### 📌 `promise<void>` — 완료 여부 플래그로 사용
 
 ```cpp
 #include <chrono>
@@ -100,12 +96,11 @@ int main() {
 }
 ```
 
-- `promise<void>`는 값을 전달하지 않고 **작업 완료 여부**만 전달
+- `promise<void>`는 값을 전달하지 않고 **작업 완료 여부** 만 전달
 - `wait_for()`를 사용해 **폴링(polling) 방식** 대기 가능
 
----
 
-## 📂 값 반환 예제 (`promise<int>`)
+### 📌 값 반환 예제 (`promise<int>`)
 
 ```cpp
 #include <chrono>
@@ -138,9 +133,7 @@ int main() {
 }
 ```
 
----
-
-## 📊 핵심 요약
+### 📌 핵심 요약
 
 | 요소 | 역할 |
 |------|------|
@@ -152,18 +145,19 @@ int main() {
 | `wait_for()`      | 특정 시간만 대기 후 상태 반환 |
 | `std::async()`    | thread + promise/future 통합형 |
 
----
 
-## 📈 동작 흐름 다이어그램
+
+### 📌 동작 흐름 다이어그램
 
 ```md
 Promise/Producer                        Future/Consumer
 ----------------                        ----------------
     │  create promise<T>                      │
-    │----------------------------------------▶│ get_future()
+    │───────────────────────────────────────▶│ get_future()
     │                                         │
-    │  set_value(value)                        │
-    │────────────────────────────────────────▶│ get() → waits until ready
+    │  set_value(value)                       │
+    │───────────────────────────────────────▶│ get() → waits until ready
     │                                         │
     │ (thread finishes)                       │
 ```
+---
