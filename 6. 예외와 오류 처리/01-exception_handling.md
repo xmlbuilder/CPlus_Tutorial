@@ -1,33 +1,32 @@
-# C++ Exception Handling
+## 📘 Exception Handling
 
-## 📌 What is an Exception?
+### 📌 What is an Exception?
 An **exception** represents an unexpected event that occurs during program execution, which disrupts the normal flow of instructions.
 
-### Examples:
+#### 🔹 Examples:
 - Running out of memory
 - Missing required file
 - Invalid user input
 
----
 
-## 🛠 What is Exception Handling?
+
+### 📌 What is Exception Handling?
 **Exception handling** is the mechanism to detect and respond to runtime errors, ensuring the program can either recover gracefully or exit cleanly.
 
 - Handle the error without crashing
 - Warn the user about the error
 - Preserve or save user data
 
----
 
-## ⚠ Types of Errors
+### ⚠ Types of Errors
 | Type          | Description |
 |---------------|-------------|
 | Compile Error | Caused by syntax mistakes — easy to fix, happens before execution |
 | Runtime Error | Caused by logic mistakes, invalid input, or unexpected situations during execution |
 
----
 
-## 🔹 Basic Syntax in C++
+
+### 📌 Basic Syntax in C++
 ```cpp
 try {
     // Code that may throw
@@ -38,9 +37,7 @@ catch (exception_type e) {
 }
 ```
 
----
-
-## 📄 Example
+### 📌 Example
 ```cpp
 int main() {
     int a, b;
@@ -58,17 +55,15 @@ int main() {
 }
 ```
 
-**Output:**
+#### 🔹 Output:
 ```
 Input 2 numbers: 1 0
 Exception: 0
 Finished
 ```
 
----
-
-## 🔄 Exceptions Can Propagate
-Exceptions can be thrown inside a function and caught in the caller.
+### 📌 Exceptions Can Propagate
+- Exceptions can be thrown inside a function and caught in the caller.
 
 ```cpp
 int divide(int a, int b) {
@@ -85,9 +80,8 @@ int main() {
 }
 ```
 
----
 
-## 🎯 Matching Exception Types
+### 📌 Matching Exception Types
 ```cpp
 try { throw 3; }
 catch (int e) { std::cout << "Int: " << e << std::endl; }
@@ -99,9 +93,7 @@ try { throw "Error"; }
 catch (const char* e) { std::cout << "String: " << e << std::endl; }
 ```
 
----
-
-## 🔀 Nested try-catch
+### 📌 Nested try-catch
 ```cpp
 try {
     try {
@@ -115,9 +107,7 @@ try {
 }
 ```
 
----
-
-## 📌 Function Exception Specification (Legacy)
+### 📌 Function Exception Specification (Legacy)
 > **Note:** `throw()` specifications are deprecated in C++11 and removed in C++17.
 
 ```cpp
@@ -130,7 +120,7 @@ double valueAt(double* p, int index) throw(int, const char*) {
 
 ---
 
-## 🏗 Custom Exception Class
+### 📌 Custom Exception Class
 ```cpp
 class FileNotFoundException : public std::exception {
     std::string message;
@@ -143,7 +133,7 @@ public:
 };
 ```
 
-Usage:
+#### 🔹 Usage:
 ```cpp
 try {
     throw FileNotFoundException("Sample.dat");
@@ -152,9 +142,8 @@ try {
 }
 ```
 
----
 
-## 📚 Summary Table
+### 📌 Summary Table
 | Keyword / Concept | Description |
 |-------------------|-------------|
 | try               | Defines a block where exceptions may occur |
@@ -163,10 +152,12 @@ try {
 | std::exception    | Base class for standard exceptions |
 | Custom exception  | User-defined exception type |
 
----
 
-## ✅ Best Practices
+### 📌 Best Practices
 - Catch exceptions by **const reference** to avoid slicing
 - Use `std::exception` hierarchy where possible
 - Avoid using exceptions for control flow
 - Prefer RAII to manage resources and avoid leaks
+
+---
+
