@@ -1,22 +1,21 @@
-# 🔄 C++ 동기화 확장 예제 — Mutual Exclusion & Condition Synchronization
+## 📘 동기화 확장 — Mutual Exclusion & Condition Synchronization
 
-## 📌 개요
-멀티프로세스 또는 멀티스레드 환경에서 공유 자원을 사용할 때 **race condition(경쟁 상태)** 이 발생할 수 있습니다.  
-이를 해결하기 위해 **동기화(synchronization)** 가 필요합니다.
+### 📌 개요
+- 멀티프로세스 또는 멀티스레드 환경에서 공유 자원을 사용할 때 **race condition(경쟁 상태)** 이 발생할 수 있습니다.  
+- 이를 해결하기 위해 **동기화(synchronization)** 가 필요합니다.
 
-동기화 전략은 크게 두 가지로 나뉩니다:
-1. **상호 배제 (Mutual Exclusion)**  
-   - 동시에 하나의 스레드만 공유 자원에 접근 가능하게 함
-   - `std::mutex`, `std::lock_guard`, `std::unique_lock` 등을 사용
-2. **조건 동기화 (Condition Synchronization)**  
-   - 특정 조건이 충족될 때까지 스레드를 대기시키고, 조건이 충족되면 실행
-   - `std::condition_variable`을 사용
+- 동기화 전략은 크게 두 가지로 나뉩니다:
+   - 1. **상호 배제 (Mutual Exclusion)**  
+      - 동시에 하나의 스레드만 공유 자원에 접근 가능하게 함
+      - `std::mutex`, `std::lock_guard`, `std::unique_lock` 등을 사용
+   - 2. **조건 동기화 (Condition Synchronization)**  
+      - 특정 조건이 충족될 때까지 스레드를 대기시키고, 조건이 충족되면 실행
+      - `std::condition_variable`을 사용
 
----
 
-## 📂 예제 — `std::condition_variable` 확장판
+### 📌 예제 — `std::condition_variable` 확장판
 
-이 예제는 **생산자(Producer)**와 **소비자(Consumer)** 패턴을 사용하여  
+- 이 예제는 **생산자(Producer)** 와 **소비자(Consumer)** 패턴을 사용하여  
 조건 변수(`std::condition_variable`)로 스레드 간 동기화를 구현한 코드입니다.
 
 ```cpp
@@ -85,7 +84,7 @@ int main() {
 
 ---
 
-## 📜 실행 예시
+#### 🔹 실행 예시
 ```
 producing 0
 producing 1
@@ -110,9 +109,7 @@ producing 11
 ...
 ```
 
----
-
-## 💡 동작 원리
+### 📌 동작 원리
 - **생산자 스레드**
   - 일정 시간 간격으로 새로운 데이터를 생성하여 큐(`produced_names`)에 삽입
   - `cv.notify_all()`로 대기 중인 모든 소비자 스레드를 깨움
@@ -121,9 +118,7 @@ producing 11
   - 알림을 받으면 큐에서 데이터를 꺼내 처리
   - 처리 후 `notified = false`로 상태 초기화
 
----
-
-## 📊 핵심 요약
+### 📌 핵심 요약
 
 | 동기화 방식       | 설명 | 사용 예시 |
 |-------------------|------|----------|
@@ -132,26 +127,24 @@ producing 11
 | notify_one()      | 대기 중인 스레드 하나 깨움 | 소비자 1명 깨우기 |
 | notify_all()      | 모든 대기 스레드 깨움 | 소비자 여러 명 깨우기 |
 
----
 
-## 📈 동작 흐름 다이어그램
-
+### 📌 동작 흐름 다이어그램
+- Producer - Consumer with Condition Variable
 ```md
-# Producer - Consumer with Condition Variable
-
 Producer                       Condition Variable                   Consumer(s)
 ---------                      -------------------                  ------------
     │                                   │                                 │
     │ produce item                      │                                 │
-    ├──────────────────────────────────▶│                                 │
+    ├─────────────────────────────────▶│                                 │
     │                                   │                                 │
     │          notify_all()             │                                 │
-    ├──────────────────────────────────▶│                                 │
+    ├─────────────────────────────────▶│                                 │
     │                                   │           wait()                │
-    │                                   ├────────────────────────────────▶│
+    │                                   ├───────────────────────────────▶│
     │                                   │                                 │
     │                                   │        consume item             │
-    │                                   │◀────────────────────────────────┤
+    │                                   │◀───────────────────────────────┤
     │                                   │                                 │
     │ (loop)                            │             (loop)              │
 ```
+---
