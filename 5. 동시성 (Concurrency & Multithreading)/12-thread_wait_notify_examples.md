@@ -1,14 +1,13 @@
-# ⏳ C++ Thread Wait & Notify 예제 (`std::condition_variable`)
+## 📘 C++ Thread Wait & Notify (`std::condition_variable`)
 
-## 📌 개요
-`std::condition_variable`은 **스레드 간의 동기화**를 위해 사용됩니다.  
-한 스레드는 **조건이 충족될 때까지 대기(wait)** 하고, 다른 스레드는 **조건이 충족되었음을 알림(notify)** 으로써 대기 중인 스레드를 깨웁니다.
+### 📌 개요
+- `std::condition_variable`은 **스레드 간의 동기화** 를 위해 사용됩니다.  
+- 한 스레드는 **조건이 충족될 때까지 대기(wait)** 하고, 다른 스레드는 **조건이 충족되었음을 알림(notify)** 으로써 대기 중인 스레드를 깨웁니다.
 
----
 
-## 📂 예제 1 — Producer / Consumer (기본 형태)
+### 📌 예제 1 — Producer / Consumer (기본 형태)
 
-### 설명
+#### 🔹 설명
 - **생산자(Producer)**: 큐에 아이템을 추가하고 `notify_one()` 호출
 - **소비자(Consumer)**: 큐가 비어있을 때 `wait()`로 대기, 알림이 오면 아이템을 꺼내 처리
 
@@ -48,17 +47,16 @@ int main() {
 }
 ```
 
-**실행 예시**
+#### 🔹 실행 예시
 ```
 pushItemToQueue()
 Saved game item in the Database
 ```
 
----
 
-## 📂 예제 2 — 콘솔 입력과 스레드 메시지 전달
+### 📌 예제 2 — 콘솔 입력과 스레드 메시지 전달
 
-### 설명
+#### 🔹 설명
 - 메인 스레드: 콘솔에서 문자열 입력 후 메시지 전송
 - 서브 스레드: `wait()` 상태로 대기하다가 알림이 오면 메시지를 출력
 
@@ -96,7 +94,7 @@ int main() {
 }
 ```
 
-**실행 예시**
+#### 🔹 실행 예시
 ```
 Please add message
 message
@@ -107,11 +105,11 @@ sample
 Please add message
 ```
 
----
 
-## 📂 예제 3 — 템플릿 기반 동기화 큐
 
-### 설명
+### 📌  예제 3 — 템플릿 기반 동기화 큐
+
+#### 🔹 설명
 - 제네릭 `queue<T>` 클래스
 - `push()` → 값 추가 후 `notify_one()` 호출
 - `pop()` → 큐가 비어있으면 `wait()`로 대기
@@ -165,14 +163,13 @@ int main() {
 }
 ```
 
-**실행 예시**
+#### 🔹 실행 예시
 ```
 Main Return 20
 ```
 
----
 
-## 📊 핵심 요약
+### 📌 핵심 요약
 
 | 메서드                          | 설명 |
 |--------------------------------|------|
@@ -181,4 +178,6 @@ Main Return 20
 | `notify_one()`                  | 하나의 대기 중인 스레드를 깨움 |
 | `notify_all()`                  | 모든 대기 스레드를 깨움 |
 
-💡 **주의**: `wait()` 호출 전 **반드시 `std::unique_lock<std::mutex>`를 소유**해야 합니다.
+- **주의**: `wait()` 호출 전 **반드시 `std::unique_lock<std::mutex>`를 소유** 해야 합니다.
+---
+
