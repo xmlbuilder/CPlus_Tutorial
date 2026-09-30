@@ -1,6 +1,6 @@
-# ⏱️ C++ `std::chrono` 타이머 가이드
+## ⏱️ C++ `std::chrono` 타이머
 
-## 코드 예제와 설명
+### 📌 코드 예제와 설명
 
 ```cpp
 #include <iostream>
@@ -37,14 +37,23 @@ int main() {
 }
 ```
 
-### 핵심 포인트
+#### 🔹 출력
+```
+17907382059806789
+17907382079806789
+Start time 610043047056700
+End time 610046062484600
+3015427
+```
+
+### 📌 핵심 포인트
 - **`system_clock`**: 실제 날짜/시간(“벽시계”). 시간 변경 시 점프 가능 → 경과 시간 측정엔 부적합.
 - **`steady_clock`**: 단조증가(monotonic) 보장. 경과 시간/타임아웃 측정에 추천.
 - `time_since_epoch().count()`는 시계의 기본 단위(tick) 값 → 사람이 읽을 단위로 변환하려면 `duration_cast` 사용.
 
----
 
-## 리터럴 사용 (C++14)
+
+### 📌 리터럴 사용 (C++14)
 ```cpp
 using namespace std::chrono_literals;
 
@@ -52,9 +61,11 @@ std::this_thread::sleep_for(750ms);
 std::this_thread::sleep_for(2s);
 ```
 
----
 
-## 사람이 읽을 수 있는 시간 출력
+
+### 📌 사람이 읽을 수 있는 시간 출력
+- `std::put_time(std::localtime(&t), "%F %T")`
+  
 ```cpp
 auto now = std::chrono::system_clock::now();
 std::time_t t = std::chrono::system_clock::to_time_t(now);
@@ -64,9 +75,8 @@ std::cout << std::put_time(std::localtime(&t), "%F %T") << "\n"; // 2025-08-12 1
 std::cout << std::format("{:%F %T}\n", now);
 ```
 
----
 
-## 함수 실행 시간 측정 템플릿
+### 📌 함수 실행 시간 측정 템플릿
 ```cpp
 template <class F, class... Args>
 auto measure_us(F&& f, Args&&... args) {
@@ -83,9 +93,7 @@ auto us = measure_us([]{
 std::cout << "Elapsed: " << us << " us\n";
 ```
 
----
-
-## 스코프 타이머 (RAII)
+### 📌 스코프 타이머 (RAII)
 ```cpp
 struct ScopeTimer {
     const char* name;
@@ -105,9 +113,8 @@ struct ScopeTimer {
 }
 ```
 
----
 
-## 타임아웃/데드라인 패턴
+### 📌 타임아웃/데드라인 패턴
 ```cpp
 using namespace std::chrono;
 
@@ -118,17 +125,14 @@ while (true) {
 }
 ```
 
----
-
-## 흔한 실수 체크리스트
+### 📌 흔한 실수 체크리스트
 - 경과 시간 측정에 `system_clock` 사용 → 시계 점프로 값 틀어짐
 - `count()`를 그대로 출력 → 단위 모름 → 반드시 `duration_cast`
 - `<thread>` 누락 → `sleep_for` 컴파일 에러
-- `high_resolution_clock` 남용 → 의미 모호
 
----
 
-## 요약
+
+### 📌 요약
 - 경과 시간/성능 측정 → `steady_clock` + `duration_cast`
 - 현재 날짜/시간 → `system_clock` (+ `to_time_t` / `format`)
 - 가독성 → `2s`, `5ms` 같은 리터럴 사용
