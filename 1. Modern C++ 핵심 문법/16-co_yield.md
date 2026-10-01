@@ -1,7 +1,7 @@
-## C++ Generator
+##  📘 Generator
 
-## 🔁 Python의 yield from vs C++의 generator 위임
-### Python
+### 📌 Python의 yield from vs C++의 generator 위임
+#### Python
 ```python
 def subgen():
     yield 1
@@ -13,7 +13,7 @@ def main():
     yield 'end'
 ```
 
-### C++20 coroutine 스타일
+#### C++20 coroutine 스타일
 
 ```cpp
 Generator<int> subgen() {
@@ -32,7 +32,7 @@ Generator<int> main() {
 - main()은 subgen()의 값을 반복해서 직접 co_yield 합니다.
 - C++에는 yield from 같은 문법은 없지만, for (auto val : subgen())로 위임 효과를 구현할 수 있음.
 
-## ✅ 핵심 요약
+### 📌 핵심 요약
 | 항목               | Python: `yield from`                  | C++20: `co_yield` 위임 방식                     |
 |--------------------|----------------------------------------|------------------------------------------------|
 | 위임 문법          | `yield from subgen()`                 | `for (auto x : subgen()) co_yield x;`         |
@@ -41,19 +41,19 @@ Generator<int> main() {
 | 반환값 전달 방식   | `StopIteration.value`로 전달          | `co_return`으로 반환값 전달 가능              |
 
 
-## 💡 팁
+### 📌 팁
 - C++에서는 co_yield를 반복문으로 감싸서 위임합니다.
 - co_return을 사용하면 Python처럼 하위 generator의 반환값도 받을 수 있습니다.
 - 위임 구조는 중첩된 데이터 흐름, 스트리밍 처리, 상태 머신 등에 유용합니다.
 
 ---
 
-## coroutine 반환값 전달과 비동기 위임
+### 📌 coroutine 반환값 전달과 비동기 위임
 - coroutine에서 과 를 활용한 반환값 전달과 비동기 위임 구조를 설명.
 - Python의 처럼 generator를 위임하거나, 비동기 흐름을 연결하는 방식입니다.
 
-## 🧩 1. 을 활용한 반환값 전달
-### 📦 예제: 하위 coroutine의 결과를 상위 coroutine으로 전달
+### 📌 1. 을 활용한 반환값 전달
+#### 📦 예제: 하위 coroutine의 결과를 상위 coroutine으로 전달
 ```cpp
 #include <coroutine>
 #include <iostream>
@@ -100,14 +100,14 @@ int main() {
     std::cout << "Main task result: " << t.get() << std::endl;
 }
 ```
-### 출력:
+#### 출력:
 ```
 Subtask returned: 42
 Main task result: 43
 ```
 
-## ⚡️ 2. 를 활용한 비동기 위임 구조
-### 📦 예제: 비동기 작업을 coroutine으로 연결
+### 📌 2. 를 활용한 비동기 위임 구조
+#### 📦 예제: 비동기 작업을 coroutine으로 연결
 ```cpp
 #include <coroutine>
 #include <iostream>
@@ -157,14 +157,14 @@ int main() {
     std::this_thread::sleep_for(std::chrono::seconds(2));  // main이 먼저 끝나지 않도록
 }
 ```
-### 출력:
+#### 출력:
 ```
 Starting async task...
 Async operation completed!
 Resumed after await!
 ```
 
-## ✅ 요약
+### 📌 요약
 | 기능             | 설명                                      | 키워드       |
 |------------------|-------------------------------------------|--------------|
 | 반환값 전달      | 하위 coroutine의 결과를 상위에서 받기     | `co_return`  |
@@ -172,12 +172,12 @@ Resumed after await!
 | 병렬 처리        | `await_suspend`에서 스레드나 이벤트 연결  | `std::thread` 등 |
 
 
-##  coroutine 실무
+### 📌  coroutine 실무
 - C++20 coroutine은 강력하지만 문법이 너무 복잡해서 직접 구현하려면 부담이 큽니다.
 - 그래서 실무에서는 직접 coroutine을 짜기보다는, 잘 만들어진 Wrapper나 라이브러리를 활용해서 블랙박스처럼 쓰는 방식이 훨씬 효율적.
 
-## 🧠 언제 coroutine을 쓰면 좋을까?
-### ✅ 대표적인 사용처
+### 📌 언제 coroutine을 쓰면 좋을까?
+#### 대표적인 사용처
 | 사용처                  | 관련 coroutine 키워드         |
 |-------------------------|-------------------------------|
 | 비동기 I/O 처리         | `co_await`                    |
@@ -187,8 +187,8 @@ Resumed after await!
 
 예를 들어, 네트워크 요청을 기다리는 동안 다른 작업을 진행하거나, 게임 캐릭터의 행동을 단계별로 표현할 때 coroutine이 빛을 발합니다.
 
-## 🧰 어떻게 Wrapper해서 블랙박스처럼 쓸 수 있을까?
-### 1. 라이브러리 사용 (예: cppcoro, Folly, Boost)
+### 📌 어떻게 Wrapper해서 블랙박스처럼 쓸 수 있을까?
+#### 1. 라이브러리 사용 (예: cppcoro, Folly, Boost)
 - cppcoro: C++ coroutine을 위한 경량 라이브러리
 - Folly: Facebook에서 만든 고성능 coroutine 지원
 - Boost.Asio: coroutine 기반 비동기 네트워크 처리 가능
@@ -203,7 +203,7 @@ task<int> fetch_data() {
 ```
 → 내부 구현은 보지 않아도 되고, 마치 Python처럼 간결하게 사용할 수 있어요.
 
-### 2. 자체 Wrapper 클래스 만들기
+#### 2. 자체 Wrapper 클래스 만들기
 직접 coroutine을 감싸는 클래스를 만들어서 API처럼 제공할 수도 있어요.
 ```cpp
 class AsyncFetcher {
@@ -217,7 +217,7 @@ public:
 
 → 사용자는 AsyncFetcher().fetch()만 호출하면 되고, 내부 coroutine 구조는 몰라도 됩니다.
 
-### 3. DSL 스타일로 추상화
+#### 3. DSL 스타일로 추상화
 게임 엔진이나 UI 프레임워크에서는 coroutine을 **도메인 특화 언어(DSL)**처럼 추상화해서 사용합니다.
 ```cpp
 co_await move_to(target);
@@ -227,7 +227,7 @@ co_await wait(2s);
 
 → 이건 마치 "스크립트"처럼 보이지만, 내부는 coroutine으로 동작합니다.
 
-## ✅ 요약:
+### 📌 요약:
 | 전략              | 설명                                      |
 |-------------------|-------------------------------------------|
 | 라이브러리 활용    | cppcoro, Boost 등으로 복잡한 문법 감춤     |
@@ -236,12 +236,12 @@ co_await wait(2s);
 
 
 
-## Wrapper 만들어 보기
+### 📌 Wrapper 만들어 보기
 
 복잡한 C++ coroutine을 감추고, 사용자는 간단하게 호출만 하면 되는 형태의 사용자 정의 Wrapper 예제.
 예제는 숫자를 하나씩 생성하는 Generator Wrapper입니다.
 
-### 🎁 목표: 사용자 입장에서는 이렇게만 쓰면 됨
+### 📌 목표: 사용자 입장에서는 이렇게만 쓰면 됨
 ```cpp
 MyGenerator gen(5);
 while (gen.has_next()) {
@@ -250,7 +250,7 @@ while (gen.has_next()) {
 ```
 
 
-### 🧱 내부 구현: coroutine은 Wrapper가 알아서 처리
+### 📌 내부 구현: coroutine은 Wrapper가 알아서 처리
 ```cpp
 #include <coroutine>
 #include <iostream>
@@ -303,7 +303,7 @@ MyGenerator make_generator(int max) {
 
 ```
 
-### ✅ 사용 예
+#### 사용 예
 ```cpp
 int main() {
     auto gen = make_generator(5);
@@ -323,7 +323,7 @@ int main() {
 ```
 
 
-## 💡 요점
+### 📌 요점
 - 사용자는 make_generator()만 호출하면 되고, coroutine 내부는 몰라도 됨
 - MyGenerator는 next()와 has_next()만 제공하는 블랙박스 API
 - 내부적으로 co_yield와 promise_type을 사용해 coroutine을 처리
@@ -358,12 +358,12 @@ co_yield 42;  // 컴파일러가 내부적으로 yield_value(42) 호출
 
 → value에 42가 저장되고, std::suspend_always로 코루틴이 멈춥니다.
 
-### 🧠 왜 연결 지점이 없어 보일까?
+### 📌 왜 연결 지점이 없어 보일까?
 - co_yield는 일반 함수 호출처럼 보이지 않기 때문에
 - promise_type은 사용자 코드와 직접 연결되지 않기 때문에
 - 컴파일러가 자동으로 yield_value()를 호출하므로 보이지 않는 연결처럼 느껴집니다
 
-## ✅ 요약 (Markdown 표)
+### 📌 요약 (Markdown 표)
 | 키워드       | 내부적으로 호출되는 메서드           |
 |--------------|----------------------------------------|
 | `co_yield x` | `promise_type::yield_value(x)`         |
