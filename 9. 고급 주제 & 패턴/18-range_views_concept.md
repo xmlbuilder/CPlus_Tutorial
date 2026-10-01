@@ -1,9 +1,10 @@
-# 🧩 1. Ranges: 뷰 파이프라인, 프로젝션, std::views::chunk
-## 📌 개념 요약
+## 📘 std::views
+### 📌 1. Ranges: 뷰 파이프라인, 프로젝션, std::views::chunk
+#### 🔹 개념 요약
 - ranges는 STL 알고리즘과 컨테이너를 더 유연하게 연결해주는 기능
-- **뷰(view)**는 원본 데이터를 복사하지 않고 지연 평가(lazy evaluation) 방식으로 처리
+- **뷰(view)** 는 원본 데이터를 복사하지 않고 지연 평가(lazy evaluation) 방식으로 처리
 - 파이프라인() 문법으로 여러 뷰를 연결 가능
-## 🧪 예제: 파이프라인 + 프로젝션
+#### 🔹 예제: 파이프라인 + 프로젝션
 ```cpp
 #include <ranges>
 #include <vector>
@@ -21,7 +22,7 @@ int main() {
 }
 ```
 
-## 🧪 예제: std::views::chunk
+#### 🔹 예제: std::views::chunk
 ```cpp
 #include <ranges>
 #include <vector>
@@ -40,7 +41,7 @@ int main() {
 }
 ```
 
-📌 출력:
+#### 🔹 출력:
 ```
 1 2 3
 4 5 6
@@ -48,11 +49,11 @@ int main() {
 ```
 ---
 
-# 🧠 2. Concepts & requires: 템플릿 제약
-## 📌 개념 요약
+### 📌 2. Concepts & requires: 템플릿 제약
+#### 🔹 개념 요약
 - concepts는 템플릿 인자에 대해 제약 조건을 명시하는 기능
 - requires 키워드로 조건을 직접 기술하거나, 표준 concept (std::integral, std::floating_point) 사용 가능
-## 🧪 예제: 정수 타입만 허용하는 템플릿
+#### 🔹 예제: 정수 타입만 허용하는 템플릿
 ```cpp
 #include <concepts>
 #include <iostream>
@@ -68,7 +69,7 @@ int main() {
 }
 ```
 
-## 🧪 예제: requires 표현식
+#### 🔹 예제: requires 표현식
 ```cpp
 template<typename T>
 requires requires(T x) {
@@ -80,12 +81,12 @@ void print_size(const T& x) {
 ```
 ---
 
-# 📦 3. std::span: 연속 메모리 뷰
-## 📌 개념 요약
+### 📌 3. std::span: 연속 메모리 뷰
+#### 🔹 개념 요약
 - std::span은 배열, 벡터, 포인터 등 연속된 메모리 블록을 참조하는 lightweight 뷰
 - 복사 없이 안전하게 범위 접근 가능
 - 크기 고정 (std::span<int, 5>) 또는 동적 (std::span<int>)
-## 🧪 예제
+#### 🔹 예제
 ```cpp
 #include <span>
 #include <vector>
@@ -107,12 +108,12 @@ int main() {
 ```
 
 
-# 🧵 4. std::string_view: 문자열 뷰
-## 📌 개념 요약
+### 📌 4. std::string_view: 문자열 뷰
+#### 🔹 개념 요약
 - std::string_view는 문자열을 복사하지 않고 읽기 전용 참조로 처리
 - const char*, std::string 모두에서 생성 가능
 - 매우 빠르고 메모리 효율적
-## 🧪 예제
+#### 🔹 예제
 ```cpp
 #include <string_view>
 #include <iostream>
@@ -129,7 +130,7 @@ int main() {
 ```
 
 
-## ✨ 요약 테이블
+### 📌 요약 테이블
 | 기능 | 설명 | 장점 |
 |------|-----|------| 
 | ranges | 지연 평가 뷰 파이프라인 | 가독성, 성능 | 
