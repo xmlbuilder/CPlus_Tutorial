@@ -1,23 +1,21 @@
-# 🧵 C++ Thread Pool (Java 스타일 영감) — README
+## 📘 C++ Thread Pool (Java 스타일)
 
-간단하지만 실전에 투입 가능한 C++ Thread Pool 구현입니다.  
-Java의 Executor/ThreadPool에서 아이디어를 가져와 **작업 큐 + 워커 스레드 + 안전한 종료 + future 기반 결과 수집**을 제공합니다.
+- 간단하지만 실전에 투입 가능한 C++ Thread Pool 구현입니다.  
+- Java의 Executor/ThreadPool에서 아이디어를 가져와 **작업 큐 + 워커 스레드 + 안전한 종료 + future 기반 결과 수집** 을 제공합니다.
 
----
 
-## ✨ 특징
+### 📌 특징
 
-- ✅ **고정 크기 워커 스레드** (생성 시 지정)
-- ✅ **작업 큐**로 비동기 작업 스케줄링
-- ✅ `enqueueJob()` (void 작업) + `submit()` (반환값/예외 수거 `std::future`)
-- ✅ **예외 안전**: `submit()`은 예외를 future로 전파
-- ✅ **안전한 종료**: `Drain`(드레인) / `Discard`(즉시중단) 정책
-- ✅ 데이터 레이스 제거 (`std::atomic<bool>` + 락)
-- 🧩 확장 포인트: 우선순위 큐, bounded queue, cancel(token), metrics 등
+- **고정 크기 워커 스레드** (생성 시 지정)
+- **작업 큐** 로 비동기 작업 스케줄링
+- `enqueueJob()` (void 작업) + `submit()` (반환값/예외 수거 `std::future`)
+- **예외 안전**: `submit()`은 예외를 future로 전파
+- **안전한 종료**: `Drain`(드레인) / `Discard`(즉시중단) 정책
+- 데이터 레이스 제거 (`std::atomic<bool>` + 락)
+- 확장 포인트: 우선순위 큐, bounded queue, cancel(token), metrics 등
 
----
 
-## 📦 인터페이스 요약
+### 📌 인터페이스 요약
 
 ```cpp
 namespace ThreadPool {
@@ -44,11 +42,10 @@ public:
 } // namespace ThreadPool
 ```
 
----
 
-## 🧪 사용 예시
+### 📌 사용 예시
 
-### 1) fire-and-forget (반환값 없음)
+### 🔹 1) fire-and-forget (반환값 없음)
 
 ```cpp
 #include <chrono>
