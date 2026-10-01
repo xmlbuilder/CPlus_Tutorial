@@ -1,7 +1,7 @@
-# C# 코드에서는 정규식 수량자
-C# 코드에서는 정규식 수량자 {n,m}를 사용해 특정 범위의 반복을 매칭하고 있죠. 
+## 📘 정규식 수량자
+- C#, C++, Java, Python 코드에서는 정규식 수량자 {n,m}를 사용해 특정 범위의 반복을 매칭 
 
-## ✅ 정규식 수량자 개요
+### 📌 정규식 수량자 개요
 
 | 수량자     | 설명                     | 예시 표현 | 매칭 가능한 문자열 예시         |
 |------------|--------------------------|------------|----------------------------------|
@@ -13,7 +13,7 @@ C# 코드에서는 정규식 수량자 {n,m}를 사용해 특정 범위의 반�
 | `{n,m}`    | 최소 n회, 최대 m회 반복 | `a{2,4}`   | `"aa"`, `"aaa"`, `"aaaa"`        |
 
 
-# 🧠 C#
+### 📌 C#
 ```csharp
 using System.Text.RegularExpressions;
 
@@ -37,7 +37,6 @@ namespace GrammarTest
              z12345
              */
 
-
             var text2 = "삼겹살-84-58433, 상추-95838-488";
             var pattern2 = @"\p{IsHangulSyllables}+-[0-9]{2,3}-[0-9]+";
 
@@ -55,7 +54,7 @@ namespace GrammarTest
 
 ```
 
-## 🧠 C++ (with <regex> from C++11)
+### 📌 C++ (with <regex> from C++11)
 ```cpp
 #include <iostream>
 #include <regex>
@@ -77,7 +76,7 @@ int main() {
 - std::regex 사용
 - R"()"는 raw string literal로 백슬래시 이스케이프를 피할 수 있음
 
-## ☕ Java (with java.util.regex)
+### 📌 Java (with java.util.regex)
 ```java
 import java.util.regex.*;
 public class Main {
@@ -96,7 +95,7 @@ public class Main {
 - Pattern.compile()로 정규식 생성
 - Matcher.find()로 반복 탐색
 
-## 🐍 Python (with re module)
+### 📌 Python (with re module)
 ```python
 import re
 
@@ -112,10 +111,8 @@ for match in matches:
 - re.findall()은 매칭된 모든 결과를 리스트로 반환
 - r""은 raw string literal
 
-## 🈶 한글 정규식 매칭 방법 비교
-
-C#에서는 \p{IsHangulSyllables} 같은 유니코드 속성으로 한글을 매칭했는데, 다른 언어에서는 다음과 같이 처리할 수 있어요:
-
+### 📌 한글 정규식 매칭 방법 비교
+- C#에서는 \p{IsHangulSyllables} 같은 유니코드 속성으로 한글을 매칭했는데, 다른 언어에서는 다음과 같이 처리할 수 있음:
 
 | 언어     | 한글 매칭 정규식 예시                |
 |----------|--------------------------------------|
