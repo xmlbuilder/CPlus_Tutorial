@@ -152,7 +152,70 @@ std::call_once(initFlag, []() {
 - 여러 Thread가 동시에 객체 생성을 요청해도 생성 코드는 한 번만 성공적으로 실행됩니다.
 
 
-### 📌 8. 주의 사항
+
+### 📌 8. Singleton에 적용하면 좋은 형태
+
+- `std::call_once()`는 **Singleton을 최초 접근 시 한 번만 생성** 하는 용도로 사용할 수 있습니다.
+
+```cpp
+#include <memory>
+#include <mutex>
+
+class Singleton
+{
+public:
+    static Singleton& Instance()
+    {
+        static std::once_flag initFlag;
+
+        std::call_once(initFlag, []() {
+            instance.reset(new Singleton());
+        });
+
+        return *instance;
+    }
+
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+private:
+    Singleton() = default;
+
+    inline static std::unique_ptr<Singleton> instance;
+};
+```
+
+#### 🔹 사용:
+
+```cpp
+Singleton& obj = Singleton::Instance();
+```
+
+- 동작은 간단합니다.
+
+```text
+여러 Thread에서 Instance() 호출
+              ↓
+       같은 initFlag 사용
+              ↓
+     Singleton 최초 1회 생성
+              ↓
+      이후 기존 객체 반환
+```
+
+> Singleton 생성 외에도 별도의 초기화 작업을 함께 수행해야 할 때 `std::call_once()` 방식이 유용합니다.
+
+- 참고로 **객체 생성만 필요한 단순한 Singleton** 이라면 C++11 이후에는 다음과 같은 함수 지역 `static` 방식이 더 간단합니다.
+
+```cpp
+static Singleton& Instance()
+{
+    static Singleton instance;
+    return instance;
+}
+```
+
+### 📌 9. 주의 사항
 
 - 동일 작업은 **동일한 `once_flag`** 를 사용해야 함
 - 서로 다른 1회 작업에는 각각 별도의 `once_flag` 사용
@@ -161,7 +224,7 @@ std::call_once(initFlag, []() {
 - `Initialize → Shutdown → Initialize`처럼 반복 초기화가 필요하면 다른 상태 관리 방식이 적합
 - `call_once()`는 외부의 모든 공유 데이터를 자동으로 Thread-Safe하게 만드는 기능은 아님
 
-### 📌 9. 핵심 정리
+### 📌 10. 핵심 정리
 
 ``` cpp
 std::once_flag flag;
