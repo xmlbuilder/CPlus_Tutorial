@@ -1,18 +1,16 @@
 
-# 📚 Linked List Study (C++): Singly & Doubly
+## 📘 Linked List Study (C++): Singly & Doubly
 
-> 깃허브에 바로 올릴 수 있는 정리 파일입니다.  
-> 단방향(SLL) / 양방향(DLL) 연결 리스트 개념, 삽입/삭제 알고리즘, **안전하고 현대적인 C++ 예제 코드**를 포함합니다.
+- 단방향(SLL) / 양방향(DLL) 연결 리스트 개념, 삽입/삭제 알고리즘, **안전하고 현대적인 C++ 예제 코드** 를 포함합니다.
 
----
 
-## 1) Linked List란?
+### 📌 1) Linked List란?
 
-- **연결 리스트(Linked List)** 는 노드들이 포인터로 서로 연결된 **선형 자료구조**입니다.
+- **연결 리스트(Linked List)** 는 노드들이 포인터로 서로 연결된 **선형 자료구조** 입니다.
 - 배열과 달리 **연속된 메모리가 아니어도** 되며, 필요한 만큼 노드를 동적으로 추가/삭제할 수 있습니다.
 - 반면, 임의 접근(Random Access)가 불가능하여 **탐색은 O(n)** 입니다.
 
-### 구조 개요
+#### 🔹 📌 구조 개요
 
 ```mermaid
 flowchart LR
@@ -25,19 +23,19 @@ flowchart LR
   class Head head;
 ```
 
-- 각 노드는 `data`와 **다음 노드**를 가리키는 `next` 포인터를 가집니다.
+- 각 노드는 `data`와 **다음 노드** 를 가리키는 `next` 포인터를 가집니다.
 
 ---
 
-## 2) Singly Linked List (SLL)
+### 📌 2) Singly Linked List (SLL)
 
-### 핵심 포인트
+#### 🔹 핵심 포인트
 
-- 보통 **head 포인터**만 유지합니다. (필요 시 **더미(sentinel) head**를 둘 수 있음)
-- 삽입/삭제 시 **앞/뒤 링크 단 하나**만 조정하면 됩니다.
+- 보통 **head 포인터** 만 유지합니다. (필요 시 **더미(sentinel) head** 를 둘 수 있음)
+- 삽입/삭제 시 **앞/뒤 링크 단 하나** 만 조정하면 됩니다.
 - 임의 위치 삭제는 **직전 노드(prev)** 를 알아야 합니다.
 
-### 삽입 예시 (중간 삽입)
+#### 🔹 삽입 예시 (중간 삽입)
 
 ```mermaid
 flowchart LR
@@ -64,7 +62,7 @@ flowchart LR
   B -- next --> E
 ```
 
-### 삭제 예시 (중간 삭제)
+#### 🔹 삭제 예시 (중간 삭제)
 
 ```mermaid
 flowchart LR
@@ -86,7 +84,7 @@ flowchart LR
 
 ---
 
-### ✅ 안전한 SLL 구현 (헤드 포인터 방식)
+### 📌 안전한 SLL 구현 (헤드 포인터 방식)
 
 ```cpp
 #include <iostream>
@@ -171,14 +169,14 @@ int main() {
 }
 ```
 
-**개선 포인트(원문 대비):**  
+#### 🔹 개선 포인트(원문 대비):  
 - `new Node()` 를 무의미하게 여러 번 할당하지 않습니다.  
 - `head == nullptr` 처리와 경계 조건을 모두 체크합니다.  
 - 메모리 누수 방지를 위해 `clear` 함수를 제공합니다.
 
 ---
 
-## 3) Doubly Linked List (DLL)
+### 📌 3) Doubly Linked List (DLL)
 
 - 각 노드는 `prev` 와 `next` 를 모두 가집니다.
 - 보통 **더미 head/tail** 를 두면 경계 처리가 단순해집니다.
@@ -202,7 +200,7 @@ flowchart LR
   class NullL,NullR head;
 ```
 
-### DLL에 노드 E 삽입 (B와 C 사이)
+#### 🔹 DLL에 노드 E 삽입 (B와 C 사이)
 
 ```mermaid
 flowchart LR
@@ -228,7 +226,7 @@ flowchart LR
   classDef new stroke:#1565c0,stroke-width:2px,fill:#e3f2fd;
 ```
 
-### DLL에서 B 삭제
+#### 🔹 DLL에서 B 삭제
 
 ```mermaid
 flowchart LR
@@ -253,7 +251,7 @@ flowchart LR
 
 ---
 
-### ✅ 안전한 DLL 클래스 (센티넬 사용)
+### 📌 안전한 DLL 클래스 (센티넬 사용)
 
 ```cpp
 #include <iostream>
@@ -359,7 +357,7 @@ private:
 
 ---
 
-## 4) 연산 정리표
+### 📌 4) 연산 정리표
 
 | 연산 | SLL 시간복잡도 | DLL 시간복잡도 | 비고 |
 |---|---:|---:|---|
@@ -373,18 +371,18 @@ private:
 
 ---
 
-## 5) 흔한 실수 & 베스트 프랙티스
+### 📌 5) 흔한 실수 & 베스트 프랙티스
 
 - ❌ **불필요한 `new Node()`** 를 만들고 바로 다른 포인터를 대입(메모리 누수 위험).  
   → **필요할 때만 `new`**, 사용 후 **반드시 `delete`** 또는 `clear` 제공.
 - ❌ 삭제 시 **경계(첫/마지막 노드)** 누락.  
   → 센티넬(head/tail) 사용으로 조건 단순화.
-- ✅ 멤버 함수에서 **예외/조기 반환**으로 분기 단순화.
-- ✅ `size()` 유지로 상태 확인을 O(1)로.
+- 멤버 함수에서 **예외/조기 반환**으로 분기 단순화.
+- `size()` 유지로 상태 확인을 O(1)로.
 
 ---
 
-## 6) 추가 도식 (Mermaid)
+### 📌 6) 추가 도식 (Mermaid)
 
 ```mermaid
 flowchart LR
@@ -399,7 +397,7 @@ flowchart LR
 
 ---
 
-## 7) 사용 예 (DLL)
+### 📌 7) 사용 예 (DLL)
 
 ```cpp
 int main() {
