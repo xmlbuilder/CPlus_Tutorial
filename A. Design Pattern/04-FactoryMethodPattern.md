@@ -1,5 +1,5 @@
 
-## FactoryMethod Pattern
+## 📘 FactoryMethod Pattern
 ```cpp
 #include <iostream>
 #include <memory>
@@ -26,6 +26,8 @@ public:
     }
 };
 ```
+---
+
 ```cpp
 class Logistics {
 public:
@@ -62,10 +64,13 @@ int main() {
 ```
 
 
-### 🔧 왜 unique_ptr이 적합한가?
+### 📌 왜 unique_ptr이 적합한가?
 | 항목               | 설명                                           |
 |--------------------|------------------------------------------------|
 | `move`             | 소유권을 명확히 이전하여 객체 생명주기 관리 가능     |
 | 자동 `delete`      | 객체 소멸 시 자동으로 메모리 해제 (RAII 원칙 적용)   |
 | 예외 안전성        | 예외 발생 시에도 메모리 누수 없이 안전하게 처리       |
 | `shared_ptr` 대비  | 참조 카운팅 오버헤드 없음, 단일 소유권에 더 적합      |
+
+---
+
