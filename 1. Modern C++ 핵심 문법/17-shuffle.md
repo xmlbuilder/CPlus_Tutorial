@@ -1,7 +1,7 @@
-## std::shuffle
+## 📘std::shuffle
 - std::shuffle은 C++11부터 도입된 함수인데, 기존의 random_shuffle보다 더 안전하고 유연한 방식으로 컨테이너의 요소를 무작위로 섞는 함수입니다.
 
-## 📘 std::shuffle이란?
+### 📌 std::shuffle이란?
 - 헤더: <algorithm>
 - 기능: 컨테이너의 요소들을 무작위로 섞음
 - 필요한 것: 반드시 난수 생성기를 함께 전달해야 함 (std::mt19937 등)
