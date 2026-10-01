@@ -1,4 +1,4 @@
-## 📌 std::apply란?
+## 📘 std::apply란?
 - 정의: std::apply는 튜플을 함수 인자로 풀어서 호출해주는 함수 템플릿입니다.
 - 형식:
 ```cpp
@@ -9,7 +9,7 @@ std::apply(f, t);
   - t = std::tuple (혹은 std::pair)
 - 즉, tuple 안에 들어 있는 값들을 자동으로 꺼내서 f에 전달해 줍니다.
 
-## ✨ 간단 예시
+### 📌 간단 예시
 ```cpp
 #include <tuple>
 #include <iostream>
@@ -28,8 +28,9 @@ int main() {
     std::cout << result << "\n"; // 7
 }
 ```
-- ➡️ std::apply(add, args)는 내부적으로 add(3, 4)를 호출한 것과 같습니다.
-### 🔎 구조적 바인딩과 비교
+-  std::apply(add, args)는 내부적으로 add(3, 4)를 호출한 것과 같습니다.
+
+### 📌 구조적 바인딩과 비교
 - 구조적 바인딩:
 ```cpp
 auto [x, y] = args;
@@ -65,15 +66,15 @@ auto length = std::apply([](double x, double y, double z) {
 }, point);
 ```
 
-## 📌 정리
+### 📌 정리
 - std::apply = 튜플 → 함수 인자 풀어주기
 - 반복적인 std::get<>() 호출 없이 깔끔하게 함수에 전달 가능
 - CAD, DB, 시뮬레이션처럼 데이터를 튜플로 묶어두고 함수에 넘겨야 하는 상황에서 특히 유용
 
----
-## 실전 예시
 
-**optional + tuple + apply** 를 한 번에 활용하는 실전 예시를 CAD에 적용
+### 📌 실전 예시
+
+- **optional + tuple + apply** 를 한 번에 활용하는 실전 예시를 CAD에 적용
 
 ### 📌 시나리오
 - CAD 프로그램에서 두 선분의 교차점을 계산하는 함수가 있다고 합시다.
@@ -81,7 +82,7 @@ auto length = std::apply([](double x, double y, double z) {
 - 교차점이 있다면 (x, y, z) 좌표를 std::tuple로 묶어 반환합니다.
 - 이후 std::apply를 사용해 튜플을 함수 인자로 풀어내어 후처리(예: 거리 계산)를 합니다.
 
-### ✨ 코드 예시
+### 📌 코드 예시
 ```cpp
 #include <iostream>
 #include <tuple>
@@ -121,17 +122,16 @@ int main() {
 ```
 
 
-## 📌 실행 결과
+#### 🔹 실행 결과
 ```
 Intersection at distance 3.74166 from origin
 ```
 
-## 🔎 포인트 정리
+### 📌 포인트 정리
 - optional: 교차점이 없을 때 nullopt로 표현 → 0.0과 구분 가능.
 - tuple: 교차점 좌표 (x,y,z)를 하나의 값으로 묶어 반환.
 - apply: 튜플을 풀어서 람다에 전달 → 깔끔하게 (x,y,z)를 인자로 사용.
-
-- 👉 이렇게 하면 CAD 같은 환경에서 데이터 존재 여부 + 좌표 묶음 + 함수 호출을 모두 Modern C++ 스타일로 처리할 수 있습니다.
+- 이렇게 하면 CAD 같은 환경에서 데이터 존재 여부 + 좌표 묶음 + 함수 호출을 모두 Modern C++ 스타일로 처리할 수 있습니다.
 
 ---
 
