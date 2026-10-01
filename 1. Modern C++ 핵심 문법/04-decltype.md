@@ -1,4 +1,4 @@
-## C++ `decltype` & `decltype(auto)` 완전 정리
+## 📘 `decltype` & `decltype(auto)`
 
 ### 📌 1. 개념
 - **`auto`** : 변수의 **타입을 추론** 하여 새로운 변수를 정의.
