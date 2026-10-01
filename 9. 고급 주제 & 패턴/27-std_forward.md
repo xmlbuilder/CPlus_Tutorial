@@ -1,15 +1,15 @@
-# std::forward<Args>(args)...
+## 📘 std::forward<Args>(args)...
 
 - std::forward<Args>(args)... 는 템플릿 함수에서 전달받은 인자들을 **완벽 전달(perfect forwarding)** 하기 위한 구문입니다.  
 - 즉, 원래 인자가 lvalue였는지 rvalue였는지를 그대로 보존해서 다른 함수로 넘겨줍니다.
 
-## 📌 배경
+### 📌 배경
 - C++ 템플릿에서 Args&&... args 같은 forwarding reference (universal reference) 를 쓰면,  
   인자가 lvalue인지 rvalue인지에 따라 타입이 달라집니다.
 - 하지만 함수 내부에서 이름을 붙여버리면, 원래 rvalue였던 것도 lvalue처럼 취급됩니다.
 - 이때 std::forward<T>(arg) 를 사용하면, 원래의 값 카테고리(lvalue/rvalue)를 복원해서 전달할 수 있습니다.
 
-## 📌 구문 의미
+### 📌 구문 의미
 ```rust
 template <typename... Args>
 void wrapper(Args&&... args) {
@@ -21,7 +21,7 @@ void wrapper(Args&&... args) {
 - std::forward<Args>(args)... → 각 인자를 원래 타입(lvalue/rvalue)을 유지한 채로 target 함수에 전달.
 - `...` → pack expansion으로 여러 인자를 한 번에 펼쳐서 전달.
 
-## 📌 예시
+### 📌 예시
 ```cpp
 #include <iostream>
 #include <utility>
@@ -45,16 +45,15 @@ int main() {
 - forwarder(a) → a는 lvalue → process(int&) 호출.
 - forwarder(20) → 20은 rvalue → process(int&&) 호출.
 
-## 📌 핵심 요약
+### 📌 핵심 요약
 - std::forward는 인자의 원래 성격(lvalue/rvalue)을 보존해서 전달합니다.
 - std::forward<Args>(args)...는 가변 인자 팩을 펼쳐서 모두 완벽 전달합니다.
 - std::move와 달리, std::forward는 원래 rvalue일 때만 rvalue로 캐스팅합니다.
-
-- 👉 정리하면, std::forward<Args>(args)... 는 템플릿 함수에서 받은 인자들을 다른 함수로 넘길 때,  
+- 정리하면, std::forward<Args>(args)... 는 템플릿 함수에서 받은 인자들을 다른 함수로 넘길 때,  
   원래의 lvalue/rvalue 특성을 그대로 유지하면서 전달하는 문법입니다.
 
 
-## 📊 std::move vs std::forward 비교
+### 📌 std::move vs std::forward 비교
 
 | 구분 | std::move | std::forward |
 |------|-----------|--------------|
@@ -66,13 +65,12 @@ int main() {
 | 대표 예시 | `vec.push_back(std::move(x));` | ```cpp template<typename T> void f(T&& arg){ g(std::forward<T>(arg)); } ``` |
 
 
-## 📝 핵심 요약
+### 📌 핵심 요약
 - std::move → **이제 이 객체는 안 씀, rvalue로 취급!**
 - std::forward → **원래 인자가 lvalue였는지 rvalue였는지 그대로 전달!**
+- 즉, std::move는 강제 이동, std::forward는 원래 성격 유지라고 기억하면 됩니다.
 
-- 👉 즉, std::move는 강제 이동, std::forward는 원래 성격 유지라고 기억하면 됩니다.
-
-## 📌 예제 코드
+### 📌 예제 코드
 ```cpp
 #include <iostream>
 #include <utility>
@@ -113,8 +111,7 @@ int main() {
 }
 ```
 
-
-## 📊 실행 결과
+#### 🔹 실행 결과
 ```
 === std::move ===
 rvalue: Hello
@@ -124,12 +121,10 @@ lvalue: Hello
 rvalue: World
 ```
 
-
-## ✅ 핵심 포인트
+### 📌 핵심 포인트
 - std::move → 항상 rvalue로 캐스팅 → lvalue도 rvalue로 바뀜.
 - std::forward → 원래 성격 유지 → lvalue는 lvalue, rvalue는 rvalue.
-- 👉 이렇게 보면 std::move는 강제 이동, std::forward는 완벽 전달(perfect forwarding) 이라는 차이가 확실히 드러납니다.
-
+- 이렇게 보면 std::move는 강제 이동, std::forward는 완벽 전달(perfect forwarding) 이라는 차이가 확실히 드러납니다.
 
 ## 📌 클래스 버전 예제
 ```cpp
@@ -184,8 +179,7 @@ int main() {
 }
 ```
 
-
-### 📊 실행 결과
+#### 🔹 실행 결과
 ```
 data = Init
 === Using setDataMove ===
@@ -196,12 +190,11 @@ data = World
 str after forward: World
 data = Temp
 ```
----
 
-✅ 핵심 포인트
+
+## 📌 핵심 포인트
 - setDataMove: std::move를 쓰면 항상 rvalue로 캐스팅 → lvalue도 강제로 이동 → 원본이 비워짐.
 - setDataForward: std::forward를 쓰면 원래 성격 유지 → lvalue는 복사, rvalue는 이동 → 원본 안전하게 유지 가능.
-
 ---
 
 
