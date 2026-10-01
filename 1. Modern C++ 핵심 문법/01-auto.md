@@ -53,7 +53,7 @@ std::cout << f(3, 4.5); // 7.5
 
 
 ### 📌 템플릿에서의 auto
-#### ✅ Non-type 템플릿 파라미터 (C++17)
+#### 🔹 Non-type 템플릿 파라미터 (C++17)
 ```cpp
 template<auto N>
 void print() {
@@ -64,7 +64,7 @@ print<100>();     // int
 print<'A'>();     // char
 ```
 
-#### ✅ decltype(auto) (C++14)
+#### 🔹 decltype(auto) (C++14)
 - decltype(auto)는 표현식의 정확한 타입을 유지하면서 추론합니다.
 ```cpp
 int x = 10;
@@ -111,7 +111,7 @@ void foo() {
 }
 ```
 - 이렇게 하면 value의 타입을 명시하지 않아도 컴파일러가 알아서 추론.
-### ✅ 예시
+### 🔹 예시
 ```cpp
 foo<10>();        // value는 int로 추론됨
 foo<'A'>();       // value는 char
