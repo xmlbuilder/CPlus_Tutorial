@@ -72,6 +72,7 @@ const Type& operator[](int i) const {
 - 이 클래스는 내부적으로 2차원 배열처럼 동작하며, operator()를 통해 배열처럼 접근할 수 있게 변경 할 수 있습니다.
 
 #### 🔹 내부 구조
+```cpp
 class ON_Matrix {
 public:
   int m_row_count;
@@ -82,7 +83,7 @@ public:
   double& operator()(int i, int j);
   const double& operator()(int i, int j) const;
 };
-
+```
 
 - 행렬 데이터는 double* m으로 1차원 배열로 저장됩니다.
 - 실제로는 m[i * m_col_count + j] 방식으로 2차원처럼 접근합니다.
