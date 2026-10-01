@@ -1,7 +1,7 @@
-# Memoize 구현 코드
+## 📘 Memoize 구현
 
-## 🛠️ C++에서 Memoization Decorator 설계 아이디어
-### 1. 템플릿 기반 래퍼 클래스
+### 📌 Memoization Decorator 설계 아이디어
+#### 🔹 1. 템플릿 기반 래퍼 클래스
 - 함수 객체(std::function)를 감싸고,
 - 입력 인자를 키로 해서 결과를 std::unordered_map에 저장합니다.
 - 동일한 인자가 들어오면 캐시된 값을 반환합니다.
@@ -56,18 +56,17 @@ int main() {
 }
 ```
 
-
-### 2. 일반화된 설계
+#### 🔹 2. 일반화된 설계
 - 인자 타입이 다양할 수 있으므로 std::tuple과 std::hash를 활용해 범용화.
 - std::apply를 사용하면 가변 인자 함수도 처리 가능.
 - 캐시 정책(LRU, TTL 등)을 추가하면 Python의 functools.lru_cache와 유사하게 확장 가능.
 
-### 3. Decorator 패턴과 결합
+#### 🔹 3. Decorator 패턴과 결합
 - memoize를 데코레이터 함수로 만들어, 다른 데코레이터(예: 로깅, 성능 측정)와 체인처럼 연결할 수 있습니다.
 ```cpp
 auto decorated = log_decorator(memoize(slow_add));
 ```
-## 📌 설계 포인트
+### 📌 설계 포인트
 - Key 설계: 인자를 어떻게 캐싱 키로 만들지 → tuple + hash 조합
 - Cache 정책: 단순 map vs LRU 캐시
 - Thread-safety: 멀티스레드 환경이면 std::mutex 필요
@@ -75,12 +74,12 @@ auto decorated = log_decorator(memoize(slow_add));
 
 ---
 
-## Overview of the memoization wrapper and its flow
-이 코드는 특정 함수 호출 결과를 캐시에 저장해 같은 입력에 대해 재계산을 피하는 **메모이제이션** 을 C++로 구현한 예시입니다.  
-현재 구현은 인자 두 개가 int인 함수에 맞춰져 있고, 키로 std::tuple<int, int>를 사용합니다.  
-아래에서 각 부분을 단계별로 설명하고, 쓰인 기법과 개선 포인트까지 정리합니다.
+### 📌 Overview of the memoization wrapper and its flow
+- 이 코드는 특정 함수 호출 결과를 캐시에 저장해 같은 입력에 대해 재계산을 피하는 **메모이제이션** 을 구현한 예시입니다.  
+- 현재 구현은 인자 두 개가 int인 함수에 맞춰져 있고, 키로 std::tuple<int, int>를 사용합니다.  
+- 아래에서 각 부분을 단계별로 설명하고, 쓰인 기법과 개선 포인트까지 정리합니다.
 
-### Code walkthrough, step by step
+#### 🔹 Code walkthrough, step by step
 ```cpp
 #include <iostream>
 #include <functional>
@@ -525,4 +524,5 @@ Result = std::invoke_result_t<Func&, Args...>;
 
 ### 👉 정리하면:
 - std::invoke_result_t는 **이 함수(또는 호출 객체)를 이런 인자로 호출했을 때 반환되는 타입** 을 컴파일러가 알려주는 도구입니다.
+---
 
