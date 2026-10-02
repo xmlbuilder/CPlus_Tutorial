@@ -1,4 +1,4 @@
-## C++ Compile-Time Type Relationship Utilities
+## 📘 Compile-Time Type Relationship Utilities
 
 - C++ 타입 사이의 관계를 **컴파일 타임(compile time)** 에 확인하기 위한 간단한 유틸리티 함수 모음이다.
 - 주요 목적은 다음 세 가지이다.
@@ -14,7 +14,7 @@
 > `Base*`만 가지고 실제 객체가 `Derived`인지 알아내야 하는 경우에는
 > `dynamic_cast` 또는 프로젝트의 RTTI 시스템을 사용해야 한다.
 
-------------------------------------------------------------------------
+
 
 ### 📌 1. 전체 소스
 
