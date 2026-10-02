@@ -111,12 +111,14 @@ thread->start();
 QFutureWatcher<void> watcher;
 
 QObject::connect(&watcher, &QFutureWatcher<void>::finished,
-                 this, [this]() {
+  this, [this]()
+{
     ui->progressBar->setValue(100);
     ui->statusLabel->setText("Completed");
 });
 
-watcher.setFuture(QtConcurrent::run([this] {
+watcher.setFuture(QtConcurrent::run([this]
+{
     for (int i = 0; i < 100; ++i)
     {
         DoSomething(i);
@@ -130,7 +132,9 @@ watcher.setFuture(QtConcurrent::run([this] {
             },
             Qt::QueuedConnection);
     }
-}));
+}
+) //run
+); //setFuture
 ```
 
 
@@ -143,7 +147,7 @@ QObject::connect(&timer, &QTimer::timeout, &loop, &QEventLoop::quit);
 timer.start(1000);
 loop.exec();
 ```
-> 새 문법은 **컴파일러 타입 체크**가 가능하고, 리팩토링에 안전합니다.
+> 새 문법은 **컴파일러 타입 체크** 가 가능하고, 리팩토링에 안전합니다.
 
 
 ### 📌 체크리스트
