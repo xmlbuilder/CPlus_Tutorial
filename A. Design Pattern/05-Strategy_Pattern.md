@@ -1,15 +1,15 @@
-# Strategy Pattern
+## 📘Strategy Pattern
 
-**전략 패턴(Strategy Pattern)** 을  C++ 로 구현한 예제.
+- **전략 패턴(Strategy Pattern)** 을  C++ 로 구현한 예제.
 
 
-## 🧠 전략 패턴 핵심 구조
+### 📌 전략 패턴 핵심 구조
 - Strategy: 알고리즘 인터페이스 (trait / interface / abstract class)
 - ConcreteStrategy: 실제 알고리즘 구현체
 - Context: 전략을 사용하는 클래스, 전략을 교체 가능
 
 
-### 💠 C++ 예제 (unique_ptr 기반)
+### 📌 C++ 예제 (unique_ptr 기반)
 ```cpp
 #include <iostream>
 #include <memory>
@@ -63,9 +63,9 @@ int main() {
     return 0;
 }
 ```
----
 
-## 📌 스마트 포인터 은닉화된 전략 패턴
+
+### 📌 스마트 포인터 은닉화된 전략 패턴
 ```cpp
 #include <iostream>
 #include <memory>
@@ -129,20 +129,17 @@ int main() {
     return 0;
 }
 ```
-## 📊 개선된 점
+### 📌 개선된 점
 - 호출부 단순화: context.setStrategy<StrategyA>()처럼 타입만 지정하면 됨.
 - 스마트 포인터 은닉화: 내부에서 std::make_unique와 std::move 처리 → 호출자는 신경 쓸 필요 없음.
 - 유연성: 생성자 인자가 필요한 전략도 context.setStrategy<StrategyX>(args...)로 전달 가능.
 
-## ✅ 요약
+### 📌 요약
 - 전략 패턴에서도 스마트 포인터를 Context 내부에서 은닉화했으니, 호출자는 단순히 **전략을 교체한다”**  개념만 신경 쓰면 됩니다.
-
----
-
 - Fluent DSL 스타일로 전략 패턴을 구현하면, 호출부가 context.use<StrategyA>().execute();처럼 훨씬 직관적으로 읽히게 됩니다. 
 - 내부에서는 여전히 std::unique_ptr로 자원을 관리하지만, 호출자는 전혀 신경 쓸 필요가 없음.
 
-## 📌 Fluent DSL 스타일 전략 패턴
+## #📌 Fluent DSL 스타일 전략 패턴
 ```cpp
 #include <iostream>
 #include <memory>
@@ -210,19 +207,17 @@ int main() {
 ```
 
 
-## 📊 장점
+### 📌 장점
 - 스마트 포인터 은닉화: 호출부에서는 std::make_unique나 std::move를 전혀 보지 않음.
 - 체인식 API: use<>()와 execute()를 자연스럽게 이어서 호출 가능.
 - 가독성↑: “전략을 선택하고 실행한다”는 의도가 코드에 그대로 드러남.
 - 유연성: 생성자 인자가 필요한 전략도 context.use<StrategyX>(args...)로 전달 가능.
 
-## ✅ 요약
+### 📌 요약
 - 이제 전략 패턴을 Fluent DSL 스타일로 구현했으니, 호출자는 단순히 **전략을 선택하고 실행한다** 는 개념만 신경 쓰면 됩니다.
 
----
 
-
-## 📌 조건부 실행 기능 추가한 Fluent DSL 전략 패턴
+### 📌 조건부 실행 기능 추가한 Fluent DSL 전략 패턴
 ```cpp
 #include <iostream>
 #include <memory>
@@ -304,19 +299,19 @@ int main() {
 }
 ```
 
-## 📊 실행 결과 (예상)
+### 📌 실행 결과 (예상)
 ```
 Executing Strategy A
 Condition not met, skipping strategy.
 ```
-## ✅ 요약
+### 📌 요약
 - executeIf(condition) 메서드를 추가해 조건부 실행 지원.
 - 호출부는 context.use<StrategyX>().executeIf(flag)처럼 직관적으로 작성.
 - DSL 스타일과 결합해 **전략 선택 → 조건부 실행** 흐름을 자연스럽게 표현 가능.
 
 ---
 
-## 📌 람다 조건 지원 Fluent DSL 전략 패턴
+### 📌 람다 조건 지원 Fluent DSL 전략 패턴
 ```cpp
 #include <iostream>
 #include <memory>
@@ -417,14 +412,14 @@ int main() {
 }
 ```
 
-## 📊 실행 결과 (예상)
+### 📌 실행 결과 (예상)
 ```
 Executing Strategy A
 Condition not met, skipping strategy.
 Executing Strategy A
 ```
 
-## ✅ 요약
+### 📌 요약
 - executeIf(bool) → 단순 조건.
 - executeIf(lambda) → 동적 조건 검사.
 - 호출부는 context.use<StrategyX>().executeIf([]{ return someCheck(); });처럼 DSL로 표현 가능.
@@ -433,7 +428,7 @@ Executing Strategy A
 
 ---
 
-## 📌 여러 조건 체인 실행 지원 Fluent DSL 전략 패턴
+### 📌 여러 조건 체인 실행 지원 Fluent DSL 전략 패턴
 
 - 여러 조건을 체인으로 묶어서 실행하는 버전을 만들어 보겠습니다.  
 - 핵심은 executeIf를 체인식으로 호출할 수 있도록 Context&를 반환하고, 각 조건을 독립적으로 평가하도록 하는 겁니다.  
@@ -544,7 +539,7 @@ int main() {
 }
 ```
 
-## 📊 실행 결과
+### 📌 실행 결과
 ```
 Executing Strategy A
 Condition not met, skipping strategy.
@@ -554,14 +549,14 @@ Executing Strategy B
 ```
 
 
-## ✅ 요약
+### 📌 요약
 - executeIf(bool)과 executeIf(lambda) 모두 체인식 호출 가능.
 - 여러 조건을 이어 붙여서 조건부 실행 흐름을 자연스럽게 표현할 수 있음.
 - 스마트 포인터는 내부에서 은닉화 → 호출자는 전략 교체와 조건만 신경 쓰면 됨.
 
 ---
 
-## 📌 여러 전략 등록 + 조건부 선택 실행 버전
+### 📌 여러 전략 등록 + 조건부 선택 실행 버전
 ```cpp
 #include <iostream>
 #include <memory>
@@ -679,7 +674,7 @@ int main() {
 ```
 
 
-## 📊 실행 결과 (예상)
+### 📌 실행 결과 (예상)
 ```
 Executing Strategy A
 Condition not met, skipping strategy.
@@ -687,7 +682,7 @@ Executing Strategy C
 ```
 
 
-## ✅ 요약
+### 📌 요약
 - Context가 여러 전략을 unordered_map에 보관.
 - add<T>()로 전략을 등록하고, execute<T>()로 특정 전략 실행.
 - executeIf<T>(condition)으로 조건부 실행 지원.
@@ -695,7 +690,7 @@ Executing Strategy C
 
 
 ---
-## 📌 우선순위 기반 실행 전략 패턴
+### 📌 우선순위 기반 실행 전략 패턴
 
 - 여러 전략을 동시에 등록하고, 조건을 만족하는 전략 중 가장 높은 우선순위를 실행하는 버전을 만들어 보겠습니다.  
 - 핵심은 Context가 전략을 우선순위와 함께 저장하고, 실행 시 조건을 평가한 뒤 최고 우선순위 전략만 실행하도록 하는 것입니다.
@@ -809,13 +804,13 @@ int main() {
 }
 ```
 
-## 📊 실행 결과 (예상)
+### 📌 실행 결과 (예상)
 ```
 Executing Strategy B
 ```
 
 
-## ✅ 요약
+### 📌 요약
 - add<T>(priority, condition)으로 전략 등록 시 우선순위와 조건을 함께 지정.
 - execute()는 조건을 만족하는 전략 중 가장 높은 우선순위 전략만 실행.
 - 호출부는 context.add<StrategyA>(1, condFn).add<StrategyB>(3, condFn).execute();처럼 DSL 스타일로 작성 가능.
