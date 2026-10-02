@@ -1,11 +1,11 @@
-## 📌 Builder 패턴 개념
+## 📘 Builder 패턴 개념
 - 목적: 복잡한 객체를 생성할 때, 생성 과정(단계)을 분리하여 유연성을 높임.
 - 장점:
   - 객체 생성 과정을 캡슐화 → 클라이언트는 세부 구현을 몰라도 됨.
   - 동일한 생성 과정으로 서로 다른 표현(객체)을 만들 수 있음.
   - 가독성과 유지보수성 향상.
 
-## 📌 Builder Pattern 다이어그램
+### 📌 Builder Pattern 다이어그램
 ```mermaid
 classDiagram
     class Computer {
@@ -52,8 +52,8 @@ classDiagram
     OfficeComputerBuilder --> Computer
 ```
 
-## 📌 C++ 샘플 코드
-### 1. 스마트 포인터 사용 (권장)
+### 📌 C++ 샘플 코드
+#### 🔹 1. 스마트 포인터 사용 (권장)
 - Computer* 대신 std::unique_ptr<Computer>를 반환하면 자동으로 메모리 관리가 됩니다.
 ```cpp
 class ComputerBuilder {
@@ -106,7 +106,7 @@ int main() {
 }
 ```
 
-## 2. 수동 해제 (비권장)
+#### 🔹 2. 수동 해제 (비권장)
 - 만약 스마트 포인터를 쓰지 않는다면, main에서 delete를 직접 호출해야 합니다.
 ```cpp
 Computer* gamingPC = director.construct();
@@ -115,14 +115,14 @@ delete gamingPC; // 직접 해제
 ```
 - 하지만 이 방식은 실수로 delete를 빼먹기 쉽고, 예외 발생 시 안전하지 않으므로 스마트 포인터 방식이 훨씬 권장됩니다.
 
-## ✅ 요약
+### 📌 요약
 - 원래 코드에서는 new로 생성한 Computer 객체가 해제되지 않아 메모리 누수 발생.
 - 해결책은 스마트 포인터(std::unique_ptr)로 반환하여 자동 관리하거나, 수동으로 delete 호출.
 - 현대 C++에서는 스마트 포인터 방식을 강력히 권장합니다.
 
 ---
 
-## 📌 Fluent DSL + 스마트 포인터 기반 Builder 패턴
+### 📌 Fluent DSL + 스마트 포인터 기반 Builder 패턴
 ```cpp
 #include <iostream>
 #include <memory>
@@ -197,7 +197,7 @@ int main() {
 ```
 
 
-## 📊 실행 결과 (예상)
+### 📌 실행 결과 (예상)
 ```
 CPU: Intel i9
 GPU: NVIDIA RTX 4090
@@ -208,7 +208,7 @@ RAM: 16GB DDR4
 ```
 
 
-📌  다이어그램
+### 📌  다이어그램
 ```mermaid
 classDiagram
     class Computer {
@@ -233,7 +233,7 @@ classDiagram
 ```
 
 
-## ✅ 요약
+### 📌 요약
 - 스마트 포인터 기반: std::unique_ptr로 메모리 자동 관리 → delete 불필요.
 - Fluent DSL 스타일: withCPU().withGPU().withRAM().build() 체인식 호출로 직관적 객체 생성.
 - Mermaid 다이어그램: 구조를 시각적으로 표현해 이해도 향상.
