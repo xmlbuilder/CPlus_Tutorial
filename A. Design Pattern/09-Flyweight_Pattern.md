@@ -1,11 +1,12 @@
-# 🧠 Flyweight 패턴이란?
+## 📘 Flyweight 패턴이란?
 - 목적: 동일한 데이터를 가진 객체들을 공유하여 메모리 사용을 최소화
-- 핵심 개념:
+
+### 📌 핵심 개념:
 - Intrinsic state: 공유 가능한 내부 상태
 - Extrinsic state: 개별 객체마다 다른 외부 상태
 
 
-## 🗺️ Flyweight 패턴 클래스 다이어그램
+### 📌 Flyweight 패턴 클래스 다이어그램
 ```mermaid
 classDiagram
     class TreeType {
@@ -23,7 +24,7 @@ classDiagram
 ```
 
 
-## 💻 C++ 버전
+### 📌 C++ 버전
 ```cpp
 #include <iostream>
 #include <memory>
@@ -70,9 +71,9 @@ int main() {
 }
 
 ```
----
 
-## 수정된 코드 (스마트 포인터 은닉화)
+
+### 📌 수정된 코드 (스마트 포인터 은닉화)
 ```cpp
 #include <iostream>
 #include <memory>
@@ -121,28 +122,10 @@ int main() {
 ```
 
 
-## 🔹 특징
+### 📌 특징
 - TreeFactory 내부에서 shared_ptr로 객체를 관리 → 메모리 안전성 유지.
 - 외부에는 TreeType*만 반환 → 클라이언트는 스마트 포인터를 몰라도 됨.
 - 클라이언트가 delete를 호출할 필요 없음 → 팩토리 소멸 시 자동 정리.
 
-## 🔹 클래스 다이어그램
-```mermaid
-classDiagram
-    class TreeType {
-        -string name
-        -string texture
-        +TreeType(string name, string texture)
-        +draw(int x, int y)
-    }
-
-    class TreeFactory {
-        -unordered_map<string, shared_ptr<TreeType>> types
-        +getTreeType(string name, string texture) TreeType*
-    }
-
-    TreeFactory --> TreeType
-```
-- 👉 이렇게 하면 클라이언트 코드가 스마트 포인터를 직접 다루지 않고도 안전하게 객체를 사용할 수 있습니다.
-
+---
 
