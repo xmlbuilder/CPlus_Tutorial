@@ -56,10 +56,12 @@ public:
     std::unique_lock<std::mutex> lk(m_);
     cv_.wait(lk, [&]{ return interrupted_.exchange(false); });
   }
+
   void sleep_until(std::chrono::system_clock::time_point tp) {
     std::unique_lock<std::mutex> lk(m_);
     cv_.wait_until(lk, tp, [&]{ return interrupted_.exchange(false); });
   }
+
   void interrupt() {
     {
       std::lock_guard<std::mutex> lk(m_);
@@ -67,11 +69,13 @@ public:
     }
     cv_.notify_all();
   }
+
 private:
   std::mutex m_;
   std::condition_variable cv_;
   std::atomic<bool> interrupted_{false};
 }
+
 
 // ---------- Tiny ThreadPool (fixed size) ----------
 class ThreadPool {
@@ -133,6 +137,8 @@ private:
   bool stopping_ = false;
 };
 
+
+
 // ---------- Cron (5 fields) ----------
 class BadCron : public std::runtime_error {
 public:
@@ -146,6 +152,7 @@ inline void add_tm(std::tm& tm, std::chrono::system_clock::duration d) {
   auto tt = Clock::to_time_t(tp2);
   tm = *std::localtime(&tt);
 }
+
 
 struct Cron {
   // minute hour day month dow
@@ -196,6 +203,7 @@ struct Cron {
   }
 };
 
+
 // ---------- Scheduler ----------
 class Scheduler {
 public:
@@ -231,6 +239,7 @@ public:
   void in(Clock::time_point tp, F&& f, Args&&... args) {
     add(tp, std::make_shared<InTask>(bind(std::forward<F>(f), std::forward<Args>(args)...)));
   }
+
   template <class F, class... Args>
   void in(Clock::duration d, F&& f, Args&&... args) {
     in(Clock::now() + d, std::forward<F>(f), std::forward<Args>(args)...);
@@ -389,8 +398,6 @@ int main() {
   std::this_thread::sleep_for(std::chrono::minutes(10));
 }
 ```
-
-
 
 ### 📌 API 요약
 
