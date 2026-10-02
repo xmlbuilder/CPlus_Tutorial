@@ -1,16 +1,16 @@
-## C++ dynamic_cast
+## 📘 dynamic_cast
 
 ### 📌 1. dynamic_cast란?
 - **런타임 타입 검사(RTTI)** 를 통해 안전한 다운캐스팅을 수행하는 연산자
 - 부모 클래스 포인터를 자식 클래스 포인터로 변환할 때 사용
 - 실제 객체의 타입이 자식 클래스인지 확인한 후 변환
 
-#### 🔧 기본 문법
+#### 🔹 기본 문법
 ```cpp
 dynamic_cast<새로운_타입>(표현식);
 ```
 
-#### 예시:
+#### 🔹 예시:
 ```cpp
 Child* c = dynamic_cast<Child*>(parentPtr);
 ```
@@ -32,19 +32,19 @@ Child* c = dynamic_cast<Child*>(parentPtr);
 | `참조` | `변환된 참조 반환` | `std::bad_cast 예외 발생` | 
 
 
-#### 예시: 포인터
+#### 🔹 예시: 포인터
 ```cpp
 Shape* shape = new Triangle();
 Triangle* tri = dynamic_cast<Triangle*>(shape); // OK
 ```
 
-#### 예시: 실패 시 nullptr
+#### 🔹 예시: 실패 시 nullptr
 ```cpp
 Shape* shape = new Shape();
 Triangle* tri = dynamic_cast<Triangle*>(shape); // nullptr
 ```
 
-#### 예시: 참조 → 예외 발생
+#### 🔹 예시: 참조 → 예외 발생
 ```cpp
 Shape& shapeRef = Shape();
 try {
@@ -54,7 +54,7 @@ try {
 }
 ```
 
-#### 🧪 실전 예제
+#### 🔹 실전 예제
 ```cpp
 class Shape {
 public:
@@ -80,7 +80,7 @@ int main() {
 ```
 
 
-### ⚠️ 4. 주의 사항
+### 📌 4. 주의 사항
 - RTTI가 비활성화된 컴파일러 옵션에서는 동작하지 않음
 - 성능 비용이 있으므로 빈번한 캐스팅은 피하는 것이 좋음
 - 참조 타입 변환 실패 시 예외 처리 필수
