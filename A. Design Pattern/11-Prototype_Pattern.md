@@ -1,10 +1,10 @@
-# Prototype Pattern
+## 📘 Prototype Pattern
 
-## 🧠 프로토타입 패턴이란?
+### 📌 프로토타입 패턴이란?
 - 객체를 직접 생성하지 않고, **기존 객체를 복제(clone)** 해서 새로운 객체를 만드는 생성 패턴입니다.
 - 복잡한 초기화 과정을 피하고, 런타임에 객체를 유연하게 생성할 수 있게 해줍니다.
 
-## 구현 코드
+#### 🔹구현 코드
 ```cpp
 #include <iostream>
 #include <memory>
@@ -39,7 +39,7 @@ int main() {
 
 ---
 
-## 🔹 Prototype 패턴 (스마트 포인터 은닉화 버전)
+### 📌 Prototype 패턴 (스마트 포인터 은닉화 버전)
 ```cpp
 #include <iostream>
 #include <memory>
@@ -88,13 +88,13 @@ int main() {
     return 0;
 }
 ```
-## 🔹 특징
+### 📌 특징
 - clone()은 raw pointer를 반환 → 클라이언트는 스마트 포인터를 몰라도 됨.
 - ShapeManager 내부에서 unique_ptr로 관리 → 메모리 안전성 확보.
 - 클라이언트는 단순히 Shape*만 받아서 사용 → 코드가 간결해짐.
 - ShapeManager가 소멸될 때 모든 객체 자동 해제.
 
-## 🔹 Mermaid 다이어그램
+### 📌 Mermaid 다이어그램
 ```mermaid
 classDiagram
     class Shape {
@@ -116,12 +116,12 @@ classDiagram
     Shape <|-- Circle
     ShapeManager o--> Shape
 ```
-- 👉 이렇게 하면 Prototype 패턴을 유지하면서도 클라이언트는 스마트 포인터를 직접 다루지 않고,  
+- 이렇게 하면 Prototype 패턴을 유지하면서도 클라이언트는 스마트 포인터를 직접 다루지 않고,  
   내부에서만 안전하게 관리할 수 있습니다.
 
 ---
 
-## 🔹 전체 코드 (Manager가 생성 책임을 가짐)
+### 📌 전체 코드 (Manager가 생성 책임을 가짐)
 ```cpp
 #include <iostream>
 #include <memory>
@@ -197,13 +197,12 @@ int main() {
 }
 ```
 
-## 🔹 특징
+### 📌 특징
 - 클라이언트는 절대 new를 호출하지 않음 → Manager가 생성 책임을 가짐.
 - create<T>()로 객체를 만들고, cloneShape()로 복제 → 모두 Manager 내부에서 unique_ptr 관리.
 - 클라이언트는 Shape*만 받아서 사용 → 스마트 포인터 은닉화.
 - Manager 소멸 시 모든 객체 자동 해제 → 메모리 누수 방지.
-
-- 👉 이렇게 하면 Prototype 패턴을 유지하면서도, 객체 생성과 메모리 관리 책임을 전부 Manager가 맡아  
+- 이렇게 하면 Prototype 패턴을 유지하면서도, 객체 생성과 메모리 관리 책임을 전부 Manager가 맡아  
   클라이언트 코드가 훨씬 안전하고 단순해집니다.
 
 ---
