@@ -1,16 +1,15 @@
-# 🚀 C++ `std::async` — 비동기 실행과 결과 수집
+## 📘`std::async` — 비동기 실행과 결과 수집
 
-## 📌 개요
-`std::async`는 C++11부터 도입된 **비동기 함수 실행 도구**로, 내부적으로 `std::thread` + `std::promise` + `std::future`를 결합한 고수준 API입니다.
+### 📌 개요
+- `std::async`는 C++11부터 도입된 **비동기 함수 실행 도구** 로,  
+내부적으로 `std::thread` + `std::promise` + `std::future`를 결합한 고수준 API입니다.
 
 - 반환값은 **`std::future<T>`** 로 받습니다.
 - **Thread Pool** 또는 구현체 내부 스케줄러를 활용할 수 있습니다.
 - 예외/값 반환을 안전하게 처리합니다.
 - 실행 정책(`std::launch`)을 통해 즉시 실행할지, 지연 실행할지 결정할 수 있습니다.
 
----
-
-## 📂 기본 사용 예제
+### 📌 기본 사용 예제
 
 ```cpp
 #include <iostream>
@@ -30,25 +29,24 @@ int main() {
 }
 ```
 
-**출력 예시**
+#### 🔹 출력 예시
 ```
 b - Thread : 0
 ...
 a - Thread : 4
 ```
 
----
 
-## ⚙️ 실행 정책 (`std::launch`)
+### 📌 실행 정책 (`std::launch`)
 | 정책 | 설명 |
 |------|------|
 | `std::launch::async` | 즉시 새로운 스레드에서 실행 |
 | `std::launch::deferred` | 지연 실행 — `get()` 또는 `wait()` 호출 시 실행 (호출 스레드에서 실행) |
 | 생략 | 구현체가 async 또는 deferred 중 선택 |
 
----
 
-## ⚠️ 예외 처리
+
+### 📌 예외 처리
 
 ```cpp
 #include <iostream>
@@ -73,7 +71,7 @@ int main() {
 }
 ```
 
-출력:
+#### 🔹 출력:
 ```
 Caught a future_error with code "future:4"
 Message: "no state"
@@ -81,7 +79,7 @@ Message: "no state"
 
 ---
 
-## ⏳ `wait_for()`로 상태 확인
+### 📌 `wait_for()`로 상태 확인
 
 ```cpp
 #include <iostream>
@@ -110,7 +108,7 @@ int main() {
 
 ---
 
-## 🔀 병렬 합계 계산 예제
+### 📌 병렬 합계 계산 예제
 
 ```cpp
 #include <iostream>
@@ -145,9 +143,13 @@ int main() {
 
 ---
 
-## 📊 핵심 요약
+### 📌 핵심 요약
 - `std::async`는 `thread`보다 안전하고 간편한 비동기 실행 도구
 - `future.get()`로 값/예외를 수거 (1회만 호출 가능)
 - 실행 정책으로 즉시/지연 실행 제어 가능
 - `wait_for()`/`wait_until()`로 비차단 상태 확인 가능
 - 병렬 알고리즘 구현 시 재귀적으로 사용할 수 있음
+
+
+---
+
