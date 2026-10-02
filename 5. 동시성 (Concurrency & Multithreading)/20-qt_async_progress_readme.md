@@ -1,18 +1,18 @@
-# 🪟 Qt + `std::async` + `QBasicTimer` — 진행 표시 UI 예제 (정리 & 개선)
+## 📘 Qt + `std::async` + `QBasicTimer` - 진행 표시 UI 예제
 
-Qt GUI에서 **백그라운드 작업 진행률**을 표시하는 예제를 정리했습니다.
-GUI 스레드에서만 위젯 접근(예: `progressBar->setValue`)하는 것은 **중요한 **일입니다 — 타이머로 메인 스레드에서만 UI를 만지도록 되어 있어 안전합니다.
+- Qt GUI에서 **백그라운드 작업 진행률** 을 표시하는 예제를 정리.
+- GUI 스레드에서만 위젯 접근(예: `progressBar->setValue`)하는 것은 **중요한** 일
+- 타이머로 메인 스레드에서만 UI를 만지도록 되어 있어 안전합니다.
 
----
 
-## ✅ 안전한 동기화
+### 📌 안전한 동기화
 
 - `m_nProgress` → `std::atomic<int>`
-- `**`std::launch::async`** 로 강제(지연 실행 방지)
+- **`std::launch::async`** 로 강제(지연 실행 방지)
 - 완료 시점의 UI 변경은 **메인 스레드로 우회** (`QMetaObject::invokeMethod` with `Qt::QueuedConnection`)
 - 소멸자에서 **`f.wait()`** 로 안전 종료
 
-### `mainwindow.h`
+### 📌 `mainwindow.h`
 
 ```cpp
 #ifndef MAINWINDOW_H
@@ -50,7 +50,7 @@ private:
 #endif // MAINWINDOW_H
 ```
 
-### `mainwindow.cpp`
+### 📌 `mainwindow.cpp`
 
 ```cpp
 #include "mainwindow.h"
@@ -108,26 +108,25 @@ void MainWindow::on_pushButton_clicked()
 
     // 백그라운드 실행을 확실히 강제
     f = std::async(std::launch::async, &func_cb,
-                   // 콜백: 작업 스레드에서 호출됨 (UI 직접 접근 금지)
-                   [this](int type, int value) -> int {
-                       if (type == 0) {
-                           // 진행률 업데이트 (스레드-세이프)
-                           m_progress.store(value, std::memory_order_relaxed);
-                       } else if (type == 1) {
-                           // 완료: 메인 스레드에서 타이머 정지 및 최종 표시
-                           QMetaObject::invokeMethod(this, [this] {
-                               m_timer.stop();
-                               ui->progressBar->setValue(100);
-                           }, Qt::QueuedConnection);
-                       }
-                       return 0;
-                   });
+       // 콜백: 작업 스레드에서 호출됨 (UI 직접 접근 금지)
+       [this](int type, int value) -> int {
+           if (type == 0) {
+               // 진행률 업데이트 (스레드-세이프)
+               m_progress.store(value, std::memory_order_relaxed);
+           } else if (type == 1) {
+               // 완료: 메인 스레드에서 타이머 정지 및 최종 표시
+               QMetaObject::invokeMethod(this, [this] {
+                   m_timer.stop();
+                   ui->progressBar->setValue(100);
+               }, Qt::QueuedConnection);
+           }
+           return 0;
+       });
 }
 ```
 
----
 
-## 🧪 동작 흐름
+### 📌 동작 흐름
 1. 버튼 클릭 → `std::async`로 `func_cb`가 **작업 스레드에서** 시작
 2. 매 초 콜백 호출 → `m_progress`를 원자적으로 업데이트
 3. `QBasicTimer`가 **메인 스레드에서** `timerEvent`로 주기적 UI 갱신
@@ -136,17 +135,17 @@ void MainWindow::on_pushButton_clicked()
 
 ---
 
-## 💡 대안: Qt-native (추천)
-Qt만으로도 같은 구조를 더 자연스럽게 만들 수 있습니다.
-- `QtConcurrent::run()` + `QFutureWatcher`로 진행/완료 시그널을 GUI 스레드로 자동 전달
-- 또는 **`QThread` + QObject worker + signal/slot`** 패턴
+### 📌 대안: Qt-native (추천)
+- Qt만으로도 같은 구조를 더 자연스럽게 만들 수 있습니다.
+    - `QtConcurrent::run()` + `QFutureWatcher`로 진행/완료 시그널을 GUI 스레드로 자동 전달
+    - 또는 **`QThread` + QObject worker + signal/slot`** 패턴
 
-하지만 위 수정판처럼 `std::async` + `QBasicTimer` 조합도 **충분히 안전**하게 동작합니다.
+- 하지만 위 수정판처럼 `std::async` + `QBasicTimer` 조합도 **충분히 안전** 하게 동작합니다.
 
----
 
-## 🛠 빌드 팁
+
+### 📌 빌드 팁
 - C++17 이상 권장 (`std::atomic`, `std::async` 사용)
-- `std::launch::async` 사용 시, future 파괴 전에 작업이 끝나도록 **`wait()`/`get()`** 호출을 잊지 마세요.
+- `std::launch::async` 사용 시, future 파괴 전에 작업이 끝나도록 **`wait()`/`get()`** 호출.
 
 ---
