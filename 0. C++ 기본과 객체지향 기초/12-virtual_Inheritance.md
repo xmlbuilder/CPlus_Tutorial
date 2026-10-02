@@ -1,4 +1,4 @@
-## C++에서의 가상 상속 (Virtual Inheritance)
+## 📘 가상 상속 (Virtual Inheritance)
 
 ### 📌 개념 요약
 - 가상 상속은 다중 상속 시 기본 클래스의 멤버 중복 문제를 해결하기 위한 C++의 기능입니다.  
@@ -43,7 +43,7 @@ int main() {
 }
 ```
 
-### 🧾 출력 결과
+### 📌 출력 결과
 ```
 BaseIO Constructor called
 ```
@@ -61,7 +61,7 @@ BaseIO Constructor called
 - In과 Out은 BaseIO를 가상 상속하므로, InOut 객체 생성 시 BaseIO의 생성자는 한 번만 호출됩니다.
 - mode 멤버는 InOut 객체에서 모호하지 않게 하나만 존재합니다.
 
-### 🖼️ 참고 이미지
+### 📌 참고 이미지
 
 ```mermaid
 flowchart TB
