@@ -1,3 +1,6 @@
+# 📘 Adapter Pattern
+- **서로 인터페이스가 맞지 않는 두 클래스를 연결하기 위한 구조 패턴(Structural Pattern)** 입니다.
+  
 ## 📌 스마트 포인터 기반 + 은닉화 적용 코드
 ```cpp
 #include <iostream>
@@ -45,12 +48,7 @@ int main() {
 ```
 
 
-## 📊 개선된 점
-- 스마트 포인터 사용: std::unique_ptr<LegacyPrinter> → 메모리 자동 관리.
-- 은닉화: 클라이언트는 LegacyPrinter를 직접 생성하거나 관리하지 않고, PrinterAdapter 내부에서 캡슐화.
-- 인터페이스 통일: 클라이언트는 ModernPrinter 인터페이스만 알면 됨.
-
-📌 다이어그램
+### 📌 다이어그램
 ```mermaid
 classDiagram
     class ModernPrinter {
@@ -72,15 +70,16 @@ classDiagram
 ```
 
 
-## ✅ 요약
+### 📌 요약
 - Adapter 패턴을 스마트 포인터 기반으로 개선 → 메모리 안전성 확보.
 - 은닉화 기법을 통해 클라이언트는 LegacyPrinter 존재를 알 필요 없음.
 - Mermaid 다이어그램으로 구조를 시각화 → ModernPrinter 인터페이스와 LegacyPrinter 구현을 Adapter가 연결.
 
 ---
-## 📌 코드 예제 (스마트 포인터 + 은닉화)
 
-- 이번에는 여러 LegacyPrinter 타입(XML, JSON 등)을 하나의 ModernPrinter 인터페이스로 통합하는 버전을 보여드리겠습니다.  
+### 📌 코드 예제 (스마트 포인터 + 은닉화)
+
+- 이번에는 여러 LegacyPrinter 타입(XML, JSON 등)을 하나의 ModernPrinter 인터페이스로 통합하는 버전  
 - 핵심은 Adapter 패턴을 확장해서, 다양한 LegacyPrinter 구현을 ModernPrinter 인터페이스로 감싸고 클라이언트는 ModernPrinter만 사용하도록 만드는 것입니다.
 
 ```cpp
@@ -149,14 +148,14 @@ int main() {
 ```
 
 
-## 📊 실행 결과
+#### 🔹 실행 결과
 ```
 <xml>Hello XML Adapter!</xml>
 { "data": "Hello JSON Adapter!" }
 ```
 
 
-## 📌 다이어그램
+### 📌 다이어그램
 ```mermaid
 classDiagram
     class ModernPrinter {
@@ -188,7 +187,7 @@ classDiagram
     JSONPrinterAdapter --> LegacyJSONPrinter
 ```
 
-## ✅ 요약
+### 📌 요약
 - 여러 LegacyPrinter(XML, JSON 등)를 각각 Adapter로 감싸서 ModernPrinter 인터페이스로 통합.
 - 클라이언트는 ModernPrinter만 사용 → 내부 구현(XML/JSON)은 은닉화.
 - 스마트 포인터(std::unique_ptr)로 메모리 관리 자동화.
@@ -196,10 +195,11 @@ classDiagram
 
 ---
 
-## 📌 코드 예제 (Factory + Adapter + 스마트 포인터)
+### 📌 코드 예제 (Factory + Adapter + 스마트 포인터)
 
-- 런타임에 프린터 타입(XML, JSON 등)을 선택할 수 있는 Factory 패턴 결합 버전을 보여드리겠습니다.
-- 핵심은 클라이언트가 문자열이나 enum으로 원하는 타입을 지정하면 Factory가 적절한 Adapter를 생성해주고, 클라이언트는 ModernPrinter 인터페이스만 사용한다는 점입니다.
+- 런타임에 프린터 타입(XML, JSON 등)을 선택할 수 있는 Factory 패턴 결합 버전.
+- 핵심은 클라이언트가 문자열이나 enum으로 원하는 타입을 지정하면 Factory가 적절한 Adapter를 생성해주고,
+- 클라이언트는 ModernPrinter 인터페이스만 사용한다는 점입니다.
 ```cpp
 #include <iostream>
 #include <memory>
@@ -282,14 +282,14 @@ int main() {
 }
 ```
 
-## 📊 실행 결과
+#### 🔹 실행 결과
 ```
 <xml>Hello Factory + Adapter!</xml>
 { "data": "Hello JSON Factory Adapter!" }
 ```
 
 
-## 📌 다이어그램
+### 📌 다이어그램
 ```mermaid
 classDiagram
     class ModernPrinter {
@@ -327,14 +327,15 @@ classDiagram
 ```
 
 
-## ✅ 요약
+### 📌 요약
 - Factory 패턴을 결합해 런타임에 프린터 타입(XML, JSON)을 선택 가능.
 - 클라이언트는 ModernPrinter 인터페이스만 사용 → 내부 구현은 은닉화.
 - std::unique_ptr로 메모리 자동 관리.
 - Mermaid 다이어그램으로 구조를 시각화 → Factory가 Adapter를 생성해 ModernPrinter 인터페이스로 제공.
 
 ---
-## 📌 코드 예제 (자동 등록 플러그인 구조)
+
+### 📌 코드 예제 (자동 등록 플러그인 구조)
 ```cpp
 #include <iostream>
 #include <memory>
@@ -446,14 +447,14 @@ int main() {
 }
 ```
 
-## 📊 실행 결과 (예상)
+#### 🔹 실행 결과 (예상)
 ```
 <xml>Hello XML Plugin!</xml>
 { "data": "Hello JSON Plugin!" }
 ```
 
 
-## 📌 크래스 다이어그램
+### 📌 클래스 다이어그램
 ```mermaid
 classDiagram
     class ModernPrinter {
@@ -493,18 +494,19 @@ classDiagram
     JSONPrinterRegistration --> PrinterFactory
 ```
 
-## ✅ 요약
+### 📌 요약
 - 각 플러그인 모듈(XML, JSON)은 정적 Registration 객체를 통해 Factory에 자동 등록.
 - 메인 코드에서는 createPrinter("XML")처럼 호출만 하면 됨.
 - 새로운 플러그인 추가 시 Factory 수정 불필요 → 확장성 극대화.
 - 스마트 포인터(std::unique_ptr)로 메모리 자동 관리.
   
 ---
-## Dynamic plugin system for runtime-loaded printers
+
+### 📌 Dynamic plugin system for runtime-loaded printers
 - DLL/so를 런타임에 로드해, 로딩 시점에 자동으로 Factory에 등록되는 **진짜 플러그인 시스템** 을 구성합니다. 
 - 핵심은 공용 Registry를 메인 프로세스가 갖고, 각 플러그인이 로딩되면 노출된 엔트리 포인트를 통해 자신의 Adapter 생성기를 등록하는 구조입니다.
 
-## Architecture overview
+### 📌 Architecture overview
 - Core app:
     - ModernPrinter 인터페이스, PrinterFactory(Registry) 보유.
     - 플랫폼별 로더로 DLL/so를 로드, 각 플러그인의 **registerPlugin()** 를 호출.
@@ -734,7 +736,7 @@ flowchart LR
     Main --> Factory
 ```
 
-## Notes and tips
+### 📌 Notes and tips
 - 빌드/링크: 플러그인들이 core_app.hpp를 포함하므로 헤더를 공유하고, 각 플러그인을 별도 DLL/so로 빌드.
 - 심볼 노출: extern "C"로 C 방식 심볼명을 사용하면 이름 맹글링을 피하고 dlsym/GetProcAddress로 쉽게 찾을 수 있습니다.
 - 메모리 안전: Adapter 내부는 std::unique_ptr로 Legacy 인스턴스를 관리해 누수 없이 안전합니다.
