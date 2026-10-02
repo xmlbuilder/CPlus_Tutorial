@@ -1,4 +1,4 @@
-## 📘 hread Pool (Java 스타일)
+## 📘 Thread Pool (Java 스타일)
 
 - 간단하지만 실전에 투입 가능한 C++ Thread Pool 구현입니다.  
 - Java의 Executor/ThreadPool에서 아이디어를 가져와 **작업 큐 + 워커 스레드 + 안전한 종료 + future 기반 결과 수집** 을 제공합니다.
