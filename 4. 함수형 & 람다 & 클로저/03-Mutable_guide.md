@@ -1,14 +1,14 @@
 
-# 🔧 `mutable` in C++
+## 📘 `mutable`
 
-A detailed guide to the **`mutable` keyword** in C++:  
+- A detailed guide to the **`mutable` keyword** in C++:  
 What it is, why it matters, and how to use it effectively.
 
----
 
-## 📌 What is `mutable`?
 
-In C++, the `mutable` keyword **allows a non-static class member variable to be modified inside a `const` member function**.
+### 📌 What is `mutable`?
+
+- In C++, the `mutable` keyword **allows a non-static class member variable to be modified inside a `const` member function**.
 
 ```cpp
 class Example {
@@ -23,14 +23,14 @@ private:
 };
 ```
 
-### Key Points
+### 📌 Key Points
 - Works only for **non-static** member variables.
 - Overrides the immutability implied by `const` member functions.
 - Useful for **logical constness** — modifying internal state without changing the logical behavior of the object.
 
 ---
 
-## 🧠 Why Use `mutable`?
+### 📌 Why Use `mutable`?
 
 | **Use Case**     | **Description** |
 |------------------|-----------------|
@@ -41,7 +41,7 @@ private:
 
 ---
 
-## 🔍 Example: Bounding Box Cache
+### 📌 Example: Bounding Box Cache
 
 ```cpp
 class BoundingBox { /* ... */ };
@@ -64,16 +64,16 @@ private:
 };
 ```
 
-### Explanation
+### 📌 Explanation
 - `GetBoundingBox()` is `const`.
 - `m_bbox` and `m_dirty` are updated internally, thanks to `mutable`.
 - This is a **classic use case**: **lazy evaluation** with a **dirty flag pattern**.
 
 ---
 
-## 🛠 More Practical Examples
+### 📌 More Practical Examples
 
-### 1. Debugging Counters
+#### 🔹 1. Debugging Counters
 ```cpp
 class DebugLogger {
 public:
@@ -89,7 +89,7 @@ private:
 };
 ```
 
-### 2. Memoization
+#### 🔹 2. Memoization
 ```cpp
 #include <unordered_map>
 
@@ -109,7 +109,7 @@ private:
 
 ---
 
-## ⚠️ Things to Watch Out For
+### 📌 Things to Watch Out For
 
 - **Non-static only**: `mutable` cannot be applied to static members.
 - **Thread safety**: `mutable` does not make code thread-safe. Use locks or atomics when needed.
@@ -117,7 +117,7 @@ private:
 
 ---
 
-## ✅ When to Use
+### 📌 When to Use
 
 Use `mutable` when:
 - You need to **cache** or track **internal state** in a `const` method.
@@ -126,23 +126,25 @@ Use `mutable` when:
 
 ---
 
-## ❌ When Not to Use
+### 📌 When Not to Use
 
 Avoid `mutable` when:
 - It **breaks the expected behavior** of `const` objects.
 - It introduces **hidden side effects**.
 - You are in a **multithreaded context** without proper synchronization.
 
----
 
-## 📚 Related Concepts
+### 📌 Related Concepts
 - `const_cast`
 - Const member functions
 - Logical vs. physical constness
 - Lazy evaluation
 - Dirty flag pattern
 
----
+
 
 > **Summary:**  
 > *"`mutable` is a bridge between const-correctness and practical optimization."*
+
+---
+
