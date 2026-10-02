@@ -1,4 +1,4 @@
-## 📘 C++에서 타입 정보 확인하기
+## 📘 타입 정보 확인하기
 - typeid, std::is_base_of, instanceof 완전 정복
 
 ### 📌 1. typeid — 런타임 타입 확인
