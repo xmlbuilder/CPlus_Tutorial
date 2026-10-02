@@ -1,4 +1,4 @@
-## C++11 위임 생성자(delegate constructor) 정리
+## 📘 위임 생성자(delegate constructor) 정리
 
 ### 📌 개요
 - C++11부터는 클래스 내에서 한 생성자가 다른 생성자를 호출할 수 있는 기능,  
