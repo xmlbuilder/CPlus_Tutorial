@@ -1,11 +1,11 @@
-# ⏰ Single‑File C++ Scheduler (every / in / interval / cron / at)
+## 📘 Single‑File C++ Scheduler (every / in / interval / cron / at)
 
-간단한 **단일 파일 스케줄러**입니다. 외부 의존성 없이 `every`, `in`, `interval`, `cron`, `at` 를 지원하며,
-내부에 경량 **ThreadPool**을 포함합니다. 프로젝트에 파일 하나만 넣고 빌드하면 바로 사용할 수 있습니다.
+- 간단한 **단일 파일 스케줄러** 입니다. 외부 의존성 없이 `every`, `in`, `interval`, `cron`, `at` 를 지원하며,  
+내부에 경량 **ThreadPool**을 포함합니다.
+- 프로젝트에 파일 하나만 넣고 빌드하면 바로 사용할 수 있습니다.
 
----
 
-## ✨ 특징
+### 📌 특징
 - `every(duration, fn, args...)` : 주기적으로 실행 (작업 **시작 간격** 보장)
 - `in(duration|time_point, fn, args...)` : 지정 **지연/시각**에 1회 실행
 - `interval(duration, fn, args...)` : **작업 종료 후** 간격을 기다렸다가 재실행 (중복 실행 방지)
@@ -14,17 +14,14 @@
   - 시간만 주면 이미 지난 경우 **내일** 실행, 날짜 포함이면 이미 지났어도 **즉시** 실행
 - 내부 경량 **ThreadPool** (고정 워커, 작업 예외 격리)
 
----
 
-## 🔧 빌드
+### 📌 빌드
 ```bash
 g++ -std=c++17 -O2 single_scheduler.cpp -lpthread -o scheduler_demo
 ./scheduler_demo
 ```
 
----
-
-## 📦 단일 파일 소스 (`single_scheduler.cpp`)
+### 📌 단일 파일 소스 (`single_scheduler.cpp`)
 
 ```cpp
 // single_scheduler.cpp
@@ -393,9 +390,9 @@ int main() {
 }
 ```
 
----
 
-## 🧭 API 요약
+
+### 📌 API 요약
 
 | 메서드 | 의미 |
 |---|---|
@@ -409,10 +406,9 @@ int main() {
 
 ---
 
-## 📌 주의사항
+### 📌 주의사항
 - 본 구현은 **단일 파일** 데모이며, 운영 환경에서는 **Bounded Queue, 취소 토큰, 메트릭** 등을 추가하는 것을 권장합니다.
 - 타임존/서머타임(DST) 변경 시각에는 표준 `tm/mktime` 동작에 따릅니다.
 
 ---
 
-행복한 스케줄링! ⏱️
