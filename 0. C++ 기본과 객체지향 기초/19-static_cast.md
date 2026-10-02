@@ -1,16 +1,16 @@
-## C++ static_cast
+## 📘 static_cast
 
 ### 📌 1. static_cast란?
 - 컴파일 타임에 타입을 명시적으로 변환하는 연산자
 - 논리적으로 변환 가능한 타입끼리만 허용
 - 런타임 비용 없음 → 빠르고 안전하지만 제한적
-#### ✅ 기본 문법
+#### 🔹 기본 문법
 - static_cast<새로운_타입>(표현식);
 
 
 
 ### 📌 2. 변환 가능한 타입 예시
-#### ✅ 기본 타입 간 변환
+#### 🔹 기본 타입 간 변환
 ```cpp
 double d = 13.24;
 int i = static_cast<int>(d); // 13
@@ -18,7 +18,7 @@ int i = static_cast<int>(d); // 13
 - 실수 ↔ 정수
 - 열거형 ↔ 정수
 - float ↔ double
-#### ✅ 열거형 변환
+#### 🔹 열거형 변환
 ```cpp
 enum E_VAL { A = 0, B = 1, N = 13 };
 E_VAL e = A;
@@ -36,8 +36,8 @@ int* ptr = static_cast<int*>(arr); // OK
 - 배열 이름은 포인터로 암시적 변환 가능
 - static_cast로 명시적 변환도 가능
 
-### ❌ 4. 허용되지 않는 포인터 변환
-#### 🚫 서로 관련 없는 타입 간 변환
+### 📌 4. 허용되지 않는 포인터 변환
+#### 🔹 서로 관련 없는 타입 간 변환
 ```cpp
 char str[] = "static_cast";
 int* ptr2 = static_cast<int*>(str); // ❌ 컴파일 오류
@@ -47,7 +47,7 @@ int* ptr2 = static_cast<int*>(str); // ❌ 컴파일 오류
 - `int* → char` *도 마찬가지
 
 ### 📌 5. 상속 관계에서의 포인터 변환
-#### ✅ 업캐스트 (자식 → 부모)
+#### 🔹 업캐스트 (자식 → 부모)
 ```cpp
 Triangle triangle;
 Shape* shape = static_cast<Shape*>(&triangle); // OK
@@ -55,7 +55,7 @@ shape->draw(); // Triangle draw called
 ```
 - 안전한 변환
 - 자식 객체를 부모 타입으로 변환
-#### ⚠️ 다운캐스트 (부모 → 자식)
+#### 🔹 다운캐스트 (부모 → 자식)
 ```cpp
 Shape s;
 Triangle* triangle1 = static_cast<Triangle*>(&s); // 위험!
@@ -75,7 +75,7 @@ triangle1->onlyTriangle(); // 런타임 오류 가능
 | RTTI 필요 여부 | 불필요 | 필요 (virtual 함수 필수) | 
 
 
-#### ✅ 안전한 다운캐스트 예시
+#### 🔹 안전한 다운캐스트 예시
 ```cpp
 Shape* shape = new Shape();
 Triangle* triangle = dynamic_cast<Triangle*>(shape);
