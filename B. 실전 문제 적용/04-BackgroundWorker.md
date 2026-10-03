@@ -1,16 +1,16 @@
-# C++ BackgroundWork 구현
+## 📘 C++ BackgroundWork 구현
 
-### 1. C# BackgroundWorker 핵심 기능
+### 📌 1. C# BackgroundWorker 핵심 기능
 - 비동기 실행: RunWorkerAsync()로 작업 시작
 - 진행률 보고: ReportProgress() → ProgressChanged 이벤트 발생
 - 작업 완료 알림: RunWorkerCompleted 이벤트 발생
 - 취소 지원: CancellationPending 플래그로 중단
 
-### 2. C++에서 구현 전략
-C++에서는 std::thread + std::function + std::mutex + std::condition_variable 등을 조합해 구현할 수 있습니다.
-이벤트 시스템은 콜백(callback) 또는 observer 패턴으로 대체합니다.
+### 📌 2. C++에서 구현 전략
+- C++에서는 std::thread + std::function + std::mutex + std::condition_variable 등을 조합해 구현.
+- 이벤트 시스템은 콜백(callback) 또는 observer 패턴으로 대체합니다.
 
-### 3. 예제 구현 (C++17 기준)
+### 📌 3. 예제 구현 (C++17 기준)
 ```cpp
 #include <iostream>
 #include <thread>
@@ -83,7 +83,7 @@ int main() {
     worker.wait();
 }
 ```
-### 결과 출력
+#### 🔹 결과 출력
 ```
 Progress: 0%
 Progress: 10%
@@ -94,25 +94,23 @@ Work Completed!
 
 ```
 
-
-### 4. 구현 포인트
+### 📌 4. 구현 포인트
 - std::atomic<bool> → C#의 CancellationPending 역할
 - 람다 + std::function → C# 이벤트 대체
 - reportProgress 콜백 → ReportProgress() 역할
 - setCompleted → RunWorkerCompleted 역할
 - wait() → C#의 Join()과 유사
 
----
 
-# C++ BackgroundWork ThreadPool 구현
+## 📘 BackgroundWork ThreadPool 구현
 
-### 1. 설계 개념
+### 📌 1. 설계 개념
 - 스레드 풀: 여러 작업을 큐에 넣고, 제한된 수의 스레드가 순차적으로 처리
 - std::promise / std::future: 작업 결과를 비동기적으로 반환
 - 진행률 보고: 콜백 함수로 처리
 - 취소 지원: std::atomic<bool> 플래그 사용
 
-### 2. 간단한 스레드 풀 + BackgroundWorker 스타일 구현
+### 📌 2. 간단한 스레드 풀 + BackgroundWorker 스타일 구현
 ```cpp
 #include <iostream>
 #include <thread>
@@ -227,7 +225,7 @@ int main() {
 }
 ```
 
-### 결과 출력
+#### 🔹 결과 출력
 ```
 Progress: 0%
 Progress: 10%
@@ -237,14 +235,14 @@ Result: Progress: 40%
 100
 ```
 
-### 3. 특징
+### 📌 3. 특징
 - 스레드 풀 기반 → 여러 작업을 동시에 처리 가능
 - std::future → 작업 결과를 비동기적으로 받아옴
 - std::promise → 내부적으로 packaged_task가 사용되어 결과 전달
 - 진행률 보고 → 콜백 함수로 즉시 반영
 - 취소 지원 → std::atomic<bool>로 안전하게 중단
 
-### 4. C# BackgroundWorker와 비교
+### 📌 4. C# BackgroundWorker와 비교
 | 기능             | C# BackgroundWorker                                   | C++ (ThreadPool + future/promise)                  |
 |------------------|-------------------------------------------------------|-----------------------------------------------------|
 | 작업 시작         | `RunWorkerAsync()` 호출                               | `pool.enqueue()` 또는 `worker.runAsync()` 호출      |
@@ -258,14 +256,14 @@ Result: Progress: 40%
 | 이벤트 기반       | `DoWork`, `ProgressChanged`, `RunWorkerCompleted`     | 콜백 함수 또는 람다로 직접 지정                      |
 | 언어 지원         | .NET(C#, VB 등)                                       | C++17 이상 (표준 라이브러리 기반)                   |
 
-이 구조를 쓰면 C# BackgroundWorker의 핵심 기능을 C++에서 스레드 풀 + future/promise로 거의 동일하게 재현할 수 있습니다.
+- 이 구조를 쓰면 C# BackgroundWorker의 핵심 기능을 C++에서 스레드 풀 + future/promise로 거의 동일하게 재현할 수 있습니다.
 
 
-## 🌍 플랫폼 독립적으로 쓰는 방법
-핵심은 UI 스레드에서만 UI를 건드린다는 원칙을 지키면서,
+### 📌 플랫폼 독립적으로 쓰는 방법
+- 핵심은 UI 스레드에서만 UI를 건드린다는 원칙을 지키면서,  
 OS 종속 API 대신 표준 C++과 프레임워크 중립적인 이벤트 전달 방식을 쓰는 겁니다.
 
-### 1. 공유 상태 + 폴링(Timer) 방식
+#### 🔹 1. 공유 상태 + 폴링(Timer) 방식
 - 작업 스레드: 진행률을 std::atomic이나 뮤텍스로 보호된 변수에 저장
 - UI 스레드: 주기적으로(타이머, 메인 루프) 그 값을 읽어 UI 갱신
 - 장점: OS API 의존 없음, 어디서나 동작
@@ -287,7 +285,7 @@ if (progressChangedSinceLastCheck()) {
 
 ```
 
-### 2. 스레드 안전 큐 + 메인 루프 처리
+#### 🔹 2. 스레드 안전 큐 + 메인 루프 처리
 - 작업 스레드: 이벤트(예: 진행률 값)를 스레드 안전 큐에 push
 - UI 스레드: 메인 루프에서 큐를 비우면서 UI 갱신
 - 장점: 변화가 있을 때만 처리 → 불필요한 호출 없음
@@ -312,10 +310,9 @@ void processUIEvents() {
         updateUI(value);
     }
 }
-
 ```
 
-## 📄 전체 코드 예제
+### 📌 전체 코드 예제
 ```cpp
 #include <thread>
 #include <atomic>
@@ -450,31 +447,29 @@ int main() {
 }
 ```
 
-### 🔍 특징
+#### 🔹 특징
 - OS 독립적: Windows, Linux, macOS 어디서나 빌드 가능
 - UI 스레드 안전성 보장: UI 스레드에서만 핸들러 실행
 - 이벤트 기반: 진행률이 변할 때만 이벤트 발생
 - C# BackgroundWorker 스타일: onProgressChanged, onCompleted 제공
 
-💡 이 구조를 쓰면,
+#### 🔹 이 구조를 쓰면,
 - Windows에서는 Win32/MFC,
 - macOS에서는 Cocoa,
 - Linux에서는 GTK/Qt
-어디든 메인 루프에서 pollEvents()만 호출하면 됩니다.
+- 어디든 메인 루프에서 pollEvents()만 호출하면 됩니다.
 
 
-
-
-### 💡 간단하고 OS 독립적인 패턴
-사실 우리가 앞서 만든 BackgroundWorker 스타일 + 이벤트 큐 구조가
+### 📌 간단하고 OS 독립적인 패턴
+- 사실 우리가 앞서 만든 BackgroundWorker 스타일 + 이벤트 큐 구조가  
 이런 “파일 읽기 / 웹 요청 → 완료 시 UI 피드백”에 딱 맞습니다.
-흐름
-- 작업 스레드에서 파일 읽기나 HTTP 요청 수행
-- 완료 시 스레드 안전 큐에 “완료 이벤트” push
-- UI 스레드에서 타이머나 메인 루프에서 pollEvents() 호출
-- 큐에서 이벤트 꺼내서 UI 업데이트
+- 흐름
+    - 작업 스레드에서 파일 읽기나 HTTP 요청 수행
+    - 완료 시 스레드 안전 큐에 “완료 이벤트” push
+    - UI 스레드에서 타이머나 메인 루프에서 pollEvents() 호출
+    - 큐에서 이벤트 꺼내서 UI 업데이트
 
-예시: 파일 읽기
+#### 🔹 예시: 파일 읽기
 ```cpp
 worker.onCompleted([]() {
     // UI 스레드에서 실행됨
@@ -490,7 +485,7 @@ worker.start([]() {
 ```
 
 
-예시: 웹 요청 (libcurl)
+#### 🔹 예시: 웹 요청 (libcurl)
 ```cpp
 worker.onCompleted([]() {
     updateStatusLabel("데이터 수신 완료");
@@ -507,16 +502,15 @@ worker.start([]() {
 ```
 
 
-📌 장점
+### 📌 장점
 - OS 독립: Windows, Linux, macOS 어디서나 동일하게 동작
 - UI 스레드 안전성: UI 업데이트는 항상 메인 스레드에서만
 - 간단한 코드 흐름: async/future처럼 복잡한 동기화 코드 불필요
 - 확장성: 진행률, 취소, 예외 처리 쉽게 추가 가능
 
----
 
 
-## Qt 연동 예시
+### 📌 Qt 연동 예시
 ```cpp
 #include <QApplication>
 #include <QMainWindow>
@@ -585,15 +579,14 @@ int main(int argc, char *argv[]) {
 ```
 
 
-동작 방식
+#### 🔹 동작 방식
 - 버튼 클릭 → worker_.start()로 백그라운드 스레드 시작
 - 백그라운드 작업 → 진행률/완료 이벤트를 큐에 넣음
 - QTimer → 50ms마다 pollEvents() 호출
 - UI 업데이트 → 진행률 바와 콘솔 출력
 
----
 
-## 📌 MFC용 BackgroundWorker 예시
+### 📌 MFC용 BackgroundWorker 예시
 ```cpp
 // BackgroundWorkerMFC.h
 #pragma once
@@ -657,7 +650,7 @@ private:
 };
 
 ```
-### 📌 MFC 대화상자/뷰에서 사용 예시
+#### 🔹 MFC 대화상자/뷰에서 사용 예시
 ```cpp
 // MyDialog.h
 #pragma once
@@ -699,8 +692,7 @@ private:
 };
 ```
 
-
-## 📌 메시지 맵 연결
+#### 🔹 메시지 맵 연결
 ```cpp
 BEGIN_MESSAGE_MAP(CMyDialog, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_START, &CMyDialog::OnBnClickedStart)
@@ -709,14 +701,13 @@ BEGIN_MESSAGE_MAP(CMyDialog, CDialogEx)
 END_MESSAGE_MAP()
 ```
 
-
-## 🔍 동작 흐름
+### 📌 동작 흐름
 - start() 호출 → 백그라운드 스레드 시작
 - 진행률 발생 시 PostMessage(WM_WORKER_PROGRESS, progress, 0) 호출
 - UI 스레드에서 ON_MESSAGE 매핑된 핸들러 실행 → 안전하게 UI 업데이트
 - 완료 시 WM_WORKER_COMPLETED 메시지 전송 → UI에서 완료 처리
 
-💡 이렇게 하면 MFC에서도 C# BackgroundWorker처럼
+### 📌 이렇게 하면 MFC에서도 C# BackgroundWorker처럼
 - 진행률 보고
 - 완료 알림
 - UI 스레드 안전성 보장
