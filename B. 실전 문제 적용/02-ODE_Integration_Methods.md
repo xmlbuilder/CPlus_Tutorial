@@ -801,7 +801,7 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 ```cpp
 // ----------------- 케이스 1: sin(x) [0, π] -----------------
 {
-  SinFunc f;
+  SinFunc f = [](double x) { return std::sin(x); };
   const double a = 0.0;
   const double b = ON_PI;   // opennurbs의 PI 사용
   const double exact = 2.0;
@@ -823,7 +823,7 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 
 // ----------------- 케이스 2: exp(-x^2) [0, 1] -----------------
 {
-  Gaussian01 f;
+  Gaussian01 f = [](double x) { return std::exp(-x * x); };;
   const double a = 0.0;
   const double b = 1.0;
   const double reference = 0.746824132812; // 알려진 값
@@ -842,6 +842,28 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 
 // ----------------- 케이스 3: 파라미터 가우시안 -----------------
 {
+
+  struct GaussianParam : public ON_IntegrationFunction
+  {
+      struct Context
+      {
+          double c;
+          double sigma;
+      };
+  
+      double operator()(double x, void* ctx) override
+      {
+          const auto* p =
+              static_cast<const Context*>(ctx);
+  
+          const double d = x - p->c;
+  
+          return std::exp(
+              -(d * d) /
+              (2.0 * p->sigma * p->sigma));
+      }
+  };
+
   GaussianParam f;
   struct { double c, sigma; } ctx{ 0.5, 0.10 }; // 중심 0.5, 표준편차 0.1
   const double a = 0.0;
