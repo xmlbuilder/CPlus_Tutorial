@@ -77,6 +77,9 @@ $$
 - **Simpson**: 처음/중간/끝 세 점으로 포물선 적분  
 - **RK4**: “처음, 중간, 중간, 끝” 4번의 slope 평가 → Simpson을 explicit하게 바꾼 버전
 
+![Trapezoid, Simpson, RK4 비교](image/trapezoid_simpson_rk4.png)
+
+
 ---
 
 ### 📌 정리:
