@@ -1,19 +1,17 @@
-# FixedSizePool
-
-## 📌 FixedSizePool (OpenNurbs 스타일 간단 재구현)
-### 소개
-이 프로젝트는 OpenNurbs의 ON_FixedSizePool 아이디어를 기반으로 한  
+## 📘 FixedSizePool (OpenNurbs 스타일 간단 재 구현)
+### 📌 소개
+- 이 프로젝트는 OpenNurbs의 ON_FixedSizePool 아이디어를 기반으로 한  
 **고정 크기 메모리 풀(Fixed-size memory pool)** 의 간단한 C++ 구현입니다.  
-동일 크기의 객체를 빠르게 할당/반환할 수 있으며, 일반적인 new/delete보다 성능과 메모리 효율성이 뛰어납니다.  
+- 동일 크기의 객체를 빠르게 할당/반환할 수 있으며, 일반적인 new/delete보다 성능과 메모리 효율성이 뛰어납니다.  
 
-### 특징
+### 📌 특징
 - 블록 단위 할당: 한 번에 큰 블록을 받아와 내부에서 요소를 관리
 - Free-list 재사용: 반환된 요소를 스택으로 관리하여 O(1) 할당/반환
 - Placement new 지원: 클래스 타입 객체의 생성자/소멸자 호출 가능
 - Thread-safe 버전 제공: 멀티스레드 환경에서도 안전하게 사용 가능
 - 간단한 API: Create → Allocate → Return → Destroy 흐름
 
-### 구조
+### 📌 구조
 - FixedSizePool : raw memory 관리용 풀
 - SimpleFixedSizePool<T> : 타입 안전 래퍼, placement new 지원
 - AllocateElement() : zeroed 메모리 반환
@@ -21,7 +19,7 @@
 - Construct(...) : placement new로 객체 생성
 - DestructAndReturn(...) : 소멸자 호출 후 반환
 
-## 소스 코드
+### 📌 소스 코드
 ```cpp
 #pragma once
 #include <cstddef>
@@ -29,7 +27,6 @@
 #include <cstring>
 #include <new>
 #include <mutex>
-
 
 class FixedSizePool {
 public:
@@ -78,6 +75,7 @@ private:
     std::mutex lock_;
 };
 ```
+
 ```cpp
 // 타입 안전 래퍼
 template <class T>
@@ -288,8 +286,8 @@ void FixedSizePool::ThreadSafeReturnElement(void* p) {
 ````
 ---
 
-## 사용법
-### 1. POD 구조체 관리
+### 📌 사용법
+#### 🔹 1. POD 구조체 관리
 ```cpp
 struct Node {
     int next;
@@ -307,8 +305,7 @@ pool.DestructAndReturn(n1);
 pool.Destroy();
 ```
 
-
-### 2. 클래스 객체 관리 (생성자/소멸자 호출)
+#### 🔹 2. 클래스 객체 관리 (생성자/소멸자 호출)
 ```cpp
 struct Person {
     Person(int id, std::string name) : id_(id), name_(std::move(name)) {
@@ -340,7 +337,7 @@ pool.Destroy();
 ```
 
 
-### 3. 대량 할당/반환 성능 테스트
+#### 🔹 3. 대량 할당/반환 성능 테스트
 ```cpp
 SimpleFixedSizePool<int> pool;
 pool.Create(1000, 0);
@@ -364,7 +361,7 @@ pool.Destroy();
 ```
 
 
-### 4. 멀티스레드 ThreadSafe 테스트
+#### 🔹 4. 멀티스레드 ThreadSafe 테스트
 ```cpp
 struct Item { int id; };
 
@@ -389,14 +386,7 @@ pool.Destroy();
 ```
 
 
-### 빌드 방법
-```
-g++ -std=c++17 -O2 FixedSizePool.cpp Test.cpp -o test
-./test
-```
-
-
-## 결과 예시
+#### 🔹 결과 예시
 ```
 Construct Person(1, Alice)
 Construct Person(2, Bob)
@@ -408,9 +398,9 @@ Active count: 0
 ```
 
 ---
-## 테스트 코드
+### 📌 테스트 코드
 
-### 1. Case1
+#### 🔹 1. Case1
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -467,7 +457,7 @@ int main() {
     return 0;
 }
 ```
-### 2. Case2
+#### 🔹 2. Case2
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -522,7 +512,7 @@ int main() {
     return 0;
 }
 ``` 
-### 3. Case3
+#### 🔹 3. Case3
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -548,7 +538,7 @@ int main() {
     return 0;
 }
 ```
-### 4. Case4
+#### 🔹 4. Case4
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -586,7 +576,7 @@ int main() {
     return 0;
 }
 ```
-### 5. Case5
+#### 🔹 5. Case5
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -624,7 +614,7 @@ int main() {
     return 0;
 }
 ```
-### 6. Case6
+#### 🔹 6. Case6
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -668,7 +658,7 @@ int main() {
     return 0;
 }
 ```
-### 7. Case7
+#### 🔹 7. Case7
 ```cpp
 #include "FixedSizePool.h"
 #include <iostream>
@@ -707,8 +697,8 @@ int main() {
 
 # RTOS 적용
 
-## 📌 RTOS에서 적용하는 방법
-### 1. FreeRTOS 예시
+### 📌 RTOS에서 적용하는 방법
+#### 🔹 1. FreeRTOS 예시
 ```cpp
 #include "FixedSizePool.h"
 #include "FreeRTOS.h"
@@ -740,10 +730,10 @@ struct FixedSizePool {
 };
 ```
 
-- 👉 std::mutex 대신 FreeRTOS의 SemaphoreHandle_t를 사용합니다.
+- std::mutex 대신 FreeRTOS의 SemaphoreHandle_t를 사용합니다.
 - xSemaphoreTake / xSemaphoreGive로 임계 구역을 보호하면 됩니다.
 
-### 2. Zephyr RTOS 예시
+#### 🔹 2. Zephyr RTOS 예시
 ```cpp
 #include <zephyr.h>
 
@@ -762,9 +752,9 @@ struct FixedSizePool {
     }
 };
 ```
-- 👉 Zephyr에서는 k_mutex를 사용합니다.
+- Zephyr에서는 k_mutex를 사용합니다.
 
-### 3. ThreadX 예시
+#### 🔹 3. ThreadX 예시
 ```cpp
 #include "tx_api.h"
 
@@ -783,9 +773,9 @@ struct FixedSizePool {
     }
 };
 ```
-- 👉 ThreadX에서는 TX_MUTEX를 사용합니다.
+- ThreadX에서는 TX_MUTEX를 사용합니다.
 
-## ✅ 요약
+#### 🔹 요약
 - RTOS 환경에서는 std::mutex 대신 RTOS 전용 동기화 객체를 사용해야 합니다.
 - FreeRTOS → SemaphoreHandle_t
 - Zephyr → k_mutex
@@ -793,18 +783,19 @@ struct FixedSizePool {
 - 나머지 풀 로직은 동일하게 유지됩니다.
 
 ---
-# Fixed-size pool for FreeRTOS
+
+### 📌 Fixed-size pool for FreeRTOS
 
 FreeRTOS 환경에서 바로 사용할 수 있도록 만든 OpenNurbs 스타일의 고정 크기 메모리 풀 전체 소스입니다.  
 블록 단위 할당, free-list 재사용, O(1) 할당/반환을 지원하며, 동기화는 FreeRTOS의 뮤텍스(SemaphoreHandle_t)로 처리합니다.  
 블록 메모리는 pvPortMalloc/vPortFree를 사용합니다.
 
-## Files overview
+### 📌 Files overview
 - FixedSizePool_FREERTOS.h: 헤더 (API와 템플릿 래퍼)
 - FixedSizePool_FREERTOS.cpp: 구현 (FreeRTOS 락/힙 사용)
 - Sample_FREERTOS.cpp: 샘플 코드 (POD/클래스/멀티태스크 예시)
 
-## FixedSizePool_FREERTOS.h
+### 📌 FixedSizePool_FREERTOS.h
 ```cpp
 #pragma once
 
@@ -941,7 +932,7 @@ private:
     FixedSizePool pool_;
 };
 ```
-## FixedSizePool_FREERTOS.cpp
+### 📌 FixedSizePool_FREERTOS.cpp
 ```cpp
 #include "FixedSizePool_FREERTOS.h"
 
@@ -1140,7 +1131,7 @@ void FixedSizePool::ThreadSafeReturnElement(void* p) {
 ```
 
 
-## Sample_FREERTOS.cpp
+### 📌 Sample_FREERTOS.cpp
 ```cpp
 #include "FixedSizePool_FREERTOS.h"
 #include <cstdio>
@@ -1239,7 +1230,7 @@ int main(void) {
 }
 ```
 
-## Notes for RTOS integration
+### 📌 Notes for RTOS integration
 - 메모리: 블록은 pvPortMalloc/vPortFree로 관리합니다. 프로젝트의 FreeRTOS heap 설정에 맞춰 동작합니다.
 - 동기화: SemaphoreHandle_t 기반 뮤텍스 사용. ThreadSafe* 함수들만 락을 잡고, 일반 함수는 락 없이 동작합니다.
 - 태스크 간 공유 시에는 ThreadSafe 함수 사용을 권장합니다.
@@ -1249,7 +1240,7 @@ int main(void) {
 - Capacity 힌트: Create(sizeof_element, estimate, block_capacity)에서 estimate를 적절히 크게 잡으면  
   첫 블록이 넉넉하게 잡혀 초기 힙 호출을 줄일 수 있습니다.
 
-## Build (example)
+### 📌 Build (example)
 프로젝트에 FreeRTOS 헤더/라이브러리를 포함한 뒤, 아래와 같이 컴파일합니다.
 - Include paths: FreeRTOS headers, config, portable layer
 - Link: FreeRTOS kernel, heap implementation (heap4 등)
