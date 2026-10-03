@@ -16,7 +16,7 @@
 - 특징: 다형성(polymorphism), 인터페이스 공유.
 - 잘못 쓰면: 상속으로 구현 세부사항까지 엮여 **결합도↑, 취약한 기반 클래스 문제** 발생.
 
-### 📌 C++ 예시
+#### 🔹 C++ 예시
 ```cpp
 struct ICurve { virtual ~ICurve() = default; virtual double Length() const = 0; };
 
@@ -34,7 +34,7 @@ struct LineCurve : ICurve {
 // is-a: NurbsCurve, LineCurve 는 ICurve 의 ‘한 종류’
 ```
 
-### 📌 LSP 위반 대표 사례 (피해야 함)
+#### 🔹 LSP 위반 대표 사례 (피해야 함)
 ```cpp
 struct Rectangle { virtual void SetWidth(double); virtual void SetHeight(double); };
 struct Square : Rectangle { // “정사각형은 직사각형” 논리로 상속하면
@@ -53,7 +53,7 @@ struct Square : Rectangle { // “정사각형은 직사각형” 논리로 상�
   - **합성(Composition)** : 강한 소유/생명주기 동일 (부품이 주체에 종속)
   - **집합(Aggregation)** : 약한 소유/공유 (부품 생명주기 독립)
 
-### 📌 C++ 예시 (엔진을 가진 자동차)
+#### 🔹 C++ 예시 (엔진을 가진 자동차)
 ```cpp
 // 합성: Car가 Engine을 '소유' (생명주기 함께)
 class Engine {
@@ -101,7 +101,7 @@ class Renderer {
 ---
 
 
-#### 📌 is‑a (상속, 일반화)
+#### 🔹 is‑a (상속, 일반화)
 ```
    ICurve
      ▲
@@ -111,7 +111,7 @@ class Renderer {
 NurbsCurve   LineCurve
 ```
 
-### 📌 has‑a (합성: 강한 소유)
+#### 🔹 has‑a (합성: 강한 소유)
 ```
 Car ──has-a──▶ Engine
 [filled diamond at Car side]
@@ -122,7 +122,7 @@ Car
  └─ engine_: Engine   (by value / unique_ptr)  ← Composition
 ```
 
-### 📌 has‑a (집합: 약한 소유/공유)
+#### 🔹 has‑a (집합: 약한 소유/공유)
 ```
 Garage ──o──▶ Car
 [open diamond at Garage side]
