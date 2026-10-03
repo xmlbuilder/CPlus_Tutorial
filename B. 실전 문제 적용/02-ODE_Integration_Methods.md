@@ -1,13 +1,13 @@
-# 📘 1. 배경 – 적분과 ODE의 차이
+## 📘 ODE
 
-### 적분 문제
+### 📌 적분 문제
 
 $\[ I = \int_a^b f(x)\, dx \]$
 
 - 함수 \(f(x)\)를 여러 점에서 평가해 면적을 근사.
 
 
-### 초기값 문제 (ODE)
+### 📌 초기값 문제 (ODE)
 
 $\[ y'(t) = f(t,y), \quad y(t_0) = y_0 \]$
 
@@ -16,39 +16,38 @@ $\[ y'(t) = f(t,y), \quad y(t_0) = y_0 \]$
 
 ---
 
-# 📘 2. Trapezoidal / Simpson과 ODE 해법
+### 📌 Trapezoidal / Simpson과 ODE 해법
 
-### Trapezoidal rule applied to ODE
+#### 🔹 Trapezoidal rule applied to ODE
 
 $\[ y_{n+1} = y_n + \frac{h}{2} \big( f(t_n,y_n) + f(t_{n+1}, y_{n+1}) \big) \]$
 
-- Implicit method: \(y_{n+1}\)이 양변에 있음 → 해 찾기 위해 보통 Newton iteration 필요.
+- Implicit method: \$y_{n+1}\$ 이 양변에 있음 → 해 찾기 위해 보통 Newton iteration 필요.
 
 ---
 
-### Simpson’s rule applied to ODE
+#### 🔹 Simpson’s rule applied to ODE
 
 $\[ y_{n+1} = y_n + \frac{h}{6} \Big(f(t_n,y_n) + 4 f(t_{n+\tfrac{1}{2}}, y_{n+\tfrac{1}{2}}) + f(t_{n+1}, y_{n+1}) \Big) \]$
 
 - 역시 **암시적(implicit)** → $\(y_{n+1}\)$ 을 포함하므로 계산이 번거롭다.
 
----
 
-# 📘 3. Runge–Kutta (Explicit RK)
+### 📌 3. Runge–Kutta (Explicit RK)
 
-Runge–Kutta는 사실상 Simpson/Trapezoid 아이디어를 ODE에 맞게 **명시적(explicit)**으로 재구성한 것.
+- Runge–Kutta는 사실상 Simpson/Trapezoid 아이디어를 ODE에 맞게 **명시적(explicit)** 으로 재구성한 것.
 
-### 4차 Runge–Kutta (RK4) 수식
+### 📌 4차 Runge–Kutta (RK4) 수식
 
-스텝 크기 $\(h\)$ , 현재 상태 $\(y_n\)$ , 시간 $\(t_n\)$ :
+- 스텝 크기 $\(h\)$ , 현재 상태 $\(y_n\)$ , 시간 $\(t_n\)$ :
 
 $$
 \[
 \begin{aligned}
 k_1 &= f(t_n, y_n), \\
-k_2 &= f\left(t_n + \tfrac{h}{2}, \, y_n + \tfrac{h}{2}k_1\right), \\
-k_3 &= f\left(t_n + \tfrac{h}{2}, \, y_n + \tfrac{h}{2}k_2\right), \\
-k_4 &= f\left(t_n + h, \, y_n + h k_3\right), \\
+k_2 &= f\left(t_n + \tfrac{h}{2},  y_n + \tfrac{h}{2}k_1\right), \\
+k_3 &= f\left(t_n + \tfrac{h}{2},  y_n + \tfrac{h}{2}k_2\right), \\
+k_4 &= f\left(t_n + h, y_n + h k_3\right), \\
 y_{n+1} &= y_n + \tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4).
 \end{aligned}
 \]
@@ -60,7 +59,7 @@ $$
 
 ---
 
-# 📘 4. 차이점 요약
+### 📌 차이점 요약
 
 | 구분 | Trapezoid / Simpson (적분) | Runge–Kutta (ODE) |
 |------|-----------------------------|--------------------|
@@ -72,7 +71,7 @@ $$
 
 ---
 
-# 📘 5. 직관 그림
+### 📌 직관 그림
 
 - **Trapezoid**: 처음/끝 기울기 평균으로 적분  
 - **Simpson**: 처음/중간/끝 세 점으로 포물선 적분  
@@ -80,13 +79,13 @@ $$
 
 ---
 
-✅ **정리:** 
+### 📌 정리:
 
 - Trapezoid/Simpson은 적분 공식을 ODE에 억지로 적용하면 implicit → 계산이 무겁다.  
 - Runge–Kutta는 이를 explicit 형태로 바꿔 ODE에 맞게 설계된 방법.  
 - 그래서 ODE 해석에는 RK 계열이 주로 쓰인다.
 
-# 소스 정리
+### 📌 소스 정리
 ```cpp
 class ON_CLASS ON_IntegrationFunction
 {
@@ -761,7 +760,7 @@ bool ON_Integrator::Integrate1D_RK45(
 }
 ```
 
-# 샘플 정리 1
+#### 🔹 샘플 정리 1
 ```cpp
 ON_Integrator::Function1D f1 = [](double x) { return std::sin(x); };
 
@@ -784,7 +783,7 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 
 ```
 
-# 결과 1
+#### 🔹결과 1
 ```
 ∫ sin(x) dx [0,π] = 2
   RK4  result = 2
@@ -795,7 +794,7 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
   RK45 result = 0.746824
 ```
 
-# 샘플 정리 2
+#### 🔹 샘플 정리 2
 ```cpp
 // ----------------- 케이스 1: sin(x) [0, π] -----------------
 {
@@ -862,7 +861,7 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 
 ```
 
-# 결과 정리 2
+#### 🔹결과 정리 2
 
 ```
 ∫ sin(x) dx, [0,π] = 2
@@ -880,7 +879,7 @@ std::cout << "  RK45 result = " << rk45_exp << std::endl;
 ```
 
 
-# 샘플 정리 3
+#### 🔹 샘플 정리 3
 
 ```cpp
 
@@ -1212,9 +1211,5 @@ double ON_NurbsSurfaceApproximateArea(
   }
   return area;
 }
-
-
-
-
 ```
 ----
