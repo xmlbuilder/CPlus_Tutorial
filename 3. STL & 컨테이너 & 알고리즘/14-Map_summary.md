@@ -84,3 +84,61 @@ int main() {
 
 ---
 
+### 📌 `emplace`
+- 객체 생성과 삽입을 한 줄로 표현할 수 있다는 편의성
+
+#### 🔹 insert
+```cpp
+std::map<int, std::string> m;
+
+std::pair<int, std::string> item(1, "Apple");
+m.insert(item);
+
+
+m.insert(std::make_pair(1, "Apple"));
+
+```
+
+#### 🔹 emplace
+```cpp
+m.emplace(1, "Apple");
+```
+
+```cpp
+std::map<std::string, Point3D> points;
+
+points.emplace("P1", Point3D(1.0, 2.0, 3.0));
+
+```
+
+#### 🔹 함수 설명
+
+| 함수 | 실무적인 느낌 |
+|------|-------------|
+| insert()	| 이미 만들어진 값을 넣는다 | 
+| emplace()	| 간단하게 key/value를 바로 넣는다 | 
+| try_emplace()	| value를 그 자리에서 만들면서 중복 생성도 피한다  | 
+| insert_or_assign()	| 있으면 바꾸고, 없으면 넣는다 | 
+
+- try_emplace: **생성 비용 측면에서 가장 유리한 선택**
+
+#### 🔹 사용 예
+
+```cpp
+std::map<int, std::string> m;
+
+// 기존 방식
+m.insert(std::make_pair(1, "Apple"));
+
+// 간결
+m.emplace(2, "Banana");
+
+// C++17 - 생성자 인자 직접 전달
+m.try_emplace(3, "Orange");
+
+// 있으면 덮어쓰기
+m.insert_or_assign(3, "Grape");
+```
+
+---
+
