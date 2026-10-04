@@ -1,13 +1,13 @@
-# 🔎 HashMap 개념 및 특징 정리
-## 1. 개요
-### ✔ HashMap
+## 📘 HashMap 개념 및 특징 정리
+### 📌 1. 개요
+#### ✔ HashMap
 - Key → Value의 매핑 구조 (연관 배열)
 - 키는 유일해야 하고, 각각의 키는 하나의 값에 매핑됨
 - 예: { "apple": 10, "banana": 20 }
 
 - **해시 테이블(hash table)** 을 내부 구현으로 사용하며, O(1)에 가까운 평균 접근 시간을 갖는 것이 핵심이다.
 
-## 2. 내부 구조 비교
+### 📌 2. 내부 구조 비교
 - 아래 표는 HashMap의 내부 구조 관점.
   - 저장되는 요소:	Value 단일값	Key + Value 쌍
   - Key 역할:	Key가 별도로 존재
@@ -15,7 +15,7 @@
   - 중복 처리: 동일 키 중복 저장 불가, value는 변경 가능
   - 비교 방식:	hash(key) / equal(key1, key2)
 
-## 3. 동작 원리
+### 📌 3. 동작 원리
 
 - 다음 과정을 공유한다:
 - 요소(또는 Key)에 대해 **해시 함수(hash)** 를 계산
@@ -25,46 +25,44 @@
 - 대부분 O(1) 평균 시간으로 처리되지만,
 - 해시 충돌이 지나치게 많을 경우 최악의 경우 O(n)까지 늘어날 수 있다.
 
-## 4. HashMap 특징
-### ✔ 장점
+### 📌 4. HashMap 특징
+#### ✔ 장점
 - Key ↔ Value 구조로 접근성이 뛰어남
   - O(1) 평균 시간으로 찾고, 수정하고, 삽입 가능.
 - set과 다르게 Value는 마음대로 변경 가능
  - Key만 변경하면 안 됨.
 - 실제 데이터 모델링에 가장 자주 사용하는 데이터 구조
 
-### ✔ 단점
+#### ✔ 단점
 - 순서가 없음
 - 해시 함수가 성능의 핵심
 - Key 변경 금지
   - Key 수정 시 그 Key가 저장된 버킷 위치가 바뀌므로, 구조가 깨짐 → 원칙적으로 허용하면 안 됨.
 
-## 5. 해시 충돌 처리 방식
+### 📌 5. 해시 충돌 처리 방식
+- HashMap은 두 가지 방식 중 하나를 사용한다.
+- Hash 구조는 Separate Chaining 기반이며, intrusive 구조라서 Node 메모리 효율이 높다.
 
-HashMap은 두 가지 방식 중 하나를 사용한다.
-
-### ✔ 1) Separate Chaining (체이닝)
+#### ✔ 1) Separate Chaining (체이닝)
 
 - 같은 버킷에 여러 요소가 들어가면 연결 리스트로 연결
 - 장점: 구현 간단, 확장 용이
 - 단점: 메모리 증가
 
-### ✔ 2) Open Addressing (개방 주소법)
+#### ✔ 2) Open Addressing (개방 주소법)
 
 - 충돌 시 테이블 내 다른 위치를 탐색하여 저장
 - 장점: 포인터가 없어 메모리 효율적
 - 단점: 삭제 처리 어렵고, 클러스터링 문제 발생
 
-Hash 구조는 Separate Chaining 기반이며, intrusive 구조라서 Node 메모리 효율이 높다.
-
-## 6. HashSet vs HashMap: 어떤 경우 사용?
+### 📌 6. HashSet vs HashMap: 어떤 경우 사용?
 - Key → Value 매핑 필요		✔
 - Key 중복 허용 불가	✔	✔
 - Value와 함께 부가 정보 필요		✔
 
-## 7. intrusive 방식 (OpenNURBS 스타일) 특징
+### 📌 7. intrusive 방식 특징
 - Hash32Map은 intrusive hash table이다.
-### intrusive 특징
+#### intrusive 특징
 - Node가 사용자 클래스에 직접 포함됨
 - 외부에서 노드 메모리를 따로 할당하지 않음
 - 메모리 단편화 및 할당/해제 오버헤드가 없음
@@ -75,9 +73,10 @@ Hash 구조는 Separate Chaining 기반이며, intrusive 구조라서 Node 메�
 - 단점
   - 자료구조가 객체 내부에 결합되므로 다소 복잡
   - 키 변경 금지
-## 8. HashSet / HashMap의 성능적 중요성
 
-NURBS, BRep, Mesh 엔진에서는 다음 작업에 HashSet/HashMap이 필수적이다:
+### 📌 8. HashSet / HashMap의 성능적 중요성
+
+- NURBS, BREP, Mesh 엔진에서는 다음 작업에 HashSet/HashMap이 필수적이다:
 - ✔ 중복 Vertex/Edge 제거
   - (Topology 생성)
 - ✔ Trim Curve 중복 관리 / 빠른 lookup
@@ -85,12 +84,11 @@ NURBS, BRep, Mesh 엔진에서는 다음 작업에 HashSet/HashMap이 필수적�
 - ✔ Mesh face, edge indexing
 - ✔ Curve / Surface intersection 시 seed 관리
 - ✔ Boolean 연산 시 새로운 Edge/Vertex 병합
+- 이런 작업에서 O(1) 평균 시간 lookup은 큰 성능 차이를 만든다.
 
-이런 작업에서 O(1) 평균 시간 lookup은 큰 성능 차이를 만든다.
-
-## 9. 정리표
+### 📌 9. 정리표
 - 저장 구조:	Value pair
-- Key	Key: 별도 제공
+- Key: 별도 제공
 - 중복:	Key 중복 X
 - Value: 	Value는 변경 가능, Key는 금지
 - 주 용도:	fast lookup	연관 배열, 데이터 맵핑
@@ -98,12 +96,12 @@ NURBS, BRep, Mesh 엔진에서는 다음 작업에 HashSet/HashMap이 필수적�
 - intrusive 지원:가능
 - 평균 시간: O(1)
 
-## 10. 결론
+### 📌 10. 결론
 - HashMap은 키 → 값 구조
 - CAD 엔진이나 OpenNURBS처럼 대규모 데이터 처리에서는 intrusive hash 구조가 메모리 효율 및 성능 면에서 매우 유리
 
 ---
-## 소스 코드
+### 📌 소스 코드
 ```cpp
 #pragma once
 
@@ -515,7 +513,7 @@ namespace util_hash
 } // namespace util_hash
 ```
 
-###  테스트 코드
+### 📌  테스트 코드
 ```cpp
 #include "hash_set32.h"
 #include "hash32_map.h"
