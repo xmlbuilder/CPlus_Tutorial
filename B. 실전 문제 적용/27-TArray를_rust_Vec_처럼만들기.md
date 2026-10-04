@@ -1,6 +1,6 @@
-# TArray 기능 확장
+## 📘 TArray 기능 확장
 
-## 소스 코드
+### 📌 소스 코드
 ```cpp
 #pragma once
 
@@ -13,7 +13,6 @@
 #ifndef MIN
 #define MIN(a,b) ( ((a)>(b)) ? (b) : (a) )
 #endif
-
 
 template<class Type>
 class TArrRef
@@ -36,8 +35,6 @@ public:
         assert( nIndex >= 0 && nIndex < m_nSize);
         return m_pData[nIndex];
     }
-
-
 protected:
     const Type*	m_pData;
     int 	m_nSize;
@@ -159,7 +156,6 @@ public:
         }
     }
 
-
     void calcAbsMaxMinValue(Type& dMax, Type& dMin) const
     {
         int lCnt = m_nSize;
@@ -200,7 +196,6 @@ public:
         }
     }
 
-
     std::vector<TArrRef<Type>> windows(int k) const {
         std::vector<TArrRef<Type>> result;
         if (k <= 0 || k > m_nSize) return result;
@@ -209,7 +204,6 @@ public:
         }
         return result;
     }
-
 
     std::vector<TArrRef<Type>> chunks(int k) const {
         std::vector<TArrRef<Type>> result;
@@ -220,8 +214,6 @@ public:
         }
         return result;
     }
-
-
 
     template <class ResultType>
     TArray<ResultType> map(std::function<ResultType(const Type&)> func) const {
@@ -257,7 +249,6 @@ public:
         return acc;
     }
 
-
     void for_each(std::function<void(const Type&)> func) const {
         for (int i = 0; i < m_nSize; i++) {
             func(m_pData[i]);
@@ -270,10 +261,9 @@ public:
         }
     }
 
-
     template <class OtherType, class ResultType>
     TArray<ResultType> zip(const TArray<OtherType>& other,
-                           std::function<ResultType(const Type&, const OtherType&)> func) const {
+	   std::function<ResultType(const Type&, const OtherType&)> func) const {
         int n = std::min(m_nSize, other.getSize());
         TArray<ResultType> result;
         result.setSize(n);
@@ -314,9 +304,6 @@ public:
         }
         return result;
     }
-
-
-
 protected:
     Type*	 m_pData;
     int      m_nSize;
@@ -364,7 +351,7 @@ typedef TArray<double>              TArrayd;
 
 ---
 
-## 샘플 코드
+### 📌 샘플 코드
 ```cpp
 #include <iostream>
 #include "TArray.hpp"
@@ -455,7 +442,7 @@ int main() {
     return 0;
 }
 ```
-### 출력 결과
+#### 🔹 출력 결과
 ```
 arr results:
 1 2 3 4 5
