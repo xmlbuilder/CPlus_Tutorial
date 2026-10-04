@@ -1,5 +1,5 @@
-## IntLock32 사용 설명서
-### 1. IntLock32 개요
+## 📘 IntLock32 사용 설명서
+### 📌 1. IntLock32 개요
 - IntLock32는 32비트 정수 하나로 구현한 아주 가벼운 락입니다.
 - 내부 구현: std::atomic<int>
 - 크기: sizeof(IntLock32) == sizeof(int) (static_assert로 확인)
@@ -9,7 +9,7 @@
   - 강제 해제(BreakLock) 제공
   - RAII 가드(IntLockGuard)로 편하게 사용 가능
 
-### 2. 상태 값 / 상수
+### 📌 2. 상태 값 / 상수
 ```cpp
 enum : int
 {
@@ -26,8 +26,8 @@ enum : int
 - -1 (InvalidLockValue)
   - 내부적으로 “유효하지 않은 값”을 의미.
     - 이 값으로는 락을 잡거나 풀 수 없음.
-## 3. 함수별 설명
-### 3.1 생성자 / 복사 금지
+### 📌 3. 함수별 설명
+#### 🔹 3.1 생성자 / 복사 금지
 ```cpp
 IntLock32() noexcept
   : m_lock_value(UnlockedValue)
@@ -40,7 +40,7 @@ IntLock32& operator=(const IntLock32&) = delete;
 - 기본 생성: **항상 unlocked 상태(0)** 로 시작.
 - 복사/대입은 금지 (락은 복사되는 순간 의미가 깨지므로).
 
-### 3.2 int IsLocked() const
+#### 🔹 3.2 int IsLocked() const
 ```cpp
 int IsLocked() const noexcept
 {
@@ -54,7 +54,7 @@ int IsLocked() const noexcept
 
 - 디버깅/로그용으로 “누가 잡았는지”를 lock 값에 실어두고 싶을 때 유용.
 
-### 3.3 bool IsLockedFlag() const
+#### 🔹 3.3 bool IsLockedFlag() const
 ```cpp
 bool IsLockedFlag() const noexcept
 {
@@ -66,7 +66,7 @@ bool IsLockedFlag() const noexcept
   - true → 누군가 잡고 있음
   - false → unlocked
 
-### 3.4 bool GetDefaultLock()
+#### 🔹 3.4 bool GetDefaultLock()
 ```cpp
 bool GetDefaultLock() noexcept
 {
@@ -79,7 +79,7 @@ bool GetDefaultLock() noexcept
   - 성공 → true (0 → 1로 변경)
   - 실패 → false (이미 잠겨있거나, 내부 오류)
 
-### 3.5 bool ReturnDefaultLock()
+#### 🔹 3.5 bool ReturnDefaultLock()
 ```cpp
 bool ReturnDefaultLock() noexcept
 {
@@ -91,7 +91,7 @@ bool ReturnDefaultLock() noexcept
   - 현재 값이 1이면 0으로 돌리고 true
   - 그렇지 않으면 아무 것도 하지 않고 false
 
-### 3.6 bool GetLock(int lock_value)
+#### 🔹 3.6 bool GetLock(int lock_value)
 ```cpp
 bool GetLock(int lock_value) noexcept
 {
@@ -110,18 +110,18 @@ bool GetLock(int lock_value) noexcept
 ```
 - 사용자 지정 토큰(lock_value)으로 try-lock.
 
-#### 규칙
+#### 🔹 규칙
 - lock_value 는
   - != 0(UnlockedValue) 이어야 하고
   - != -1(InvalidLockValue) 이어야 합니다.
 - 현재 값이 0일 때만 lock_value로 바꾸고 성공(true).
 - 이미 누군가 잡고 있으면 false.
 
-#### 활용 예
+#### 🔹 활용 예
 - lock_value에 스레드 ID나, 객체 ID 같은 걸 넣어서
   - 디버그 시 “누가 잡고 있는지”를 추적할 수 있음.
 
-### 3.7 bool ReturnLock(int lock_value)
+#### 🔹 3.7 bool ReturnLock(int lock_value)
 ```cpp
 bool ReturnLock(int lock_value) noexcept
 {
@@ -140,7 +140,7 @@ bool ReturnLock(int lock_value) noexcept
 ```
 - 지정한 토큰(lock_value)으로 잠겨 있을 때만 unlock.
 
-#### 규칙
+#### 🔹 규칙
 - 현재 락 값이 lock_value일 때만
   - lock_value → 0 으로 변경
   - true 반환
@@ -148,10 +148,10 @@ bool ReturnLock(int lock_value) noexcept
 - 현재 값이 다르면:
   - 아무 것도 바꾸지 않고 false 반환
 
-#### 용도
+#### 🔹용도
 **내가 잡은 락만 풀고 싶다**  라는 의도를 명확하게 표현할 수 있음.
 
-### 3.8 int BreakLock()
+#### 🔹 3.8 int BreakLock()
 ```cpp
 int BreakLock() noexcept
 {
@@ -164,12 +164,12 @@ int BreakLock() noexcept
   - 잠그기 전의 값 (0이면 원래 unlocked 상태였던 것)
   - 0이 아니면 **누군가/뭔가가 잡고 있었다** 는 의미
 
-#### 사용 예
+#### 🔹 사용 예
 - 타임아웃 / 비상 복구:
   - 너무 오래 잠겨 있는 경우, 관리자 코드에서 강제로 해제하고 싶을 때
   - 이전 값으로 **누가 잡았었는지** 를 기록해서 디버깅에 사용 가능
 
-## 4. RAII 가드: IntLockGuard
+### 📌 4. RAII 가드: IntLockGuard
 ```cpp
 class IntLockGuard
 {
@@ -203,7 +203,7 @@ private:
 };
 ```
 
-#### 동작 방식
+#### 🔹 동작 방식
 - 생성자:
   - lock.GetLock(token)을 호출해서 try-lock
   - 성공 시 m_owns = true
@@ -211,13 +211,13 @@ private:
 - 소멸자:
   - m_owns == true이면 lock.ReturnLock(token) 호출 → 자동 해제
 
-#### owns_lock() 사용
+#### 🔹 owns_lock() 사용
 - IntLockGuard g(lock);
   - 이때 락을 못 얻을 수도 있으므로,
   - if (!g.owns_lock()) { /*실패 처리*/ } 식으로 체크 가능.
 
-## 5. 사용 예제 – 단계별
-### 5.1 기본적인 단일 스레드 사용
+### 📌 5. 사용 예제 – 단계별
+#### 🔹 5.1 기본적인 단일 스레드 사용
 ```cpp
 IntLock32 lock;
 
@@ -237,7 +237,7 @@ else
 }
 ```
 
-### 5.2 커스텀 토큰 사용 (디버깅 / owner 표시)
+#### 🔹 5.2 커스텀 토큰 사용 (디버깅 / owner 표시)
 ```cpp
 IntLock32 lock;
 int my_token = 1234; // 예: 스레드 ID, 객체 ID 등
@@ -259,7 +259,7 @@ else
 }
 ```
 
-### 5.3 RAII 방식으로 사용하기
+### 🔹 5.3 RAII 방식으로 사용하기
 ```cpp
 IntLock32 lock;
 
@@ -280,7 +280,7 @@ void critical_section()
 
 - 예외/조기 return이 있어도 자동으로 unlock되기 때문에, 락 깜빡 잊고 안 푸는 버그를 줄일 수 있음.
 
-### 5.4 멀티 스레드에서 spin lock으로 사용
+#### 🔹 5.4 멀티 스레드에서 spin lock으로 사용
 ```cpp
 IntLock32 lock;
 int shared_counter = 0;
