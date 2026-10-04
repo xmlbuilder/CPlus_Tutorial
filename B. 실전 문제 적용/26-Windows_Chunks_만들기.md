@@ -326,6 +326,7 @@ for (auto& w : win) {
 ```
 
 #### 🔹 chunks
+```
 // chunks(4)
 auto ch = arr.chunks(4);
 for (auto& c : ch) {
