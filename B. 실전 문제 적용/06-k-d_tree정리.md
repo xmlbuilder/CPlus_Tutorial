@@ -1,18 +1,18 @@
+## 📘 k-d Tree 기반 3D 포인트 병합 알고리즘
 
-# 🌲 k-d Tree 기반 3D 포인트 병합 알고리즘
+- 3차원 공간상의 점들을 k-d 트리(k-dimensional tree)를 활용하여 효율적으로 병합하는 알고리즘을 구현한 것입니다.
+- 가까운 점들을 기준 거리(threshold) 이하일 경우 평균값으로 병합하여 데이터의 중복을 줄이고, 공간적 밀집도를 완화할 수 있습니다.
 
-이 프로젝트는 3차원 공간상의 점들을 k-d 트리(k-dimensional tree)를 활용하여 효율적으로 병합하는 알고리즘을 구현한 것입니다. 가까운 점들을 기준 거리(threshold) 이하일 경우 평균값으로 병합하여 데이터의 중복을 줄이고, 공간적 밀집도를 완화할 수 있습니다.
-
-## 📦 주요 기능
+### 📌 주요 기능
 
 - 3D 포인트 구조체 정의
 - 유클리디안 거리 계산 함수
 - k-d 트리 삽입 및 최근접점 탐색
 - 기준 거리 이하의 점 병합 처리
 
-## 🧠 알고리즘 설명
+### 📌 알고리즘 설명
 
-### 1. `Point3D` 구조체
+#### 🔹 1. `Point3D` 구조체
 ```cpp
 struct Point3D {
     double x, y, z;
@@ -20,12 +20,13 @@ struct Point3D {
 ```
 - 3차원 공간상의 점을 나타냅니다.
 
-### 2. 거리 계산 함수
+#### 🔹 2. 거리 계산 함수
+```cpp
 double distance(const Point3D& a, const Point3D& b);
-
+```
 - 두 점 사이의 유클리디안 거리를 계산합니다.
 
-### 3. k-d 트리 노드 및 삽입
+#### 🔹 3. k-d 트리 노드 및 삽입
 ```cpp
 struct KDNode {
     Point3D point;
@@ -56,7 +57,7 @@ KDNode* insertKDTree(KDNode* root, Point3D point, int depth = 0) {
 - 3차원 공간이므로 x, y, z 축을 기준으로 깊이에 따라 분할합니다.
 - 삽입 시 현재 깊이(depth)에 따라 축을 선택하여 좌/우 서브트리에 삽입합니다.
 
-### 4. 최근접점 탐색
+#### 🔹 4. 최근접점 탐색
 ```cpp
 Point3D findNearest(KDNode* root, Point3D target, int depth = 0, Point3D best = {9999, 9999, 9999}) {
     if (!root) return best;
@@ -91,7 +92,7 @@ Point3D findNearest(KDNode* root, Point3D target, int depth = 0, Point3D best = 
 - 분할 축 기준으로 탐색 우선순위를 정하고, 필요 시 반대 방향도 탐색합니다.
 
 
-### 5. 병합 처리
+#### 🔹 5. 병합 처리
 ```cpp
 std::vector<Point3D> mergeClosePoints(std::vector<Point3D>& points, double threshold) {
     KDNode* root = nullptr;
@@ -116,7 +117,8 @@ std::vector<Point3D> mergeClosePoints(std::vector<Point3D>& points, double thres
 
 - 각 점에 대해 k-d 트리에서 최근접점을 찾고, 기준 거리 이하일 경우 평균값으로 병합합니다.
 - 병합되지 않은 점은 k-d 트리에 삽입하여 이후 탐색에 활용됩니다.
-### 🚀 실행 예시
+
+### 📌 실행 예시
 ```cpp
 int main() {
     std::vector<Point3D> points = {
@@ -144,7 +146,7 @@ Merged Points:
 10, 10.1, 10.2
 ```
 
-## 📁 전체 소스
+### 📌 전체 소스
 ```cpp
 #include <iostream>
 #include <vector>
@@ -202,17 +204,11 @@ int main() {
 // 10.1, 10.2, 10.3
 ```
 
-## 🛠️ 컴파일 및 실행
-g++ -std=c++11 main.cpp -o kd_merge
-./kd_merge
 
-
-## 📌 활용 예시
+### 📌 활용 예시
 - 3D 스캔 데이터 후처리
 - 포인트 클라우드 정제
 - 공간적 중복 제거 및 압축
-
-## 📜 라이선스
-MIT License
+---
 
 
