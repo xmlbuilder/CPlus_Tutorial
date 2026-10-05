@@ -104,7 +104,7 @@ bool GetLock(int lock_value) noexcept
       lock_value,
       std::memory_order_acq_rel,
       std::memory_order_acquire);
-
+  // 현재 값이 내가 예상한 값과 같으면 새 값으로 교체한다
   return (ok && expected == UnlockedValue);
 }
 ```
