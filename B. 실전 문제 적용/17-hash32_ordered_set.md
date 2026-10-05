@@ -1,12 +1,12 @@
-# hash32_ordered_set
+## 📘 hash32_ordered_set
 
 - Hash32OrderedSet은 한 줄로 요약하면:
   - 해시 기반인데, 삽입 순서를 그대로 기억하는 Set  
     (std::unordered_set + std::vector 느낌을 intrusive 방식으로 합쳐놓은 구조) 입니다.
 
 
-## 1. Hash32OrderedSet 구조와 특징
-템플릿 정의(앞에서 만든 버전 기준):
+### 📌 1. Hash32OrderedSet 구조와 특징
+- 템플릿 정의:
 ```cpp
 template<
   typename T,
@@ -16,7 +16,7 @@ template<
 >
 class Hash32OrderedSet;
 ```
-- 내부 Node
+#### 🔹 내부 Node
 ```cpp
 struct Node : public Hash32Item
 {
@@ -35,7 +35,7 @@ struct Node : public Hash32Item
 - Hash32Item 상속 → 해시테이블(Hash32Table)에 들어가는 intrusive 노드
 - prev_order / next_order → 삽입 순서를 유지하기 위한 이중 연결 리스트 포인터
 
-- 주요 멤버
+#### 🔹 주요 멤버
 ```cpp
 Hash32Table m_table;                   // 해시 테이블 (bucket + 체이닝)
 std::size_t m_size;                    // 원소 개수
@@ -48,7 +48,7 @@ Node*       m_tail = nullptr;          // 삽입 순서 리스트 tail
 Hash32PoolAllocator<Node, PoolBlockSize> m_pool; // 노드 전용 메모리 풀
 ```
 
-### 동작 특징
+#### 🔹 동작 특징
 
 - 삽입 순서 유지
   - insert / emplace로 들어간 값은 처음 삽입된 순서대로 연결 리스트에 저장됩니다.
@@ -73,7 +73,7 @@ Hash32PoolAllocator<Node, PoolBlockSize> m_pool; // 노드 전용 메모리 풀
 
 ---
 
-## 소스 코드
+### 📌 소스 코드
 ```cpp
 #pragma once
 
@@ -340,14 +340,12 @@ namespace util_hash
   };
 
 } // namespace util_hash
-
 ```
 ---
 
-## 테스트 코드 예제
+### 📌 테스트 코드 예제
 
-아래 코드는 Hash32OrderedSet의 기본 동작을 검증하는 단독 실행용 main입니다.
-
+- 아래 코드는 Hash32OrderedSet의 기본 동작을 검증하는 단독 실행용 main입니다.
 - 삽입 & 순서 유지
 - 중복 삽입 무시
 - contains / find / erase
@@ -524,6 +522,5 @@ int main()
   }
 }
 ```
-
 ---
 
