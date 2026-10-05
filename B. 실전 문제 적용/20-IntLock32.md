@@ -109,6 +109,7 @@ bool GetLock(int lock_value) noexcept
 }
 ```
 - 사용자 지정 토큰(lock_value)으로 try-lock.
+-  compare_exchange_strong : 현재 값이 내가 예상한 값과 같으면 새 값으로 교체한다
 
 #### 🔹 규칙
 - lock_value 는
@@ -148,8 +149,8 @@ bool ReturnLock(int lock_value) noexcept
 - 현재 값이 다르면:
   - 아무 것도 바꾸지 않고 false 반환
 
-#### 🔹용도
-**내가 잡은 락만 풀고 싶다**  라는 의도를 명확하게 표현할 수 있음.
+#### 🔹 용도
+**내가 잡은 락만 풀고 싶다** 라는 의도를 명확하게 표현할 수 있음.
 
 #### 🔹 3.8 int BreakLock()
 ```cpp
@@ -259,7 +260,7 @@ else
 }
 ```
 
-### 🔹 5.3 RAII 방식으로 사용하기
+#### 🔹 5.3 RAII 방식으로 사용하기
 ```cpp
 IntLock32 lock;
 
@@ -308,7 +309,7 @@ void worker()
 - 실제 코드에서는
   - 일정 횟수 이상 실패 시 yield()나 sleep_for로 back-off 넣어주는 걸 권장.
 
-### 5.5 강제 해제로 비상 처리 (BreakLock)
+#### 🔹 5.5 강제 해제로 비상 처리 (BreakLock)
 ```cpp
 IntLock32 lock;
 
@@ -326,7 +327,7 @@ if (prev != IntLock32::UnlockedValue)
   - 그래서 보통은 디버그/비상 상황에서만 사용하고,
   - 정상 로직에서는 ReturnLock / ReturnDefaultLock만 사용하는 것이 좋습니다.
 
-## 6. 요약
+### 📌 6. 요약
 
 - IntLock32는:
   - 4바이트짜리 very-lightweight lock
@@ -340,9 +341,7 @@ if (prev != IntLock32::UnlockedValue)
   - 커스텀 토큰을 사용한 owner 표시
   - 멀티스레드에서 spin-lock으로 보호 + RAII
 
----
-
-### 소스 코드 
+### 📌 소스 코드 
 ```cpp
 // IntLock32.h
 #pragma once
@@ -480,7 +479,7 @@ static_assert(sizeof(IntLock32) == sizeof(int),
               "IntLock32 is intended to be the same size as int");
 ```
 
-### 샘플 소스
+### 📌 샘플 소스
 
 ```cpp
 // test_IntLock32.cpp
@@ -645,7 +644,7 @@ int main()
   }
 }
 ```
-## 출력 코드
+#### 🔹 출력 코드
 ```
 [TEST] single-thread basic
   OK
