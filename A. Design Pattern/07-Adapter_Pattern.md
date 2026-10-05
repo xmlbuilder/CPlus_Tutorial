@@ -1,7 +1,7 @@
-# 📘 Adapter Pattern
+## 📘 Adapter Pattern
 - **서로 인터페이스가 맞지 않는 두 클래스를 연결하기 위한 구조 패턴(Structural Pattern)** 입니다.
   
-## 📌 스마트 포인터 기반 + 은닉화 적용 코드
+### 📌 스마트 포인터 기반 + 은닉화 적용 코드
 ```cpp
 #include <iostream>
 #include <memory>
