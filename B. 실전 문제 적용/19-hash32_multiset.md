@@ -1,12 +1,12 @@
-# hash32_multiset
+## 📘 hash32_multiset
 
-- Hash32MultiSet은 한 줄로 말하면:
+- Hash32MultiSet:
   - 같은 값을 여러 번 넣을 수 있는 해시 기반 멀티셋 (std::unordered_multiset 비슷한데, 내부는 intrusive Hash32Table +  
     Hash32PoolAllocator) 입니다.
 
 
-## 1. Hash32MultiSet 구조와 특징 정리
-템플릿 정의(우리가 만든 버전 기준):
+### 📌 1. Hash32MultiSet 구조와 특징 정리
+- 템플릿 정의:
 ```cpp
 template<
     typename T,
@@ -35,7 +35,7 @@ struct Node : public Hash32Item
 - 값 T 하나만 저장.
 - 멀티셋이므로 동일한 값(T)을 여러 개 저장 가능.
 
-### 핵심 멤버
+#### 🔹 핵심 멤버
 ```cpp
 Hash32Table m_table;                   // 해시 테이블
 std::size_t m_size;                    // 전체 원소 개수
@@ -44,7 +44,7 @@ Equal       m_equal;                   // 동등 비교
 Hash32PoolAllocator<Node, PoolBlockSize> m_pool; // 노드 메모리 풀
 ```
 
-### 동작 특징
+#### 🔹 동작 특징
 - 중복 값 허용
   - insert(10), insert(10) 여러 번 해도 각각 별개의 노드로 저장.
   - size()는 입력한 개수만큼 증가.
@@ -59,14 +59,14 @@ Hash32PoolAllocator<Node, PoolBlockSize> m_pool; // 노드 메모리 풀
 - equal_range(value) 제공
   - 특정 값과 동일한 값들 전체를 순회할 수 있도록 [first, last) 구간을 반환.
   - 내부 구현 특성상, first~last 구간에 다른 값이 섞여 들어갈 수 있으므로 실제 사용할 때는 if (*it == value) 식으로
-    값 필터링해 주는 것이 안전하게 구현되어 있음.
+    값 필터링해 주는 것이 안전.
 
 - 메모리 풀 기반
   - Hash32PoolAllocator<Node> 사용 → Node를 블록 단위로 할당/해제.
   - insert 시 allocate()+placement new, erase/clear 시 destroy()로 소멸자 호출 + free list 재사용.
   - 멀티셋 특성상 원소 수가 많고 출입이 잦을 때 일반 new/delete보다 훨씬 효율적.
 
-## 2. 주요 API 요약
+### 📌 2. 주요 API 요약
 - bool insert(const T& value)
 - template<typename... Args> bool emplace(Args&&... args)
 - bool contains(const T& value) const
@@ -80,11 +80,11 @@ Hash32PoolAllocator<Node, PoolBlockSize> m_pool; // 노드 메모리 풀
 
 ---
 
-## 소스 코드
+### 📌 소스 코드
 ```cpp
 #pragma once
 
-#include "hash_set32.h"          // Hash32Item, Hash32Table, DefaultHash32
+#include "hash_set32.h" // Hash32Item, Hash32Table, DefaultHash32
 #include "hash32_pool_allocator.h"
 #include <functional>
 #include <iterator>
@@ -389,7 +389,7 @@ namespace util_hash
 } // namespace util_hash
 ```
 
-### 테스트 코드
+### 📌 테스트 코드
 ```cpp
 #include "hash_set32.h"
 #include "hash32_pool_allocator.h"
@@ -436,7 +436,7 @@ int main()
   return 0;
 }
 ```
-### 테스트 결과
+#### 🔹 테스트 결과
 ```
 [OrderedSet]
 apple
@@ -457,7 +457,7 @@ cherry
 
 ---
 
-## 테스트 코드 예제
+#### 🔹 테스트 코드 예제
 
 ```cpp
 #include <iostream>
