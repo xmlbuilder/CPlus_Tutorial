@@ -1,9 +1,9 @@
-# hash32_ordered_map
+## 📘 hash32_ordered_map
 - hash32_ordered_map 은 한마디로 말하면:
   - 삽입 순서를 기억하는 해시 기반 map (내부는 Hash32Table + intrusive Node + Hash32PoolAllocator) 입니다.
 
-## 1. Hash32OrderedMap 구조와 특징
-템플릿 정의:
+### 📌 1. Hash32OrderedMap 구조와 특징
+- 템플릿 정의:
 ```cpp
 template<
   typename Key,
@@ -16,14 +16,12 @@ class Hash32OrderedMap;
 ```
 
 - 내부 구성
-
 - Node 구조
 ```cpp
 struct Node : public Hash32Item
 {
   Key key;
   T   value;
-
   Node* prev_order = nullptr;
   Node* next_order = nullptr;
 };
@@ -32,14 +30,14 @@ struct Node : public Hash32Item
 - Hash32Item 상속 → 해시 테이블에서 쓰는 intrusive node
 - prev_order / next_order → 삽입 순서 유지용 이중 연결 리스트
 
-### 해시 테이블
+#### 🔹 해시 테이블
 ```cpp
 Hash32Table m_table;
 ```
 - hash32_set.h에서 만든 intrusive 해시 테이블
 - key 해시값으로 bucket 선택 → 체이닝으로 Node 연결
 
-### 메모리 풀
+#### 🔹 메모리 풀
 ```cpp
 using NodePool = Hash32PoolAllocator<Node, PoolBlockSize>;
 NodePool m_pool;
@@ -47,7 +45,7 @@ NodePool m_pool;
 - Node를 new/delete 대신 풀에서 할당/해제
 - 대량 삽입/삭제 시 성능 + 메모리 효율 ↑
 
-### 삽입 순서 리스트
+#### 🔹 삽입 순서 리스트
 
 ```cpp
 Node* m_head = nullptr;
@@ -57,29 +55,29 @@ Node* m_tail = nullptr;
 - 모든 Node를 삽입 순서대로 이중 연결 리스트로 묶어둠
 - begin()/end() iterator 는 이 리스트를 따라 순회
 
-## 주요 특징
+### 📌 주요 특징
 
-### 삽입 순서 유지
+#### 🔹 삽입 순서 유지
 
 - insert, insert_or_assign, operator[], emplace 로 들어간 키들은 처음 삽입된 순서대로 유지
 - insert_or_assign 으로 값만 바꾸면 순서는 그대로 유지
 
-### Key → Value 맵핑 + O(1) 평균 조회
+#### 🔹 Key → Value 맵핑 + O(1) 평균 조회
 - find, contains, at, operator[] 모두 해시 기반
 - 평균 시간 복잡도: O(1)
 
-### 키는 유일, 값은 수정 가능
+#### 🔹 키는 유일, 값은 수정 가능
 - 이미 존재하는 키에 대해 insert → 실패 (false 반환)
 - insert_or_assign → 존재하면 값 덮어쓰기
 
-### 메모리 풀 기반 Node 관리
+#### 🔹 메모리 풀 기반 Node 관리
 - pool.allocate() + placement new 로 Node 생성
 - erase / clear 시에는 pool.destroy(node) 로 소멸자 호출 + free list에 반환
 - 컨테이너 수명 동안 Node 메모리를 효율적으로 재사용
 
 --- 
 
-## 소스 코드
+### 📌 소스 코드
 ```cpp
 #pragma once
 
@@ -492,7 +490,7 @@ namespace util_hash
 ```
 ---
 
-## 테스트 코드 예제 (hash32_ordered_map 전용)
+### 📌 테스트 코드 예제
 ```cpp
 #include <iostream>
 #include <string>
@@ -520,14 +518,14 @@ bool test_insert_and_order()
 
   // 삽입 순서 확인
   const char* expected_keys[] = { "apple", "banana", "cherry" };
-  int         expected_vals[] = { 1, 2, 3 };
+  int expected_vals[] = { 1, 2, 3 };
 
   int idx = 0;
   for (auto it = m.begin(); it != m.end(); ++it, ++idx)
   {
     auto pair = *it; // ValueRef { const Key& first, T& second }
     const std::string& k = pair.first;
-    int&               v = pair.second;
+    int& v = pair.second;
 
     assert(k == expected_keys[idx]);
     assert(v == expected_vals[idx]);
@@ -554,14 +552,14 @@ bool test_insert_or_assign_and_order()
   assert(m.size() == 3);
 
   const char* expected_keys[] = { "apple", "banana", "cherry" };
-  int         expected_vals[] = { 1, 20, 3 };
+  int expected_vals[] = { 1, 20, 3 };
 
   int idx = 0;
   for (auto it = m.begin(); it != m.end(); ++it, ++idx)
   {
     auto pair = *it;
     const std::string& k = pair.first;
-    int&               v = pair.second;
+    int& v = pair.second;
 
     assert(k == expected_keys[idx]);
     assert(v == expected_vals[idx]);
@@ -593,7 +591,7 @@ bool test_operator_brackets()
 
   // 삽입 순서 체크: apple, banana
   const char* expected_keys[] = { "apple", "banana" };
-  int         expected_vals[] = { 100, 20 };
+  int expected_vals[] = { 100, 20 };
 
   int idx = 0;
   for (auto it = m.begin(); it != m.end(); ++it, ++idx)
@@ -651,7 +649,7 @@ bool test_find_contains_erase()
   {
     auto pair = *it;
     const std::string& k = pair.first;
-    int&               v = pair.second;
+    int&  v = pair.second;
 
     assert(k == expected_keys[idx]);
     assert(v == expected_vals[idx]);
