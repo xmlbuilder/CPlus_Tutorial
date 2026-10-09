@@ -3,3 +3,5 @@
 - [📘 exception_handling](./01-exception_handling.md)
 - [📘 noexcept_guide](./02-noexcept_guide.md)
 - [📘 예외클래스_정의](./03-예외클래스_정의.md)
+- [📘 Exception & Stack Trace](./04-exception_stack_trace.md)
+
