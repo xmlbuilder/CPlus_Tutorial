@@ -39,13 +39,13 @@ flowchart LR
 - `push_front`, `push_back`, `pop_front`, `pop_back` 등 **양끝 조작** 지원
 - 중간 위치의 `insert/erase`도 가능 (성능은 컨테이너 특성에 의존)
 
-#### 📦 내부 메모리 모델
+#### 🔹 내부 메모리 모델
 ![Deque Blocks](/image/deque_blocks.svg)
 
 - 여러 **고정 크기 블록** 을 연결해 관리 → `vector`와 달리 확장 시 전체 복사가 감소
 - 그 결과, **앞쪽 연산도 효율적** 이며 확장 시 재할당 비용이 낮음
 
-#### 📦 간단 예제
+#### 🔹 간단 예제
 ```cpp
 #include <iostream>
 #include <deque>
@@ -63,7 +63,7 @@ int main() {
 }
 ```
 
-#### 📦 생성/연산 요약
+#### 🔹 생성/연산 요약
 - 생성자: `deque<T>()`, `deque<T>(n)`, `deque<T>(n, value)`, 복사/이동 생성 등
 - 비교 연산자: `==`, `!=`, `<`, `>`, `<=`, `>=`
 - 주요 멤버:
@@ -74,7 +74,7 @@ int main() {
   - 기타: `swap()`, `assign()`  
 - **주의**: `deque`에는 `capacity()`가 없습니다.
 
-#### 📦 반복자 & 무효화
+#### 🔹 반복자 & 무효화
 - 앞/뒤 삽입·삭제 시, 해당 위치와 **이후 일부 반복자가 무효화** 될 수 있음
 - `insert/erase` 후에는 반환되는 반복자를 사용해 갱신할 것
 
@@ -113,7 +113,7 @@ flowchart LR
 - **FIFO(First-In, First-Out)**  
 - 내부적으로 `deque`(기본) 또는 `list`/`vector` 등으로 구성 가능한 **컨테이너 어댑터**
 
-#### 📦 기본 사용
+#### 🔹 기본 사용
 ```cpp
 #include <iostream>
 #include <queue>
