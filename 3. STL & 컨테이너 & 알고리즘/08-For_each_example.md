@@ -10,7 +10,7 @@
 
 ### 📌 예제 코드
 
-#### 함수 포인터 사용
+#### 🔹 함수 포인터 사용
 ```cpp
 #include <iostream>
 #include <vector>
@@ -30,7 +30,7 @@ int main() {
 }
 ```
 
-#### 람다 표현식 사용
+#### 🔹 람다 표현식 사용
 ```cpp
 #include <iostream>
 #include <vector>
