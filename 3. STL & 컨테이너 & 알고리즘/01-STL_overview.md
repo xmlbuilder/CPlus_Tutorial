@@ -17,7 +17,7 @@
 
 ### 📌 2. STL 구성 요소
 
-#### 📦 컨테이너 (Container)
+#### 🔹 컨테이너 (Container)
 - 데이터를 저장하는 객체로, 자료구조를 템플릿 클래스로 구현  
 
 - **시퀀스 컨테이너**: 데이터의 순서를 유지
@@ -34,13 +34,13 @@
 #include <map>
 #include <set>
 ```
-#### 📦 알고리즘 (Algorithm)
+#### 🔹 알고리즘 (Algorithm)
 - 컨테이너 요소를 다루기 위한 표준 함수 모음 (복사, 검색, 변환, 삭제, 정렬 등)
 - 예: `find`, `max`, `reverse`, `remove`, `transform`, `count`, `accumulate`, `sort`  
 - 대부분 `<algorithm>` 또는 `<numeric>` 헤더에 포함
 
 
-#### 📦 반복자 (Iterator)
+#### 🔹 반복자 (Iterator)
 - **컨테이너 요소에 접근** 하기 위한 객체 (포인터와 유사)
 - 컨테이너와 알고리즘을 연결하는 **다리 역할**
 - 종류:
