@@ -6,7 +6,7 @@
 - `std::copy_if`는 C++ 표준 라이브러리 `<algorithm>`에 포함된 알고리즘으로,  
 **주어진 범위에서 조건(Predicate)을 만족하는 원소만 다른 컨테이너로 복사** 할 때 사용합니다.
 
-#### 형태
+#### 🔹 형태
 ```cpp
 template<class InputIt, class OutputIt, class UnaryPredicate>
 OutputIt copy_if(InputIt first, InputIt last, OutputIt d_first, UnaryPredicate pred);
@@ -20,7 +20,7 @@ OutputIt copy_if(InputIt first, InputIt last, OutputIt d_first, UnaryPredicate p
     - 원소의 **순서를 유지** 하면서 조건에 맞는 것만 복사
     - 대상 컨테이너는 미리 크기를 확보해 두거나, `std::back_inserter`를 사용
 
-#### ✅ 간단 예시:
+#### 🔹 간단 예시:
 ```cpp
 #include <vector>
 #include <algorithm>
@@ -42,13 +42,13 @@ int main() {
 
 - 이 프로젝트에서는 `std::copy_if`를 사용해, 기준점(`center`)에서 일정 거리(`threshold`) 안에 있는 3D 포인트만 걸러냅니다.
 
-#### ✨ 핵심 포인트
+#### 🔹 핵심 포인트
 - `Point3D::DistanceTo` : 유클리드 거리 계산
 - `std::copy_if` + `std::back_inserter` : 조건을 만족하는 원소만 `filtered`에 복사
 - 람다 캡처 `[&]` : `center`와 `threshold`를 람다에서 사용
 - 시간복잡도: O(n)
 
-#### 🧾 코드
+#### 🔹 코드
 
 ```cpp
 #include <vector>
@@ -90,15 +90,8 @@ int main() {
 }
 ```
 
-### ▶️ 빌드 & 실행
 
-#### g++
-```bash
-g++ -std=c++17 -O2 main.cpp -o filter_points
-./filter_points
-```
-
-#### (선택) CMake
+#### 🔹 (선택) CMake
 - `CMakeLists.txt`:
 ```cmake
 cmake_minimum_required(VERSION 3.12)
@@ -113,14 +106,14 @@ cmake --build build --config Release
 ./build/filter_points
 ```
 
-### 🧪 예상 출력
+#### 🔹 예상 출력
 ```
 Filtered Point: (1, 2, 3)
 Filtered Point: (2, 3, 4)
 Filtered Point: (3, 4, 5)
 ```
 
-### 🛠️ 팁 (성능/안정성)
+#### 🔹 팁 (성능/안정성)
 - **sqrt 없이 제곱거리 비교** 로 성능 미세 개선:
   ```cpp
   auto sqdist = [&](const Point3D& a, const Point3D& b){
