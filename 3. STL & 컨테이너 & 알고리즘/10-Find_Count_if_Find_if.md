@@ -32,7 +32,7 @@ int main() {
 ### 📌 `std::count_if`
 - **조건에 맞는 요소의 개수를 세는 알고리즘**
 
-#### 함수 포인터 사용 예
+#### 🔹 함수 포인터 사용 예
 ```cpp
 #include <iostream>
 #include <vector>
@@ -50,7 +50,7 @@ int main() {
 }
 ```
 
-#### 람다식 사용 예
+#### 🔹 람다식 사용 예
 ```cpp
 int n = std::count_if(vec.begin(), vec.end(), [](int num){
     return (num % 2) == 0;
@@ -97,7 +97,7 @@ m_vecChannelMngr.erase(
 | `count_if` | 조건을 만족하는 요소 개수 | 정수 개수 |
 | `find_if` | 조건을 만족하는 첫 번째 요소 | 해당 요소 반복자 or `end()` |
 
-#### ✅ Tip:
+#### 🔹 Tip:
 - 모든 알고리즘은 반복자를 사용하므로, 범위를 지정해 동작
 - 람다식을 사용하면 함수 정의 없이 간단히 조건 작성 가능
 - 요소가 사용자 정의 타입이면 `operator==` 또는 조건자 필요
