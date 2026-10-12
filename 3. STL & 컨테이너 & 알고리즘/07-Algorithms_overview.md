@@ -24,7 +24,7 @@
 - 반환값: 해당 요소를 가리키는 반복자 또는 `end()`
 - 요소 비교 시 `operator==` 사용 → 사용자 정의 타입은 오버로딩 필요
 
-#### 기본 예제
+#### 🔹 기본 예제
 ```cpp
 std::vector<int> vec{1, 2, 3};
 auto itrFind = std::find(vec.begin(), vec.end(), 3);
@@ -33,7 +33,7 @@ if(itrFind != vec.end()){
 }
 ```
 
-#### 사용자 정의 타입 예제
+#### 🔹 사용자 정의 타입 예제
 ```cpp
 class Player {
 private:
@@ -70,7 +70,7 @@ if(loc != teams.end()){
 
 - 컨테이너의 **각 요소에 대해 주어진 함수를 호출** 합니다.
 
-#### 1) Functor 사용
+#### 🔹 1) Functor 사용
 ```cpp
 struct SquareRoot {
     void operator()(int x) {
@@ -83,7 +83,7 @@ std::for_each(arr.begin(), arr.end(), SquareRoot());
 // 출력: 1 4 9 16 25
 ```
 
-#### 2) 함수 포인터 사용
+#### 🔹 2) 함수 포인터 사용
 ```cpp
 void func(int x) {
     std::cout << x * x << " ";
@@ -92,7 +92,7 @@ std::vector<int> vec{1, 2, 3};
 std::for_each(vec.begin(), vec.end(), func);
 ```
 
-#### 3) 람다 사용
+#### 🔹 3) 람다 사용
 ```cpp
 std::vector<int> vec{1, 2, 3};
 std::for_each(vec.begin(), vec.end(), [](int x) { 
@@ -101,7 +101,7 @@ std::for_each(vec.begin(), vec.end(), [](int x) {
 ```
 
 
-### ➕ `std::accumulate`
+### 📌 `std::accumulate`
 
 - 누산(합산) 또는 커스텀 연산을 수행합니다. `<numeric>` 헤더 필요.
 
@@ -109,26 +109,26 @@ std::for_each(vec.begin(), vec.end(), [](int x) {
 #include <numeric>
 ```
 
-#### 기본 사용
+#### 🔹 기본 사용
 ```cpp
 std::vector<int> v = {1, 2, 3, 4, 5};
 int sum = std::accumulate(v.begin(), v.end(), 0);
 std::cout << sum << std::endl; // 15
 ```
 
-#### 곱 계산 (람다)
+#### 🔹 곱 계산 (람다)
 ```cpp
 int product = std::accumulate(v.begin(), v.end(), 1, [](int a, int b) {
     return a * b;
 });
 ```
 
-#### 곱 계산 (`std::multiplies` 사용)
+#### 🔹 곱 계산 (`std::multiplies` 사용)
 ```cpp
 int product1 = std::accumulate(v.begin(), v.end(), 1, std::multiplies<int>());
 ```
 
-#### 문자열 연결
+#### 🔹 문자열 연결
 ```cpp
 auto dash_fold = [](std::string a, int b) {
     return std::move(a) + '-' + std::to_string(b);
@@ -137,7 +137,7 @@ std::string s = std::accumulate(std::next(v.begin()), v.end(), std::to_string(v[
 std::cout << s << std::endl; // 1-2-3-4-5
 ```
 
-#### 역순 문자열 연결
+#### 🔹 역순 문자열 연결
 ```cpp
 std::string rs = std::accumulate(std::next(v.rbegin()), v.rend(),
                                  std::to_string(v.back()), dash_fold);
