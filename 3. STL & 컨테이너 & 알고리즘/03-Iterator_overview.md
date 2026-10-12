@@ -14,7 +14,7 @@
   (`stack`, `queue` 어댑터는 직접적인 반복자 순회를 제공하지 않음)
 - `begin()`은 첫 요소, `end()`는 **마지막 다음 위치** (한 칸 뒤)를 가리킵니다.
 
-#### 시퀀스 위에서의 이동
+#### 🔹 시퀀스 위에서의 이동
 ![Iterator Sequence](/image/iterator_sequence.svg)
 
 ---
@@ -44,7 +44,7 @@ int main() {
 }
 ```
 
-#### 다양한 반복자
+#### 🔹 다양한 반복자
 
 ```cpp
 #include <vector>
