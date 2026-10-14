@@ -615,6 +615,61 @@ int main() {
 
 ---
 
+### 📌 메모리 과정 추척
+```cpp
+class Geometry_Test : public ref_counted
+{
+public:
+    explicit Geometry_Test(int id) : id_(id)
+    {
+        std::cout << "Geometry Created: " << id_ << std::endl;
+    }
+    ~Geometry_Test() override
+    {
+        int a = 10;
+        std::cout << "Geometry Destroyed: " << id_ << std::endl;
+    }
 
+    void print()
+    {
+        std::cout << "Geometry ID: " << id_ << std::endl;
+    }
+
+private:
+    int id_;
+};
+
+
+void main()
+{
+    Ptr<Geometry_Test> a = make_ptr<Geometry_Test>(100);
+    std::cout << "Step 1 : refs = " << a->ref_count() << '\n';
+    {
+        Ptr<Geometry_Test> b = a;
+        std::cout << "Step 2 : refs = " << a->ref_count() << '\n';
+        {
+            Ptr<Geometry_Test> c = b;
+            c->print();
+            std::cout << "Step 3 : refs = " << a->ref_count() << '\n';
+        }
+        std::cout << "Step 4 : refs = " << a->ref_count() << '\n';
+    }
+    std::cout << "Step 5 : refs = " << a->ref_count() << '\n';
+    a = nullptr;
+    std::cout << "Step 6: All references released\n";
+}
+```
+#### 🔹 출력
+```
+Geometry Created: 100
+Step 1 : refs = 1
+Step 2 : refs = 2
+Geometry ID: 100
+Step 3 : refs = 3
+Step 4 : refs = 2
+Step 5 : refs = 1
+Geometry Destroyed: 100
+Step 6: All references released
+```
 
 
