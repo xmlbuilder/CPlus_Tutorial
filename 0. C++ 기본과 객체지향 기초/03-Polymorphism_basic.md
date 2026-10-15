@@ -25,7 +25,7 @@
 | 기본 클래스의 참조 또는 포인터 사용 | 다형성을 활용하려면 부모 타입으로 접근해야 함 | 
 
 
-### 🧾 예제 코드 분석
+#### 🔹 예제 코드 분석
 ```cpp
 class First {
 public:
@@ -71,7 +71,7 @@ first->firstFunc();   // OK
 // first->thirdFunc();  // ❌ 컴파일 에러
 ```
 
-### 🧾 출력 결과
+#### 🔹 출력 결과
 ```cpp
 firstFunc called
 secondFunc called
@@ -82,7 +82,7 @@ firstFunc called
 third destructor called
 ```
 
-### ⚠️ 주의사항
+### 📌 주의사항
     - 포인터의 자료형 기준으로 호출 가능한 함수가 결정됨
     - 실제 객체의 타입이 Third여도, First*로 접근하면 First의 멤버 함수만 호출 가능
     - virtual 키워드가 없으면 동적 바인딩이 일어나지 않음
