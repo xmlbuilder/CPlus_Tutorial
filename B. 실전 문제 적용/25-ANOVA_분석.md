@@ -430,8 +430,7 @@ $$
 ### 7.4 기여율(Contribution)
 
 $$
-Contribution_A=100\frac{SS_A}{SS_T}
-=100\frac{2450}{3800}=\boxed{64.473684\%}.
+Contribution_A=100\frac{SS_A}{SS_T}=100\frac{2450}{3800}=\boxed{64.473684\%}.
 $$
 
 $$Contribution_B=100\frac{950}{3800}=\boxed{25.000000\%},$$
