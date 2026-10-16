@@ -430,24 +430,24 @@ $$
 ### 7.4 기여율(Contribution)
 
 $$
-Contribution_A = 100\frac{SS_A}{SS_T}
+Contribution_A = 100 \frac{SS_A}{SS_T}
 = 100\frac{2450}{3800}
-= \boxed{64.473684\%}
+= \boxed{64.473684％}
 $$
 
 $$
 Contribution_B = 100\frac{950}{3800}
-= \boxed{25.000000\%}
+= \boxed{25.000000％}
 $$
 
 $$
 Contribution_C = 100\frac{350}{3800}
-= \boxed{9.210526\%}
+= \boxed{9.210526％}
 $$
 
 $$
 Contribution_D = 100\frac{50}{3800}
-= \boxed{1.315789\%}
+= \boxed{1.315789％}
 $$
 
 합계는 100%이다. **기여율이 크다는 것과 통계적 유의성이 입증되었다는 것은 같은 말이 아니다.** 풀링한 C·D의 기여율 합은 약 10.5263%다.
@@ -499,10 +499,10 @@ $$[-20-11.547005,\,-20+11.547005]
 현재 분석에서 유지한 인자 A와 B에 대해 **평균 S/N비가 가장 높은 수준**을 고른다.
 
 $$
-A^*=\arg\max_j\bar y_{Aj}=A1\quad(-20),
+A*=\arg\max_j\bar y_{Aj}=A1\quad(-20),
 $$
 $$
-B^*=\arg\max_j\bar y_{Bj}=B1\quad(-30).
+B*=\arg\max_j\bar y_{Bj}=B1\quad(-30).
 $$
 
 결과:
