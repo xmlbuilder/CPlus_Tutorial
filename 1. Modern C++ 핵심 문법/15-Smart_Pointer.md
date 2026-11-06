@@ -21,7 +21,7 @@ res->doSomething();
 // 다른 곳으로 소유권 이동
 std::unique_ptr<Resource> res2 = std::move(res);
 ```
-- 👉 단일 소유권을 보장. 함수 반환값으로 자원 전달 시 자주 사용.
+- `단일 소유권을 보장`. 함수 반환값으로 자원 전달 시 자주 사용.
 
 #### 🔹 2. shared_ptr
 ```cpp
@@ -29,7 +29,7 @@ std::shared_ptr<Resource> res1 = std::make_shared<Resource>();
 std::shared_ptr<Resource> res2 = res1; // 참조 카운트 증가
 std::cout << res1.use_count(); // 2
 ```
-- 👉 여러 객체가 같은 리소스를 공유해야 할 때 적합.
+- 여러 객체가 같은 리소스를 공유해야 할 때 적합.
 
 #### 🔹 3. weak_ptr
 ```cpp
@@ -41,15 +41,15 @@ if (auto spt = weakRes.lock()) { // 안전하게 접근
 }
 ```
 
-- 👉 순환 참조 방지. 부모-자식 관계에서 서로 shared_ptr을 가지면 해제가 안 되는데, 한쪽을 weak_ptr로 바꿔 해결.
+- `순환 참조 방지`. 부모-자식 관계에서 서로 shared_ptr을 가지면 해제가 안 되는데, 한쪽을 weak_ptr로 바꿔 해결.
 
 ### 📌 선택 가이드
 - 리소스를 한 곳에서만 관리 → unique_ptr
 - 여러 곳에서 공유해야 함 → shared_ptr
 - 공유는 필요 없고 단순히 관찰만 → weak_ptr
 
-- 👉 정리하면, 기본적으로 unique_ptr을 우선 사용하고, 정말 공유가 필요할 때만 shared_ptr,  
-  그리고 순환 참조가 우려될 때 weak_ptr을 쓰는 것이 가장 안전한 패턴입니다.
+- 정리하면, 기본적으로 `unique_ptr을 우선 사용`하고, 정말 공유가 필요할 때만 shared_ptr,  
+  그리고 `순환 참조가 우려`될 때 weak_ptr을 쓰는 것이 가장 안전한 패턴입니다.
 
 
 
@@ -72,7 +72,7 @@ void updateAll() {
     for (auto& b : bullets) b->update();
 }
 ```
-- 👉 Bullet은 게임 엔진이 단독으로 관리하므로 unique_ptr이 적합합니다.
+- Bullet은 게임 엔진이 단독으로 관리하므로 unique_ptr이 적합합니다.
 
 #### 🔹 2. shared_ptr — 여러 곳에서 공유해야 하는 경우
 - 예: GUI 시스템에서 위젯을 여러 컨테이너가 공유.
@@ -92,7 +92,7 @@ dialogs.push_back(w);
 
 w->draw();
 ```
-- 👉 Widget은 여러 UI 컨테이너가 동시에 참조하므로 shared_ptr이 필요합니다.
+- Widget은 여러 UI 컨테이너가 동시에 참조하므로 shared_ptr이 필요합니다.
 
 #### 🔹 3. weak_ptr — 순환 참조 방지
 - 예: 부모-자식 관계 트리 구조
@@ -110,12 +110,16 @@ root->children.push_back(child);
 child->parent = root; // weak_ptr로 연결
 ```
 
-- 👉 만약 parent도 shared_ptr이었다면, root와 child가 서로 참조 카운트를 유지해서  
-  메모리 해제 불가 문제가 생깁니다. weak_ptr을 쓰면 관찰만 하고 소유하지 않으므로 안전합니다.
+- 만약 parent도 shared_ptr이었다면, root와 child가 서로 참조 카운트를 유지해서  
+  메모리 해제 불가 문제가 생깁니다.
+- weak_ptr을 쓰면 관찰만 하고 소유하지 않으므로 안전합니다.
 
 ### 📌 정리된 현실적 가이드
 - 리소스가 한 곳에서만 관리 → unique_ptr
 - 여러 객체가 같은 리소스를 공유 → shared_ptr
 - 공유는 필요하지만 순환 참조 위험 → weak_ptr
-- 👉 즉, 기본은 unique_ptr, 공유가 필요할 때만 shared_ptr,  
+- 즉, 기본은 unique_ptr, 공유가 필요할 때만 shared_ptr,  
   그리고 트리/그래프 구조에서는 반드시 weak_ptr을 섞어야 합니다.
+
+---
+
