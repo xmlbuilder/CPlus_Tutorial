@@ -150,3 +150,32 @@ int main() {
 ```
 ---
 
+### 📌 실용 예제
+```cpp
+#include <vector>
+#include <list>
+#include <iterator>
+
+template<class Container>
+auto SetRow(int index, const Container& values)
+    -> decltype(std::data(values), std::size(values), void())
+{
+    // 실제 데이터 처리
+}
+```
+- 개념적으로 다음 세 단계를 거칩니다.
+    - 1. std::data(values)가 유효한 표현식인지 확인
+    - 2. std::size(values)가 유효한 표현식인지 확인
+    - 3. 마지막 void()의 타입을 반환 타입으로 결정
+
+| 타입	| std::data()	| std::size()	| 사용 가능 |
+|-------|---------------|---------------|-----------|
+| std::vector<int>	| 가능	| 가능	 |
+| std::array<int, 5>	| 가능	| 가능	 |
+| std::string	| 가능	| 가능	 |
+| int arr[5]	| 가능	| 가능	 |
+| std::list<int>	| 불가능	| 가능	 |
+| int	| 불가능	| 불가능	 |
+
+- std::list는 연속 메모리를 사용하지 않으므로 std::data()를 지원하지 않습니다.
+---
