@@ -178,4 +178,44 @@ auto SetRow(int index, const Container& values)
 | int	| 불가능	| 불가능	 |
 
 - std::list는 연속 메모리를 사용하지 않으므로 std::data()를 지원하지 않습니다.
+
+#### 🔹 템플릿 `GetRow`
+- decltype(A, B, C)에서 쉼표가 쉼표 연산자라면, A와 B의 유효성을 확인하고 C의 타입을 결과로 사용한다.
+```cpp
+template<class Container>
+    auto SetRow(int index, const Container& values)
+        -> decltype(std::data(values), std::size(values), void())
+    {
+        SetRow(index, std::data(values), std::size(values));
+    }
+```
+#### 🔹 포인터 기반 `GetRow`
+```cpp
+    void GetRow(const int index, Type* output, const std::size_t count) const
+    {
+        CheckIndex(index, m_nSize, "TFixData::GetRow");
+        CheckBuffer(output, count, m_nCompCnt);
+        const auto copy = GetRow(index); // Safe even when output aliases our storage.
+        for (int j = 0; j < m_nCompCnt; ++j)
+            output[j] = copy[static_cast<std::size_t>(j)];
+    }
+```
+#### 🔹 사용 가능 예제
+```cpp
+    // std::vector
+std::vector<double> v(3);
+data.GetRow(5, v);
+
+// std::array
+std::array<double, 3> a;
+data.GetRow(5, a);
+
+// C 배열
+double arr[3];
+data.GetRow(5, arr);
+
+// 직접 포인터 사용
+double buffer[3];
+data.GetRow(5, buffer, 3);
+```
 ---
